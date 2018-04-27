@@ -1,0 +1,3236 @@
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 1
+
+
+   1              		.cpu cortex-m0
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"FrequencyCounter.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.comm	Input_Signal_Counter1_Count,2,2
+  18              		.comm	Input_Signal_Counter2_Count,2,2
+  19              		.comm	Ref_Clock_Counter1_Count,2,2
+  20              		.comm	Ref_Clock_Counter2_Count,2,2
+  21              		.comm	Input_Signal_Count,4,4
+  22              		.comm	Ref_Clock_Count,4,4
+  23              		.comm	Freq_Integer,4,4
+  24              		.comm	Freq_Decimal,2,2
+  25              		.comm	Input_Sig_Ctr_Capture,1,1
+  26              		.comm	Ref_Clk_Ctr_Capture,1,1
+  27              		.comm	Input_Frequency,10,4
+  28              		.comm	InputCounter_ASCII,10,4
+  29              		.comm	RefCounter_ASCII,10,4
+  30              		.section	.text.Initialize_Freq_Meas_System,"ax",%progbits
+  31              		.align	2
+  32              		.global	Initialize_Freq_Meas_System
+  33              		.code	16
+  34              		.thumb_func
+  35              		.type	Initialize_Freq_Meas_System, %function
+  36              	Initialize_Freq_Meas_System:
+  37              	.LFB37:
+  38              		.file 1 ".\\FrequencyCounter.c"
+   1:.\FrequencyCounter.c **** /***************************************************************************//**
+   2:.\FrequencyCounter.c **** * @file    FrequencyCounter.c
+   3:.\FrequencyCounter.c **** * @version 1.0
+   4:.\FrequencyCounter.c **** * @author  Chethan (dche@cypress.com)
+   5:.\FrequencyCounter.c **** *
+   6:.\FrequencyCounter.c **** * @par Description
+   7:.\FrequencyCounter.c **** *   This file contains the source code to the APIs for computing the input signal 
+   8:.\FrequencyCounter.c **** *   frequency.
+   9:.\FrequencyCounter.c **** *
+  10:.\FrequencyCounter.c **** * @par Notes
+  11:.\FrequencyCounter.c **** *	None
+  12:.\FrequencyCounter.c **** *
+  13:.\FrequencyCounter.c **** * @par Hardware Dependency
+  14:.\FrequencyCounter.c **** *    1. CY8CKIT-042 BLE Pioneer Kit
+  15:.\FrequencyCounter.c **** *
+  16:.\FrequencyCounter.c **** * @par References
+  17:.\FrequencyCounter.c **** *    1. 001-32359: AN2283 "PSoC 1 Measuring Frequency"
+  18:.\FrequencyCounter.c **** *
+  19:.\FrequencyCounter.c **** * @par Code Tested With
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 2
+
+
+  20:.\FrequencyCounter.c **** *    1. PSoC Creator  3.1 SP2 (3.1.0.2177)
+  21:.\FrequencyCounter.c **** *    2. GCC 4.8.4
+  22:.\FrequencyCounter.c **** *
+  23:.\FrequencyCounter.c **** **//****************************************************************************
+  24:.\FrequencyCounter.c **** * Copyright (2015), Cypress Semiconductor Corporation.
+  25:.\FrequencyCounter.c **** ********************************************************************************
+  26:.\FrequencyCounter.c **** * All rights reserved. 
+  27:.\FrequencyCounter.c **** * This software, including source code, documentation and related 
+  28:.\FrequencyCounter.c **** * materials (“Software”), is owned by Cypress Semiconductor 
+  29:.\FrequencyCounter.c **** * Corporation (“Cypress”) and is protected by and subject to worldwide 
+  30:.\FrequencyCounter.c **** * patent protection (United States and foreign), United States copyright 
+  31:.\FrequencyCounter.c **** * laws and international treaty provisions. Therefore, you may use this 
+  32:.\FrequencyCounter.c **** * Software only as provided in the license agreement accompanying the 
+  33:.\FrequencyCounter.c **** * software package from which you obtained this Software (“EULA”). 
+  34:.\FrequencyCounter.c **** *
+  35:.\FrequencyCounter.c **** * If no EULA applies, Cypress hereby grants you a personal, non-exclusive, 
+  36:.\FrequencyCounter.c **** * non-transferable license to copy, modify and compile the Software source code
+  37:.\FrequencyCounter.c **** * solely for your use in connection with Cypress's integrated circuit products.
+  38:.\FrequencyCounter.c **** * Any reproduction, modification, translation, compilation, or representation
+  39:.\FrequencyCounter.c **** * of this Software except as specified above is prohibited without the express
+  40:.\FrequencyCounter.c **** * written permission of Cypress.
+  41:.\FrequencyCounter.c **** 
+  42:.\FrequencyCounter.c **** * Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
+  43:.\FrequencyCounter.c **** * EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
+  44:.\FrequencyCounter.c **** * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  45:.\FrequencyCounter.c **** * Cypress reserves the right to make changes to the Software without notice. 
+  46:.\FrequencyCounter.c **** * Cypress does not assume any liability arising out of the application or use 
+  47:.\FrequencyCounter.c **** * of the Software or any product or circuit described in the Software. Cypress
+  48:.\FrequencyCounter.c **** * does not authorize its products for use in any products where a malfunction
+  49:.\FrequencyCounter.c **** * or failure of the Cypress product may reasonably be expected to result in 
+  50:.\FrequencyCounter.c **** * significant property damage, injury or death (“High Risk Product”). By 
+  51:.\FrequencyCounter.c **** * including Cypress’s product in a High Risk Product, the manufacturer of such  
+  52:.\FrequencyCounter.c **** * system or application assumes all risk of such use and in doing so agrees to  
+  53:.\FrequencyCounter.c **** * indemnify Cypress against all liability. 
+  54:.\FrequencyCounter.c **** *******************************************************************************/
+  55:.\FrequencyCounter.c **** 
+  56:.\FrequencyCounter.c **** /*******************************************************************************
+  57:.\FrequencyCounter.c **** *   Included Headers
+  58:.\FrequencyCounter.c **** *******************************************************************************/
+  59:.\FrequencyCounter.c **** #include "main.h"
+  60:.\FrequencyCounter.c **** 
+  61:.\FrequencyCounter.c **** /* Variable to store the captured count values of counter */
+  62:.\FrequencyCounter.c **** uint16 Input_Signal_Counter1_Count, Input_Signal_Counter2_Count;
+  63:.\FrequencyCounter.c **** uint16 Ref_Clock_Counter1_Count, Ref_Clock_Counter2_Count;
+  64:.\FrequencyCounter.c **** 
+  65:.\FrequencyCounter.c **** /* Variable to store the 32-bit count value */
+  66:.\FrequencyCounter.c **** uint32 Input_Signal_Count, Ref_Clock_Count;
+  67:.\FrequencyCounter.c **** 
+  68:.\FrequencyCounter.c **** /* Variable to store the integer part and decimal part of the computed frequency */
+  69:.\FrequencyCounter.c **** uint32 Freq_Integer;
+  70:.\FrequencyCounter.c **** uint16 Freq_Decimal;
+  71:.\FrequencyCounter.c **** 
+  72:.\FrequencyCounter.c **** /* Variable to indicate PWM_2s ISR is executed */
+  73:.\FrequencyCounter.c **** extern uint8 Calculate_Frequency;
+  74:.\FrequencyCounter.c **** 
+  75:.\FrequencyCounter.c **** /* Variable to indicate valid capture events dtection */
+  76:.\FrequencyCounter.c **** uint8 Input_Sig_Ctr_Capture, Ref_Clk_Ctr_Capture;
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 3
+
+
+  77:.\FrequencyCounter.c **** 
+  78:.\FrequencyCounter.c **** /* Array to store the computed frequency and count value in ASCII format */
+  79:.\FrequencyCounter.c **** uint8 Input_Frequency[FREQ_DATA_LEN];
+  80:.\FrequencyCounter.c **** uint8 InputCounter_ASCII[FREQ_DATA_LEN];
+  81:.\FrequencyCounter.c **** uint8 RefCounter_ASCII[FREQ_DATA_LEN];
+  82:.\FrequencyCounter.c **** 
+  83:.\FrequencyCounter.c **** /* Interrupt Service Routine for Input_Sig_Counter, Ref_Clock_Counter and PWM_2s */
+  84:.\FrequencyCounter.c **** CY_ISR_PROTO(PWM_2s_InterruptHandler);
+  85:.\FrequencyCounter.c **** CY_ISR_PROTO(Input_Sig_Ctr_InterruptHandler);
+  86:.\FrequencyCounter.c **** CY_ISR_PROTO(Ref_Clk_Ctr_InterruptHandler);
+  87:.\FrequencyCounter.c **** 
+  88:.\FrequencyCounter.c **** /*******************************************************************************
+  89:.\FrequencyCounter.c **** * Function Name: Initialize_Freq_Meas_System
+  90:.\FrequencyCounter.c **** ********************************************************************************
+  91:.\FrequencyCounter.c **** *
+  92:.\FrequencyCounter.c **** * Summary:
+  93:.\FrequencyCounter.c **** *  Function starts component related to frequency measurement 
+  94:.\FrequencyCounter.c **** *
+  95:.\FrequencyCounter.c **** * Parameters:
+  96:.\FrequencyCounter.c **** *  None
+  97:.\FrequencyCounter.c **** *
+  98:.\FrequencyCounter.c **** * Return:
+  99:.\FrequencyCounter.c **** *  None
+ 100:.\FrequencyCounter.c **** *
+ 101:.\FrequencyCounter.c **** *******************************************************************************/
+ 102:.\FrequencyCounter.c **** void Initialize_Freq_Meas_System(void)
+ 103:.\FrequencyCounter.c **** {
+  39              		.loc 1 103 0
+  40              		.cfi_startproc
+  41 0000 80B5     		push	{r7, lr}
+  42              		.cfi_def_cfa_offset 8
+  43              		.cfi_offset 7, -8
+  44              		.cfi_offset 14, -4
+  45 0002 00AF     		add	r7, sp, #0
+  46              		.cfi_def_cfa_register 7
+ 104:.\FrequencyCounter.c **** 	/* Start the PWM and counter ISRs */
+ 105:.\FrequencyCounter.c **** 	PWM_2s_ISR_StartEx(PWM_2s_InterruptHandler);
+  47              		.loc 1 105 0
+  48 0004 0D4B     		ldr	r3, .L2
+  49 0006 181C     		mov	r0, r3
+  50 0008 FFF7FEFF 		bl	PWM_2s_ISR_StartEx
+ 106:.\FrequencyCounter.c **** 	Input_Sig_Ctr_ISR_StartEx(Input_Sig_Ctr_InterruptHandler);
+  51              		.loc 1 106 0
+  52 000c 0C4B     		ldr	r3, .L2+4
+  53 000e 181C     		mov	r0, r3
+  54 0010 FFF7FEFF 		bl	Input_Sig_Ctr_ISR_StartEx
+ 107:.\FrequencyCounter.c **** 	Ref_Clk_Ctr_ISR_StartEx(Ref_Clk_Ctr_InterruptHandler);
+  55              		.loc 1 107 0
+  56 0014 0B4B     		ldr	r3, .L2+8
+  57 0016 181C     		mov	r0, r3
+  58 0018 FFF7FEFF 		bl	Ref_Clk_Ctr_ISR_StartEx
+ 108:.\FrequencyCounter.c **** 	
+ 109:.\FrequencyCounter.c **** 	/* Start PWM component to generate pulse width of 1s */
+ 110:.\FrequencyCounter.c **** 	PWM_2s_Start();
+  59              		.loc 1 110 0
+  60 001c FFF7FEFF 		bl	PWM_2s_Start
+ 111:.\FrequencyCounter.c **** 	
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 4
+
+
+ 112:.\FrequencyCounter.c **** 	/* Start the input signal counter1 and counter2 */
+ 113:.\FrequencyCounter.c **** 	Input_Signal_Counter1_Start();
+  61              		.loc 1 113 0
+  62 0020 FFF7FEFF 		bl	Input_Signal_Counter1_Start
+ 114:.\FrequencyCounter.c **** 	Input_Signal_Counter2_Start();
+  63              		.loc 1 114 0
+  64 0024 FFF7FEFF 		bl	Input_Signal_Counter2_Start
+ 115:.\FrequencyCounter.c **** 	
+ 116:.\FrequencyCounter.c **** 	/* Start the reference clock counter1 and counter2 */
+ 117:.\FrequencyCounter.c **** 	Ref_Clock_Counter1_Start();
+  65              		.loc 1 117 0
+  66 0028 FFF7FEFF 		bl	Ref_Clock_Counter1_Start
+ 118:.\FrequencyCounter.c **** 	Ref_Clock_Counter2_Start();
+  67              		.loc 1 118 0
+  68 002c FFF7FEFF 		bl	Ref_Clock_Counter2_Start
+ 119:.\FrequencyCounter.c **** 	
+ 120:.\FrequencyCounter.c **** 	#if (OPAMP_ENABLE)
+ 121:.\FrequencyCounter.c **** 		/* Start the unity gain buffer */
+ 122:.\FrequencyCounter.c **** 		Opamp_1_Start();
+  69              		.loc 1 122 0
+  70 0030 FFF7FEFF 		bl	Opamp_1_Start
+ 123:.\FrequencyCounter.c **** 
+ 124:.\FrequencyCounter.c **** 		/* Start the opamp to convert input arbitrary signal to square wave */
+ 125:.\FrequencyCounter.c **** 		Comparator_Start();
+  71              		.loc 1 125 0
+  72 0034 FFF7FEFF 		bl	Comparator_Start
+ 126:.\FrequencyCounter.c **** 	#endif
+ 127:.\FrequencyCounter.c **** }
+  73              		.loc 1 127 0
+  74 0038 BD46     		mov	sp, r7
+  75              		@ sp needed
+  76 003a 80BD     		pop	{r7, pc}
+  77              	.L3:
+  78              		.align	2
+  79              	.L2:
+  80 003c 00000000 		.word	PWM_2s_InterruptHandler
+  81 0040 00000000 		.word	Input_Sig_Ctr_InterruptHandler
+  82 0044 00000000 		.word	Ref_Clk_Ctr_InterruptHandler
+  83              		.cfi_endproc
+  84              	.LFE37:
+  85              		.size	Initialize_Freq_Meas_System, .-Initialize_Freq_Meas_System
+  86              		.global	__aeabi_ui2f
+  87              		.global	__aeabi_fdiv
+  88              		.global	__aeabi_fmul
+  89              		.global	__aeabi_f2iz
+  90              		.global	__aeabi_fcmplt
+  91              		.global	__aeabi_fsub
+  92              		.section	.text.Compute_Frequency,"ax",%progbits
+  93              		.align	2
+  94              		.global	Compute_Frequency
+  95              		.code	16
+  96              		.thumb_func
+  97              		.type	Compute_Frequency, %function
+  98              	Compute_Frequency:
+  99              	.LFB38:
+ 128:.\FrequencyCounter.c **** 
+ 129:.\FrequencyCounter.c **** /*******************************************************************************
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 5
+
+
+ 130:.\FrequencyCounter.c **** * Function Name: Compute_Frequency
+ 131:.\FrequencyCounter.c **** ********************************************************************************
+ 132:.\FrequencyCounter.c **** *
+ 133:.\FrequencyCounter.c **** * Summary:
+ 134:.\FrequencyCounter.c **** *  Function computes the input signal frequency using the latched count value 
+ 135:.\FrequencyCounter.c **** *
+ 136:.\FrequencyCounter.c **** * Parameters:
+ 137:.\FrequencyCounter.c **** *  None
+ 138:.\FrequencyCounter.c **** *
+ 139:.\FrequencyCounter.c **** * Return:
+ 140:.\FrequencyCounter.c **** *  None
+ 141:.\FrequencyCounter.c **** *
+ 142:.\FrequencyCounter.c **** *******************************************************************************/
+ 143:.\FrequencyCounter.c **** void Compute_Frequency(void)
+ 144:.\FrequencyCounter.c **** {
+ 100              		.loc 1 144 0
+ 101              		.cfi_startproc
+ 102 0000 90B5     		push	{r4, r7, lr}
+ 103              		.cfi_def_cfa_offset 12
+ 104              		.cfi_offset 4, -12
+ 105              		.cfi_offset 7, -8
+ 106              		.cfi_offset 14, -4
+ 107 0002 83B0     		sub	sp, sp, #12
+ 108              		.cfi_def_cfa_offset 24
+ 109 0004 00AF     		add	r7, sp, #0
+ 110              		.cfi_def_cfa_register 7
+ 145:.\FrequencyCounter.c **** 	/* Variable to store the ratio of Input counter count and Ref counter count */
+ 146:.\FrequencyCounter.c **** 	float32 CountRatio = 0;
+ 111              		.loc 1 146 0
+ 112 0006 0023     		mov	r3, #0
+ 113 0008 7B60     		str	r3, [r7, #4]
+ 147:.\FrequencyCounter.c **** 	
+ 148:.\FrequencyCounter.c **** 	/* Variable to store the input signal frequency */
+ 149:.\FrequencyCounter.c **** 	float32 Frequency_Temp = 0; 
+ 114              		.loc 1 149 0
+ 115 000a 0023     		mov	r3, #0
+ 116 000c 3B60     		str	r3, [r7]
+ 150:.\FrequencyCounter.c **** 	
+ 151:.\FrequencyCounter.c **** 	/* Compute the 32-bit count value */
+ 152:.\FrequencyCounter.c **** 	Input_Signal_Count = ((int32)(Input_Signal_Counter2_Count << 16)) + Input_Signal_Counter1_Count +1
+ 117              		.loc 1 152 0
+ 118 000e 384B     		ldr	r3, .L16
+ 119 0010 1B88     		ldrh	r3, [r3]
+ 120 0012 1B04     		lsl	r3, r3, #16
+ 121 0014 374A     		ldr	r2, .L16+4
+ 122 0016 1288     		ldrh	r2, [r2]
+ 123 0018 9B18     		add	r3, r3, r2
+ 124 001a 0133     		add	r3, r3, #1
+ 125 001c 1A1C     		mov	r2, r3
+ 126 001e 364B     		ldr	r3, .L16+8
+ 127 0020 1A60     		str	r2, [r3]
+ 153:.\FrequencyCounter.c **** 	Ref_Clock_Count = ((int32)(Ref_Clock_Counter2_Count << 16)) + Ref_Clock_Counter1_Count + 1;
+ 128              		.loc 1 153 0
+ 129 0022 364B     		ldr	r3, .L16+12
+ 130 0024 1B88     		ldrh	r3, [r3]
+ 131 0026 1B04     		lsl	r3, r3, #16
+ 132 0028 354A     		ldr	r2, .L16+16
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 6
+
+
+ 133 002a 1288     		ldrh	r2, [r2]
+ 134 002c 9B18     		add	r3, r3, r2
+ 135 002e 0133     		add	r3, r3, #1
+ 136 0030 1A1C     		mov	r2, r3
+ 137 0032 344B     		ldr	r3, .L16+20
+ 138 0034 1A60     		str	r2, [r3]
+ 154:.\FrequencyCounter.c **** 	
+ 155:.\FrequencyCounter.c **** 	/* Check if divide by zero condition occurs */
+ 156:.\FrequencyCounter.c **** 	if(Ref_Clock_Count!=0)
+ 139              		.loc 1 156 0
+ 140 0036 334B     		ldr	r3, .L16+20
+ 141 0038 1B68     		ldr	r3, [r3]
+ 142 003a 002B     		cmp	r3, #0
+ 143 003c 12D0     		beq	.L5
+ 157:.\FrequencyCounter.c **** 	{
+ 158:.\FrequencyCounter.c **** 		/* Compute the ratio of input_sig_counter_count and the ref_clock_counter count */
+ 159:.\FrequencyCounter.c **** 		CountRatio = (float) ((float)Input_Signal_Count/ (float)Ref_Clock_Count);
+ 144              		.loc 1 159 0
+ 145 003e 2E4B     		ldr	r3, .L16+8
+ 146 0040 1B68     		ldr	r3, [r3]
+ 147 0042 181C     		mov	r0, r3
+ 148 0044 FFF7FEFF 		bl	__aeabi_ui2f
+ 149 0048 041C     		add	r4, r0, #0
+ 150 004a 2E4B     		ldr	r3, .L16+20
+ 151 004c 1B68     		ldr	r3, [r3]
+ 152 004e 181C     		mov	r0, r3
+ 153 0050 FFF7FEFF 		bl	__aeabi_ui2f
+ 154 0054 031C     		add	r3, r0, #0
+ 155 0056 201C     		add	r0, r4, #0
+ 156 0058 191C     		add	r1, r3, #0
+ 157 005a FFF7FEFF 		bl	__aeabi_fdiv
+ 158 005e 031C     		add	r3, r0, #0
+ 159 0060 7B60     		str	r3, [r7, #4]
+ 160 0062 01E0     		b	.L6
+ 161              	.L5:
+ 160:.\FrequencyCounter.c **** 	}
+ 161:.\FrequencyCounter.c **** 	else
+ 162:.\FrequencyCounter.c **** 		CountRatio=0;
+ 162              		.loc 1 162 0
+ 163 0064 0023     		mov	r3, #0
+ 164 0066 7B60     		str	r3, [r7, #4]
+ 165              	.L6:
+ 163:.\FrequencyCounter.c **** 	
+ 164:.\FrequencyCounter.c **** 	/* Calculate the input signal frequency */
+ 165:.\FrequencyCounter.c **** 	Frequency_Temp = (CountRatio * CLOCK_FREQENCY);
+ 166              		.loc 1 165 0
+ 167 0068 7868     		ldr	r0, [r7, #4]
+ 168 006a 2749     		ldr	r1, .L16+24
+ 169 006c FFF7FEFF 		bl	__aeabi_fmul
+ 170 0070 031C     		add	r3, r0, #0
+ 171 0072 3B60     		str	r3, [r7]
+ 166:.\FrequencyCounter.c **** 	
+ 167:.\FrequencyCounter.c **** 	/* Get the integer value of the calculated frequency */
+ 168:.\FrequencyCounter.c **** 	Freq_Integer = (int32)Frequency_Temp;
+ 172              		.loc 1 168 0
+ 173 0074 3868     		ldr	r0, [r7]
+ 174 0076 FFF7FEFF 		bl	__aeabi_f2iz
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 7
+
+
+ 175 007a 031C     		mov	r3, r0
+ 176 007c 1A1C     		mov	r2, r3
+ 177 007e 234B     		ldr	r3, .L16+28
+ 178 0080 1A60     		str	r2, [r3]
+ 169:.\FrequencyCounter.c **** 	
+ 170:.\FrequencyCounter.c **** 	/* Reset the input_frequency array before storing the frequency value */
+ 171:.\FrequencyCounter.c **** 	Reset_Array(Input_Frequency, DATA_END);
+ 179              		.loc 1 171 0
+ 180 0082 234B     		ldr	r3, .L16+32
+ 181 0084 181C     		mov	r0, r3
+ 182 0086 0A21     		mov	r1, #10
+ 183 0088 FFF7FEFF 		bl	Reset_Array
+ 172:.\FrequencyCounter.c **** 	
+ 173:.\FrequencyCounter.c **** 	/* If input frequency is less than 1KHz, format the data to display in units of Hz */
+ 174:.\FrequencyCounter.c **** 	if(Frequency_Temp < ONE_KHZ)
+ 184              		.loc 1 174 0
+ 185 008c 3868     		ldr	r0, [r7]
+ 186 008e 2149     		ldr	r1, .L16+36
+ 187 0090 FFF7FEFF 		bl	__aeabi_fcmplt
+ 188 0094 031E     		sub	r3, r0, #0
+ 189 0096 1BD0     		beq	.L14
+ 175:.\FrequencyCounter.c **** 	{
+ 176:.\FrequencyCounter.c **** 		/* Extract only the decimal part of the computed frequency value */
+ 177:.\FrequencyCounter.c **** 		Frequency_Temp -= Freq_Integer;
+ 190              		.loc 1 177 0
+ 191 0098 1C4B     		ldr	r3, .L16+28
+ 192 009a 1B68     		ldr	r3, [r3]
+ 193 009c 181C     		mov	r0, r3
+ 194 009e FFF7FEFF 		bl	__aeabi_ui2f
+ 195 00a2 031C     		add	r3, r0, #0
+ 196 00a4 3868     		ldr	r0, [r7]
+ 197 00a6 191C     		add	r1, r3, #0
+ 198 00a8 FFF7FEFF 		bl	__aeabi_fsub
+ 199 00ac 031C     		add	r3, r0, #0
+ 200 00ae 3B60     		str	r3, [r7]
+ 178:.\FrequencyCounter.c **** 		
+ 179:.\FrequencyCounter.c **** 		/* Convert the decimal value into integer value for ASCII conversion */
+ 180:.\FrequencyCounter.c **** 		Freq_Decimal = (int32)(Frequency_Temp * THOUSAND);
+ 201              		.loc 1 180 0
+ 202 00b0 3868     		ldr	r0, [r7]
+ 203 00b2 1849     		ldr	r1, .L16+36
+ 204 00b4 FFF7FEFF 		bl	__aeabi_fmul
+ 205 00b8 031C     		add	r3, r0, #0
+ 206 00ba 181C     		add	r0, r3, #0
+ 207 00bc FFF7FEFF 		bl	__aeabi_f2iz
+ 208 00c0 031C     		mov	r3, r0
+ 209 00c2 9AB2     		uxth	r2, r3
+ 210 00c4 144B     		ldr	r3, .L16+40
+ 211 00c6 1A80     		strh	r2, [r3]
+ 181:.\FrequencyCounter.c **** 		
+ 182:.\FrequencyCounter.c **** 		/* Format the computed frequency value to display in units of Hz */
+ 183:.\FrequencyCounter.c **** 		FormatFrequencyData(FREQ_HZ);
+ 212              		.loc 1 183 0
+ 213 00c8 0320     		mov	r0, #3
+ 214 00ca FFF7FEFF 		bl	FormatFrequencyData
+ 215 00ce 0CE0     		b	.L4
+ 216              	.L14:
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 8
+
+
+ 184:.\FrequencyCounter.c **** 	}
+ 185:.\FrequencyCounter.c **** 	/* If input frequency is less than 1MHz, format the data to display in units of KHz */
+ 186:.\FrequencyCounter.c **** 	else if(Frequency_Temp < ONE_MHZ)
+ 217              		.loc 1 186 0
+ 218 00d0 3868     		ldr	r0, [r7]
+ 219 00d2 1249     		ldr	r1, .L16+44
+ 220 00d4 FFF7FEFF 		bl	__aeabi_fcmplt
+ 221 00d8 031E     		sub	r3, r0, #0
+ 222 00da 03D0     		beq	.L15
+ 187:.\FrequencyCounter.c **** 	{
+ 188:.\FrequencyCounter.c **** 		FormatFrequencyData(FREQ_KHZ);
+ 223              		.loc 1 188 0
+ 224 00dc 0220     		mov	r0, #2
+ 225 00de FFF7FEFF 		bl	FormatFrequencyData
+ 226 00e2 02E0     		b	.L4
+ 227              	.L15:
+ 189:.\FrequencyCounter.c **** 	}
+ 190:.\FrequencyCounter.c **** 	/* If input frequency is greater than or equal to 1MHz, format the data to 
+ 191:.\FrequencyCounter.c **** 	*  display in units of MHz */
+ 192:.\FrequencyCounter.c **** 	else
+ 193:.\FrequencyCounter.c **** 	{
+ 194:.\FrequencyCounter.c **** 		FormatFrequencyData(FREQ_MHZ);
+ 228              		.loc 1 194 0
+ 229 00e4 0120     		mov	r0, #1
+ 230 00e6 FFF7FEFF 		bl	FormatFrequencyData
+ 231              	.L4:
+ 195:.\FrequencyCounter.c **** 	}
+ 196:.\FrequencyCounter.c **** }
+ 232              		.loc 1 196 0
+ 233 00ea BD46     		mov	sp, r7
+ 234 00ec 03B0     		add	sp, sp, #12
+ 235              		@ sp needed
+ 236 00ee 90BD     		pop	{r4, r7, pc}
+ 237              	.L17:
+ 238              		.align	2
+ 239              	.L16:
+ 240 00f0 00000000 		.word	Input_Signal_Counter2_Count
+ 241 00f4 00000000 		.word	Input_Signal_Counter1_Count
+ 242 00f8 00000000 		.word	Input_Signal_Count
+ 243 00fc 00000000 		.word	Ref_Clock_Counter2_Count
+ 244 0100 00000000 		.word	Ref_Clock_Counter1_Count
+ 245 0104 00000000 		.word	Ref_Clock_Count
+ 246 0108 001BB74A 		.word	1253513984
+ 247 010c 00000000 		.word	Freq_Integer
+ 248 0110 00000000 		.word	Input_Frequency
+ 249 0114 00007A44 		.word	1148846080
+ 250 0118 00000000 		.word	Freq_Decimal
+ 251 011c 00247449 		.word	1232348160
+ 252              		.cfi_endproc
+ 253              	.LFE38:
+ 254              		.size	Compute_Frequency, .-Compute_Frequency
+ 255              		.global	__aeabi_uidivmod
+ 256              		.global	__aeabi_uidiv
+ 257              		.section	.text.FormatFrequencyData,"ax",%progbits
+ 258              		.align	2
+ 259              		.global	FormatFrequencyData
+ 260              		.code	16
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 9
+
+
+ 261              		.thumb_func
+ 262              		.type	FormatFrequencyData, %function
+ 263              	FormatFrequencyData:
+ 264              	.LFB39:
+ 197:.\FrequencyCounter.c **** 
+ 198:.\FrequencyCounter.c **** /*******************************************************************************
+ 199:.\FrequencyCounter.c **** * Function Name: FormatFrequencyData
+ 200:.\FrequencyCounter.c **** ********************************************************************************
+ 201:.\FrequencyCounter.c **** *
+ 202:.\FrequencyCounter.c **** * Summary:
+ 203:.\FrequencyCounter.c **** *  Function converts the computed frequency in hexadecimal to ASCII format 
+ 204:.\FrequencyCounter.c **** *  and stores in an array along with the unit of frequency 
+ 205:.\FrequencyCounter.c **** *
+ 206:.\FrequencyCounter.c **** * Parameters:
+ 207:.\FrequencyCounter.c **** *  FormatType: Value indicates the range of input frequency for formatting the 
+ 208:.\FrequencyCounter.c **** *			   input signal frequency
+ 209:.\FrequencyCounter.c **** *
+ 210:.\FrequencyCounter.c **** * Return:
+ 211:.\FrequencyCounter.c **** *  None
+ 212:.\FrequencyCounter.c **** *
+ 213:.\FrequencyCounter.c **** *******************************************************************************/
+ 214:.\FrequencyCounter.c **** void FormatFrequencyData(uint8 FormatType)
+ 215:.\FrequencyCounter.c **** {
+ 265              		.loc 1 215 0
+ 266              		.cfi_startproc
+ 267 0000 90B5     		push	{r4, r7, lr}
+ 268              		.cfi_def_cfa_offset 12
+ 269              		.cfi_offset 4, -12
+ 270              		.cfi_offset 7, -8
+ 271              		.cfi_offset 14, -4
+ 272 0002 85B0     		sub	sp, sp, #20
+ 273              		.cfi_def_cfa_offset 32
+ 274 0004 00AF     		add	r7, sp, #0
+ 275              		.cfi_def_cfa_register 7
+ 276 0006 021C     		mov	r2, r0
+ 277 0008 FB1D     		add	r3, r7, #7
+ 278 000a 1A70     		strb	r2, [r3]
+ 216:.\FrequencyCounter.c **** 	/* Variable to count the number of loops */
+ 217:.\FrequencyCounter.c **** 	uint8 loopNo = 0;
+ 279              		.loc 1 217 0
+ 280 000c 0F23     		mov	r3, #15
+ 281 000e FB18     		add	r3, r7, r3
+ 282 0010 0022     		mov	r2, #0
+ 283 0012 1A70     		strb	r2, [r3]
+ 218:.\FrequencyCounter.c **** 	
+ 219:.\FrequencyCounter.c **** 	/* If input frequency in in Hz, format the data to display in units of Hz */
+ 220:.\FrequencyCounter.c **** 	if((FormatType == FREQ_HZ) ||(FormatType == ZERO_HZ ))
+ 284              		.loc 1 220 0
+ 285 0014 FB1D     		add	r3, r7, #7
+ 286 0016 1B78     		ldrb	r3, [r3]
+ 287 0018 032B     		cmp	r3, #3
+ 288 001a 04D0     		beq	.L19
+ 289              		.loc 1 220 0 is_stmt 0 discriminator 1
+ 290 001c FB1D     		add	r3, r7, #7
+ 291 001e 1B78     		ldrb	r3, [r3]
+ 292 0020 042B     		cmp	r3, #4
+ 293 0022 00D0     		beq	.LCB222
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 10
+
+
+ 294 0024 87E0     		b	.L20	@long jump
+ 295              	.LCB222:
+ 296              	.L19:
+ 221:.\FrequencyCounter.c **** 	{
+ 222:.\FrequencyCounter.c **** 		/* If frequency is less than 1KHZ, store " Hz" in the first 3 bytes of 
+ 223:.\FrequencyCounter.c **** 		*  Input_Frequency array */
+ 224:.\FrequencyCounter.c **** 		/* Store 'z" in the first byte of the array */
+ 225:.\FrequencyCounter.c **** 		Input_Frequency[0] = ASCII_z;
+ 297              		.loc 1 225 0 is_stmt 1
+ 298 0026 9A4B     		ldr	r3, .L37
+ 299 0028 7A22     		mov	r2, #122
+ 300 002a 1A70     		strb	r2, [r3]
+ 226:.\FrequencyCounter.c **** 		
+ 227:.\FrequencyCounter.c **** 		/* Store "H" in the second byte of the arrray */
+ 228:.\FrequencyCounter.c **** 		Input_Frequency[1] = ASCII_H;
+ 301              		.loc 1 228 0
+ 302 002c 984B     		ldr	r3, .L37
+ 303 002e 4822     		mov	r2, #72
+ 304 0030 5A70     		strb	r2, [r3, #1]
+ 229:.\FrequencyCounter.c **** 		
+ 230:.\FrequencyCounter.c **** 		/* Store space character in the third byte */
+ 231:.\FrequencyCounter.c **** 		Input_Frequency[2] = ASCII_SPACE;
+ 305              		.loc 1 231 0
+ 306 0032 974B     		ldr	r3, .L37
+ 307 0034 2022     		mov	r2, #32
+ 308 0036 9A70     		strb	r2, [r3, #2]
+ 232:.\FrequencyCounter.c **** 		
+ 233:.\FrequencyCounter.c **** 		if(FormatType == ZERO_HZ )
+ 309              		.loc 1 233 0
+ 310 0038 FB1D     		add	r3, r7, #7
+ 311 003a 1B78     		ldrb	r3, [r3]
+ 312 003c 042B     		cmp	r3, #4
+ 313 003e 05D1     		bne	.L21
+ 234:.\FrequencyCounter.c **** 		{
+ 235:.\FrequencyCounter.c **** 			Freq_Decimal = 0;
+ 314              		.loc 1 235 0
+ 315 0040 944B     		ldr	r3, .L37+4
+ 316 0042 0022     		mov	r2, #0
+ 317 0044 1A80     		strh	r2, [r3]
+ 236:.\FrequencyCounter.c **** 			Freq_Integer = 0;
+ 318              		.loc 1 236 0
+ 319 0046 944B     		ldr	r3, .L37+8
+ 320 0048 0022     		mov	r2, #0
+ 321 004a 1A60     		str	r2, [r3]
+ 322              	.L21:
+ 237:.\FrequencyCounter.c **** 		}
+ 238:.\FrequencyCounter.c **** 		
+ 239:.\FrequencyCounter.c **** 		/* Store the decimal digits from fourth byte in the array in ASCII format */
+ 240:.\FrequencyCounter.c **** 		for(loopNo = DATA_START; loopNo < DECIMAL_END; loopNo++)
+ 323              		.loc 1 240 0
+ 324 004c 0F23     		mov	r3, #15
+ 325 004e FB18     		add	r3, r7, r3
+ 326 0050 0322     		mov	r2, #3
+ 327 0052 1A70     		strb	r2, [r3]
+ 328 0054 2AE0     		b	.L22
+ 329              	.L23:
+ 241:.\FrequencyCounter.c **** 		{
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 11
+
+
+ 242:.\FrequencyCounter.c **** 			/* Get the value of one's place of the integer */
+ 243:.\FrequencyCounter.c **** 			Input_Frequency[loopNo] = Freq_Decimal % 10;
+ 330              		.loc 1 243 0 discriminator 3
+ 331 0056 0F23     		mov	r3, #15
+ 332 0058 FB18     		add	r3, r7, r3
+ 333 005a 1C78     		ldrb	r4, [r3]
+ 334 005c 8D4B     		ldr	r3, .L37+4
+ 335 005e 1B88     		ldrh	r3, [r3]
+ 336 0060 181C     		mov	r0, r3
+ 337 0062 0A21     		mov	r1, #10
+ 338 0064 FFF7FEFF 		bl	__aeabi_uidivmod
+ 339 0068 0B1C     		mov	r3, r1
+ 340 006a 9BB2     		uxth	r3, r3
+ 341 006c DAB2     		uxtb	r2, r3
+ 342 006e 884B     		ldr	r3, .L37
+ 343 0070 1A55     		strb	r2, [r3, r4]
+ 244:.\FrequencyCounter.c **** 
+ 245:.\FrequencyCounter.c **** 			/* Convert the integer to ASCII */
+ 246:.\FrequencyCounter.c **** 			Input_Frequency[loopNo] += INTEGER_TO_ASCII;
+ 344              		.loc 1 246 0 discriminator 3
+ 345 0072 0F23     		mov	r3, #15
+ 346 0074 FB18     		add	r3, r7, r3
+ 347 0076 1B78     		ldrb	r3, [r3]
+ 348 0078 0F22     		mov	r2, #15
+ 349 007a BA18     		add	r2, r7, r2
+ 350 007c 1278     		ldrb	r2, [r2]
+ 351 007e 8449     		ldr	r1, .L37
+ 352 0080 8A5C     		ldrb	r2, [r1, r2]
+ 353 0082 3032     		add	r2, r2, #48
+ 354 0084 D1B2     		uxtb	r1, r2
+ 355 0086 824A     		ldr	r2, .L37
+ 356 0088 D154     		strb	r1, [r2, r3]
+ 247:.\FrequencyCounter.c **** 			
+ 248:.\FrequencyCounter.c **** 			/* Shift the Ten's place to one's place */
+ 249:.\FrequencyCounter.c **** 			Freq_Decimal /= 10;
+ 357              		.loc 1 249 0 discriminator 3
+ 358 008a 824B     		ldr	r3, .L37+4
+ 359 008c 1B88     		ldrh	r3, [r3]
+ 360 008e 181C     		mov	r0, r3
+ 361 0090 0A21     		mov	r1, #10
+ 362 0092 FFF7FEFF 		bl	__aeabi_uidiv
+ 363 0096 031C     		mov	r3, r0
+ 364 0098 9AB2     		uxth	r2, r3
+ 365 009a 7E4B     		ldr	r3, .L37+4
+ 366 009c 1A80     		strh	r2, [r3]
+ 240:.\FrequencyCounter.c **** 		{
+ 367              		.loc 1 240 0 discriminator 3
+ 368 009e 0F23     		mov	r3, #15
+ 369 00a0 FB18     		add	r3, r7, r3
+ 370 00a2 1A78     		ldrb	r2, [r3]
+ 371 00a4 0F23     		mov	r3, #15
+ 372 00a6 FB18     		add	r3, r7, r3
+ 373 00a8 0132     		add	r2, r2, #1
+ 374 00aa 1A70     		strb	r2, [r3]
+ 375              	.L22:
+ 240:.\FrequencyCounter.c **** 		{
+ 376              		.loc 1 240 0 is_stmt 0 discriminator 1
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 12
+
+
+ 377 00ac 0F23     		mov	r3, #15
+ 378 00ae FB18     		add	r3, r7, r3
+ 379 00b0 1B78     		ldrb	r3, [r3]
+ 380 00b2 052B     		cmp	r3, #5
+ 381 00b4 CFD9     		bls	.L23
+ 250:.\FrequencyCounter.c **** 		}
+ 251:.\FrequencyCounter.c **** 		/* Store the decimal point in the array */
+ 252:.\FrequencyCounter.c **** 		Input_Frequency[loopNo++] = ASCII_DECIMAL_POINT;
+ 382              		.loc 1 252 0 is_stmt 1
+ 383 00b6 0F23     		mov	r3, #15
+ 384 00b8 FB18     		add	r3, r7, r3
+ 385 00ba 1B78     		ldrb	r3, [r3]
+ 386 00bc 0F22     		mov	r2, #15
+ 387 00be BA18     		add	r2, r7, r2
+ 388 00c0 591C     		add	r1, r3, #1
+ 389 00c2 1170     		strb	r1, [r2]
+ 390 00c4 1A1C     		mov	r2, r3
+ 391 00c6 724B     		ldr	r3, .L37
+ 392 00c8 2E21     		mov	r1, #46
+ 393 00ca 9954     		strb	r1, [r3, r2]
+ 253:.\FrequencyCounter.c **** 		
+ 254:.\FrequencyCounter.c **** 		/* Enter the integer digits in the array in ASCII format */
+ 255:.\FrequencyCounter.c **** 		while((Freq_Integer > 0) && (loopNo < DATA_END))
+ 394              		.loc 1 255 0
+ 395 00cc 29E0     		b	.L24
+ 396              	.L26:
+ 256:.\FrequencyCounter.c **** 		{
+ 257:.\FrequencyCounter.c **** 			/* Get the value of one's place of the integer */
+ 258:.\FrequencyCounter.c **** 			Input_Frequency[loopNo] = Freq_Integer % 10;
+ 397              		.loc 1 258 0
+ 398 00ce 0F23     		mov	r3, #15
+ 399 00d0 FB18     		add	r3, r7, r3
+ 400 00d2 1C78     		ldrb	r4, [r3]
+ 401 00d4 704B     		ldr	r3, .L37+8
+ 402 00d6 1B68     		ldr	r3, [r3]
+ 403 00d8 181C     		mov	r0, r3
+ 404 00da 0A21     		mov	r1, #10
+ 405 00dc FFF7FEFF 		bl	__aeabi_uidivmod
+ 406 00e0 0B1C     		mov	r3, r1
+ 407 00e2 DAB2     		uxtb	r2, r3
+ 408 00e4 6A4B     		ldr	r3, .L37
+ 409 00e6 1A55     		strb	r2, [r3, r4]
+ 259:.\FrequencyCounter.c **** 			
+ 260:.\FrequencyCounter.c **** 			/* Convert the integer to ASCII */
+ 261:.\FrequencyCounter.c **** 			Input_Frequency[loopNo] += INTEGER_TO_ASCII;
+ 410              		.loc 1 261 0
+ 411 00e8 0F23     		mov	r3, #15
+ 412 00ea FB18     		add	r3, r7, r3
+ 413 00ec 1B78     		ldrb	r3, [r3]
+ 414 00ee 0F22     		mov	r2, #15
+ 415 00f0 BA18     		add	r2, r7, r2
+ 416 00f2 1278     		ldrb	r2, [r2]
+ 417 00f4 6649     		ldr	r1, .L37
+ 418 00f6 8A5C     		ldrb	r2, [r1, r2]
+ 419 00f8 3032     		add	r2, r2, #48
+ 420 00fa D1B2     		uxtb	r1, r2
+ 421 00fc 644A     		ldr	r2, .L37
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 13
+
+
+ 422 00fe D154     		strb	r1, [r2, r3]
+ 262:.\FrequencyCounter.c **** 			
+ 263:.\FrequencyCounter.c **** 			/* Shift the Ten's place to one's place */			
+ 264:.\FrequencyCounter.c **** 			Freq_Integer /= 10;
+ 423              		.loc 1 264 0
+ 424 0100 654B     		ldr	r3, .L37+8
+ 425 0102 1B68     		ldr	r3, [r3]
+ 426 0104 181C     		mov	r0, r3
+ 427 0106 0A21     		mov	r1, #10
+ 428 0108 FFF7FEFF 		bl	__aeabi_uidiv
+ 429 010c 031C     		mov	r3, r0
+ 430 010e 1A1C     		mov	r2, r3
+ 431 0110 614B     		ldr	r3, .L37+8
+ 432 0112 1A60     		str	r2, [r3]
+ 265:.\FrequencyCounter.c **** 			
+ 266:.\FrequencyCounter.c **** 			loopNo++;
+ 433              		.loc 1 266 0
+ 434 0114 0F23     		mov	r3, #15
+ 435 0116 FB18     		add	r3, r7, r3
+ 436 0118 1A78     		ldrb	r2, [r3]
+ 437 011a 0F23     		mov	r3, #15
+ 438 011c FB18     		add	r3, r7, r3
+ 439 011e 0132     		add	r2, r2, #1
+ 440 0120 1A70     		strb	r2, [r3]
+ 441              	.L24:
+ 255:.\FrequencyCounter.c **** 		{
+ 442              		.loc 1 255 0
+ 443 0122 5D4B     		ldr	r3, .L37+8
+ 444 0124 1B68     		ldr	r3, [r3]
+ 445 0126 002B     		cmp	r3, #0
+ 446 0128 04D0     		beq	.L25
+ 255:.\FrequencyCounter.c **** 		{
+ 447              		.loc 1 255 0 is_stmt 0 discriminator 1
+ 448 012a 0F23     		mov	r3, #15
+ 449 012c FB18     		add	r3, r7, r3
+ 450 012e 1B78     		ldrb	r3, [r3]
+ 451 0130 092B     		cmp	r3, #9
+ 452 0132 CCD9     		bls	.L26
+ 453              	.L25:
+ 220:.\FrequencyCounter.c **** 	{
+ 454              		.loc 1 220 0 is_stmt 1
+ 455 0134 A9E0     		b	.L18
+ 456              	.L20:
+ 267:.\FrequencyCounter.c **** 		}
+ 268:.\FrequencyCounter.c **** 	}
+ 269:.\FrequencyCounter.c **** 	else if(FormatType == FREQ_KHZ)
+ 457              		.loc 1 269 0
+ 458 0136 FB1D     		add	r3, r7, #7
+ 459 0138 1B78     		ldrb	r3, [r3]
+ 460 013a 022B     		cmp	r3, #2
+ 461 013c 4DD1     		bne	.L28
+ 270:.\FrequencyCounter.c **** 	{
+ 271:.\FrequencyCounter.c **** 		/* If frequency is less than 1MHZ, store "KHz" in the first 3 bytes of Frequency_Format array */
+ 272:.\FrequencyCounter.c **** 		/* Store 'z" in the first byte of the array */
+ 273:.\FrequencyCounter.c **** 		Input_Frequency[0] = ASCII_z;
+ 462              		.loc 1 273 0
+ 463 013e 544B     		ldr	r3, .L37
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 14
+
+
+ 464 0140 7A22     		mov	r2, #122
+ 465 0142 1A70     		strb	r2, [r3]
+ 274:.\FrequencyCounter.c **** 		
+ 275:.\FrequencyCounter.c **** 		/* Store "H" in the second byte of the array */		
+ 276:.\FrequencyCounter.c **** 		Input_Frequency[1] = ASCII_H;
+ 466              		.loc 1 276 0
+ 467 0144 524B     		ldr	r3, .L37
+ 468 0146 4822     		mov	r2, #72
+ 469 0148 5A70     		strb	r2, [r3, #1]
+ 277:.\FrequencyCounter.c **** 
+ 278:.\FrequencyCounter.c **** 		/* Store "K" in the third byte of the array */	
+ 279:.\FrequencyCounter.c **** 		Input_Frequency[2] = ASCII_K;
+ 470              		.loc 1 279 0
+ 471 014a 514B     		ldr	r3, .L37
+ 472 014c 4B22     		mov	r2, #75
+ 473 014e 9A70     		strb	r2, [r3, #2]
+ 280:.\FrequencyCounter.c **** 		
+ 281:.\FrequencyCounter.c **** 		/* Enter the frequency in ASCII format from fourth byte */
+ 282:.\FrequencyCounter.c **** 		loopNo = DATA_START;
+ 474              		.loc 1 282 0
+ 475 0150 0F23     		mov	r3, #15
+ 476 0152 FB18     		add	r3, r7, r3
+ 477 0154 0322     		mov	r2, #3
+ 478 0156 1A70     		strb	r2, [r3]
+ 283:.\FrequencyCounter.c **** 		
+ 284:.\FrequencyCounter.c **** 		/* Convert the frequency value from hexadecimal to decimal */
+ 285:.\FrequencyCounter.c **** 		while((Freq_Integer > 0) && (loopNo < DATA_END))
+ 479              		.loc 1 285 0
+ 480 0158 35E0     		b	.L29
+ 481              	.L32:
+ 286:.\FrequencyCounter.c **** 		{
+ 287:.\FrequencyCounter.c **** 			if(loopNo != DECIMAL_END)
+ 482              		.loc 1 287 0
+ 483 015a 0F23     		mov	r3, #15
+ 484 015c FB18     		add	r3, r7, r3
+ 485 015e 1B78     		ldrb	r3, [r3]
+ 486 0160 062B     		cmp	r3, #6
+ 487 0162 23D0     		beq	.L30
+ 288:.\FrequencyCounter.c **** 			{
+ 289:.\FrequencyCounter.c **** 				/* Get the value of one's place of the integer */
+ 290:.\FrequencyCounter.c **** 				Input_Frequency[loopNo] = Freq_Integer % 10;
+ 488              		.loc 1 290 0
+ 489 0164 0F23     		mov	r3, #15
+ 490 0166 FB18     		add	r3, r7, r3
+ 491 0168 1C78     		ldrb	r4, [r3]
+ 492 016a 4B4B     		ldr	r3, .L37+8
+ 493 016c 1B68     		ldr	r3, [r3]
+ 494 016e 181C     		mov	r0, r3
+ 495 0170 0A21     		mov	r1, #10
+ 496 0172 FFF7FEFF 		bl	__aeabi_uidivmod
+ 497 0176 0B1C     		mov	r3, r1
+ 498 0178 DAB2     		uxtb	r2, r3
+ 499 017a 454B     		ldr	r3, .L37
+ 500 017c 1A55     		strb	r2, [r3, r4]
+ 291:.\FrequencyCounter.c **** 				
+ 292:.\FrequencyCounter.c **** 				/* Convert the integer to ASCII */
+ 293:.\FrequencyCounter.c **** 				Input_Frequency[loopNo] += INTEGER_TO_ASCII;
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 15
+
+
+ 501              		.loc 1 293 0
+ 502 017e 0F23     		mov	r3, #15
+ 503 0180 FB18     		add	r3, r7, r3
+ 504 0182 1B78     		ldrb	r3, [r3]
+ 505 0184 0F22     		mov	r2, #15
+ 506 0186 BA18     		add	r2, r7, r2
+ 507 0188 1278     		ldrb	r2, [r2]
+ 508 018a 4149     		ldr	r1, .L37
+ 509 018c 8A5C     		ldrb	r2, [r1, r2]
+ 510 018e 3032     		add	r2, r2, #48
+ 511 0190 D1B2     		uxtb	r1, r2
+ 512 0192 3F4A     		ldr	r2, .L37
+ 513 0194 D154     		strb	r1, [r2, r3]
+ 294:.\FrequencyCounter.c **** 
+ 295:.\FrequencyCounter.c **** 				/* Shift the Ten's place to one's place */					
+ 296:.\FrequencyCounter.c **** 				Freq_Integer /= 10;
+ 514              		.loc 1 296 0
+ 515 0196 404B     		ldr	r3, .L37+8
+ 516 0198 1B68     		ldr	r3, [r3]
+ 517 019a 181C     		mov	r0, r3
+ 518 019c 0A21     		mov	r1, #10
+ 519 019e FFF7FEFF 		bl	__aeabi_uidiv
+ 520 01a2 031C     		mov	r3, r0
+ 521 01a4 1A1C     		mov	r2, r3
+ 522 01a6 3C4B     		ldr	r3, .L37+8
+ 523 01a8 1A60     		str	r2, [r3]
+ 524 01aa 05E0     		b	.L31
+ 525              	.L30:
+ 297:.\FrequencyCounter.c **** 			}
+ 298:.\FrequencyCounter.c **** 			/* After decimal digits are entered, store the decimal point in 
+ 299:.\FrequencyCounter.c **** 			*  the 7th byte of Input_Frequency[] array*/
+ 300:.\FrequencyCounter.c **** 			else
+ 301:.\FrequencyCounter.c **** 				Input_Frequency[loopNo] = ASCII_DECIMAL_POINT;
+ 526              		.loc 1 301 0
+ 527 01ac 0F23     		mov	r3, #15
+ 528 01ae FB18     		add	r3, r7, r3
+ 529 01b0 1B78     		ldrb	r3, [r3]
+ 530 01b2 374A     		ldr	r2, .L37
+ 531 01b4 2E21     		mov	r1, #46
+ 532 01b6 D154     		strb	r1, [r2, r3]
+ 533              	.L31:
+ 302:.\FrequencyCounter.c **** 				
+ 303:.\FrequencyCounter.c **** 			loopNo++;
+ 534              		.loc 1 303 0
+ 535 01b8 0F23     		mov	r3, #15
+ 536 01ba FB18     		add	r3, r7, r3
+ 537 01bc 1A78     		ldrb	r2, [r3]
+ 538 01be 0F23     		mov	r3, #15
+ 539 01c0 FB18     		add	r3, r7, r3
+ 540 01c2 0132     		add	r2, r2, #1
+ 541 01c4 1A70     		strb	r2, [r3]
+ 542              	.L29:
+ 285:.\FrequencyCounter.c **** 		{
+ 543              		.loc 1 285 0
+ 544 01c6 344B     		ldr	r3, .L37+8
+ 545 01c8 1B68     		ldr	r3, [r3]
+ 546 01ca 002B     		cmp	r3, #0
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 16
+
+
+ 547 01cc 5DD0     		beq	.L18
+ 285:.\FrequencyCounter.c **** 		{
+ 548              		.loc 1 285 0 is_stmt 0 discriminator 1
+ 549 01ce 0F23     		mov	r3, #15
+ 550 01d0 FB18     		add	r3, r7, r3
+ 551 01d2 1B78     		ldrb	r3, [r3]
+ 552 01d4 092B     		cmp	r3, #9
+ 553 01d6 C0D9     		bls	.L32
+ 554 01d8 57E0     		b	.L18
+ 555              	.L28:
+ 304:.\FrequencyCounter.c **** 		}
+ 305:.\FrequencyCounter.c **** 	}
+ 306:.\FrequencyCounter.c **** 	else
+ 307:.\FrequencyCounter.c **** 	{
+ 308:.\FrequencyCounter.c **** 		/* If frequency is above or equal to 1 MHZ, store "MHz" in the first 3 bytes of Frequency_Format 
+ 309:.\FrequencyCounter.c **** 		
+ 310:.\FrequencyCounter.c **** 		/* Store 'z" in the first byte of the array */
+ 311:.\FrequencyCounter.c **** 		Input_Frequency[0] = ASCII_z;
+ 556              		.loc 1 311 0 is_stmt 1
+ 557 01da 2D4B     		ldr	r3, .L37
+ 558 01dc 7A22     		mov	r2, #122
+ 559 01de 1A70     		strb	r2, [r3]
+ 312:.\FrequencyCounter.c **** 		
+ 313:.\FrequencyCounter.c **** 		/* Store "H" in the second byte of the array */	
+ 314:.\FrequencyCounter.c **** 		Input_Frequency[1] = ASCII_H;
+ 560              		.loc 1 314 0
+ 561 01e0 2B4B     		ldr	r3, .L37
+ 562 01e2 4822     		mov	r2, #72
+ 563 01e4 5A70     		strb	r2, [r3, #1]
+ 315:.\FrequencyCounter.c **** 
+ 316:.\FrequencyCounter.c **** 		/* Store "M" in the third byte of the array */		
+ 317:.\FrequencyCounter.c **** 		Input_Frequency[2] = ASCII_M;
+ 564              		.loc 1 317 0
+ 565 01e6 2A4B     		ldr	r3, .L37
+ 566 01e8 4D22     		mov	r2, #77
+ 567 01ea 9A70     		strb	r2, [r3, #2]
+ 318:.\FrequencyCounter.c **** 
+ 319:.\FrequencyCounter.c **** 		/* For frequencies greater than or equal to 1 MHZ, decimal digits will represent the "KHz" freque
+ 320:.\FrequencyCounter.c **** 		Freq_Integer = Freq_Integer/1000;
+ 568              		.loc 1 320 0
+ 569 01ec 2A4B     		ldr	r3, .L37+8
+ 570 01ee 1B68     		ldr	r3, [r3]
+ 571 01f0 181C     		mov	r0, r3
+ 572 01f2 FA23     		mov	r3, #250
+ 573 01f4 9900     		lsl	r1, r3, #2
+ 574 01f6 FFF7FEFF 		bl	__aeabi_uidiv
+ 575 01fa 031C     		mov	r3, r0
+ 576 01fc 1A1C     		mov	r2, r3
+ 577 01fe 264B     		ldr	r3, .L37+8
+ 578 0200 1A60     		str	r2, [r3]
+ 321:.\FrequencyCounter.c **** 		
+ 322:.\FrequencyCounter.c **** 		/* Enter the frequency in ASCII format from fourth byte */
+ 323:.\FrequencyCounter.c **** 		loopNo = DATA_START;
+ 579              		.loc 1 323 0
+ 580 0202 0F23     		mov	r3, #15
+ 581 0204 FB18     		add	r3, r7, r3
+ 582 0206 0322     		mov	r2, #3
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 17
+
+
+ 583 0208 1A70     		strb	r2, [r3]
+ 324:.\FrequencyCounter.c **** 		
+ 325:.\FrequencyCounter.c **** 		while((Freq_Integer > 0) && (loopNo < DATA_END))
+ 584              		.loc 1 325 0
+ 585 020a 35E0     		b	.L33
+ 586              	.L36:
+ 326:.\FrequencyCounter.c **** 		{
+ 327:.\FrequencyCounter.c **** 			if(loopNo != DECIMAL_END)
+ 587              		.loc 1 327 0
+ 588 020c 0F23     		mov	r3, #15
+ 589 020e FB18     		add	r3, r7, r3
+ 590 0210 1B78     		ldrb	r3, [r3]
+ 591 0212 062B     		cmp	r3, #6
+ 592 0214 23D0     		beq	.L34
+ 328:.\FrequencyCounter.c **** 			{
+ 329:.\FrequencyCounter.c **** 				/* Get the value of one's place of the integer */
+ 330:.\FrequencyCounter.c **** 				Input_Frequency[loopNo] = Freq_Integer % 10;
+ 593              		.loc 1 330 0
+ 594 0216 0F23     		mov	r3, #15
+ 595 0218 FB18     		add	r3, r7, r3
+ 596 021a 1C78     		ldrb	r4, [r3]
+ 597 021c 1E4B     		ldr	r3, .L37+8
+ 598 021e 1B68     		ldr	r3, [r3]
+ 599 0220 181C     		mov	r0, r3
+ 600 0222 0A21     		mov	r1, #10
+ 601 0224 FFF7FEFF 		bl	__aeabi_uidivmod
+ 602 0228 0B1C     		mov	r3, r1
+ 603 022a DAB2     		uxtb	r2, r3
+ 604 022c 184B     		ldr	r3, .L37
+ 605 022e 1A55     		strb	r2, [r3, r4]
+ 331:.\FrequencyCounter.c **** 				
+ 332:.\FrequencyCounter.c **** 				/* Convert the integer to ASCII */
+ 333:.\FrequencyCounter.c **** 				Input_Frequency[loopNo] += INTEGER_TO_ASCII;
+ 606              		.loc 1 333 0
+ 607 0230 0F23     		mov	r3, #15
+ 608 0232 FB18     		add	r3, r7, r3
+ 609 0234 1B78     		ldrb	r3, [r3]
+ 610 0236 0F22     		mov	r2, #15
+ 611 0238 BA18     		add	r2, r7, r2
+ 612 023a 1278     		ldrb	r2, [r2]
+ 613 023c 1449     		ldr	r1, .L37
+ 614 023e 8A5C     		ldrb	r2, [r1, r2]
+ 615 0240 3032     		add	r2, r2, #48
+ 616 0242 D1B2     		uxtb	r1, r2
+ 617 0244 124A     		ldr	r2, .L37
+ 618 0246 D154     		strb	r1, [r2, r3]
+ 334:.\FrequencyCounter.c **** 
+ 335:.\FrequencyCounter.c **** 				/* Shift the Ten's place to one's place */					
+ 336:.\FrequencyCounter.c **** 				Freq_Integer /= 10;
+ 619              		.loc 1 336 0
+ 620 0248 134B     		ldr	r3, .L37+8
+ 621 024a 1B68     		ldr	r3, [r3]
+ 622 024c 181C     		mov	r0, r3
+ 623 024e 0A21     		mov	r1, #10
+ 624 0250 FFF7FEFF 		bl	__aeabi_uidiv
+ 625 0254 031C     		mov	r3, r0
+ 626 0256 1A1C     		mov	r2, r3
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 18
+
+
+ 627 0258 0F4B     		ldr	r3, .L37+8
+ 628 025a 1A60     		str	r2, [r3]
+ 629 025c 05E0     		b	.L35
+ 630              	.L34:
+ 337:.\FrequencyCounter.c **** 			}
+ 338:.\FrequencyCounter.c **** 			/* If decimal digits are entered, store the decimal point in 7th byte in the array*/
+ 339:.\FrequencyCounter.c **** 			else
+ 340:.\FrequencyCounter.c **** 				Input_Frequency[loopNo] = ASCII_DECIMAL_POINT;
+ 631              		.loc 1 340 0
+ 632 025e 0F23     		mov	r3, #15
+ 633 0260 FB18     		add	r3, r7, r3
+ 634 0262 1B78     		ldrb	r3, [r3]
+ 635 0264 0A4A     		ldr	r2, .L37
+ 636 0266 2E21     		mov	r1, #46
+ 637 0268 D154     		strb	r1, [r2, r3]
+ 638              	.L35:
+ 341:.\FrequencyCounter.c **** 				
+ 342:.\FrequencyCounter.c **** 			loopNo++;
+ 639              		.loc 1 342 0
+ 640 026a 0F23     		mov	r3, #15
+ 641 026c FB18     		add	r3, r7, r3
+ 642 026e 1A78     		ldrb	r2, [r3]
+ 643 0270 0F23     		mov	r3, #15
+ 644 0272 FB18     		add	r3, r7, r3
+ 645 0274 0132     		add	r2, r2, #1
+ 646 0276 1A70     		strb	r2, [r3]
+ 647              	.L33:
+ 325:.\FrequencyCounter.c **** 		{
+ 648              		.loc 1 325 0
+ 649 0278 074B     		ldr	r3, .L37+8
+ 650 027a 1B68     		ldr	r3, [r3]
+ 651 027c 002B     		cmp	r3, #0
+ 652 027e 04D0     		beq	.L18
+ 325:.\FrequencyCounter.c **** 		{
+ 653              		.loc 1 325 0 is_stmt 0 discriminator 1
+ 654 0280 0F23     		mov	r3, #15
+ 655 0282 FB18     		add	r3, r7, r3
+ 656 0284 1B78     		ldrb	r3, [r3]
+ 657 0286 092B     		cmp	r3, #9
+ 658 0288 C0D9     		bls	.L36
+ 659              	.L18:
+ 343:.\FrequencyCounter.c **** 		}
+ 344:.\FrequencyCounter.c **** 	}
+ 345:.\FrequencyCounter.c **** }
+ 660              		.loc 1 345 0 is_stmt 1
+ 661 028a BD46     		mov	sp, r7
+ 662 028c 05B0     		add	sp, sp, #20
+ 663              		@ sp needed
+ 664 028e 90BD     		pop	{r4, r7, pc}
+ 665              	.L38:
+ 666              		.align	2
+ 667              	.L37:
+ 668 0290 00000000 		.word	Input_Frequency
+ 669 0294 00000000 		.word	Freq_Decimal
+ 670 0298 00000000 		.word	Freq_Integer
+ 671              		.cfi_endproc
+ 672              	.LFE39:
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 19
+
+
+ 673              		.size	FormatFrequencyData, .-FormatFrequencyData
+ 674              		.section	.text.Convert_HextoDec,"ax",%progbits
+ 675              		.align	2
+ 676              		.global	Convert_HextoDec
+ 677              		.code	16
+ 678              		.thumb_func
+ 679              		.type	Convert_HextoDec, %function
+ 680              	Convert_HextoDec:
+ 681              	.LFB40:
+ 346:.\FrequencyCounter.c **** 
+ 347:.\FrequencyCounter.c **** /*******************************************************************************
+ 348:.\FrequencyCounter.c **** * Function Name: Convert_HextoDec
+ 349:.\FrequencyCounter.c **** ********************************************************************************
+ 350:.\FrequencyCounter.c **** *
+ 351:.\FrequencyCounter.c **** * Summary:
+ 352:.\FrequencyCounter.c **** *  Function converts 32bit hexadecimal value to integer and stores in an array in 
+ 353:.\FrequencyCounter.c **** *  ASCII format
+ 354:.\FrequencyCounter.c **** *
+ 355:.\FrequencyCounter.c **** * Parameters:
+ 356:.\FrequencyCounter.c **** *  SourceValue: The input value which should be represented in integer format
+ 357:.\FrequencyCounter.c **** *  DestinationAddress: Pointer to the array in which the ASCII values of the integer 
+ 358:.\FrequencyCounter.c **** *  value should be stored.
+ 359:.\FrequencyCounter.c **** *
+ 360:.\FrequencyCounter.c **** * Return:
+ 361:.\FrequencyCounter.c **** *  None
+ 362:.\FrequencyCounter.c **** *
+ 363:.\FrequencyCounter.c **** *******************************************************************************/
+ 364:.\FrequencyCounter.c **** void Convert_HextoDec(uint32 SourceValue, uint8* DestinationAddress)
+ 365:.\FrequencyCounter.c **** {
+ 682              		.loc 1 365 0
+ 683              		.cfi_startproc
+ 684 0000 80B5     		push	{r7, lr}
+ 685              		.cfi_def_cfa_offset 8
+ 686              		.cfi_offset 7, -8
+ 687              		.cfi_offset 14, -4
+ 688 0002 82B0     		sub	sp, sp, #8
+ 689              		.cfi_def_cfa_offset 16
+ 690 0004 00AF     		add	r7, sp, #0
+ 691              		.cfi_def_cfa_register 7
+ 692 0006 7860     		str	r0, [r7, #4]
+ 693 0008 3960     		str	r1, [r7]
+ 366:.\FrequencyCounter.c **** 	while(SourceValue > 0)
+ 694              		.loc 1 366 0
+ 695 000a 18E0     		b	.L40
+ 696              	.L41:
+ 367:.\FrequencyCounter.c **** 	{
+ 368:.\FrequencyCounter.c **** 			/* Get the value of one's place of the integer */
+ 369:.\FrequencyCounter.c **** 			*DestinationAddress = SourceValue % 10;
+ 697              		.loc 1 369 0
+ 698 000c 7B68     		ldr	r3, [r7, #4]
+ 699 000e 181C     		mov	r0, r3
+ 700 0010 0A21     		mov	r1, #10
+ 701 0012 FFF7FEFF 		bl	__aeabi_uidivmod
+ 702 0016 0B1C     		mov	r3, r1
+ 703 0018 DAB2     		uxtb	r2, r3
+ 704 001a 3B68     		ldr	r3, [r7]
+ 705 001c 1A70     		strb	r2, [r3]
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 20
+
+
+ 370:.\FrequencyCounter.c **** 			
+ 371:.\FrequencyCounter.c **** 			/* Convert the integer to ASCII */
+ 372:.\FrequencyCounter.c **** 			*DestinationAddress += INTEGER_TO_ASCII;
+ 706              		.loc 1 372 0
+ 707 001e 3B68     		ldr	r3, [r7]
+ 708 0020 1B78     		ldrb	r3, [r3]
+ 709 0022 3033     		add	r3, r3, #48
+ 710 0024 DAB2     		uxtb	r2, r3
+ 711 0026 3B68     		ldr	r3, [r7]
+ 712 0028 1A70     		strb	r2, [r3]
+ 373:.\FrequencyCounter.c **** 
+ 374:.\FrequencyCounter.c **** 			/* Shift the Ten's place to one's place */					
+ 375:.\FrequencyCounter.c **** 			SourceValue /= 10;
+ 713              		.loc 1 375 0
+ 714 002a 7B68     		ldr	r3, [r7, #4]
+ 715 002c 181C     		mov	r0, r3
+ 716 002e 0A21     		mov	r1, #10
+ 717 0030 FFF7FEFF 		bl	__aeabi_uidiv
+ 718 0034 031C     		mov	r3, r0
+ 719 0036 7B60     		str	r3, [r7, #4]
+ 376:.\FrequencyCounter.c **** 		
+ 377:.\FrequencyCounter.c **** 			DestinationAddress++;
+ 720              		.loc 1 377 0
+ 721 0038 3B68     		ldr	r3, [r7]
+ 722 003a 0133     		add	r3, r3, #1
+ 723 003c 3B60     		str	r3, [r7]
+ 724              	.L40:
+ 366:.\FrequencyCounter.c **** 	{
+ 725              		.loc 1 366 0
+ 726 003e 7B68     		ldr	r3, [r7, #4]
+ 727 0040 002B     		cmp	r3, #0
+ 728 0042 E3D1     		bne	.L41
+ 378:.\FrequencyCounter.c **** 	}
+ 379:.\FrequencyCounter.c **** }
+ 729              		.loc 1 379 0
+ 730 0044 BD46     		mov	sp, r7
+ 731 0046 02B0     		add	sp, sp, #8
+ 732              		@ sp needed
+ 733 0048 80BD     		pop	{r7, pc}
+ 734              		.cfi_endproc
+ 735              	.LFE40:
+ 736              		.size	Convert_HextoDec, .-Convert_HextoDec
+ 737 004a C046     		.section	.text.Reset_Array,"ax",%progbits
+ 738              		.align	2
+ 739              		.global	Reset_Array
+ 740              		.code	16
+ 741              		.thumb_func
+ 742              		.type	Reset_Array, %function
+ 743              	Reset_Array:
+ 744              	.LFB41:
+ 380:.\FrequencyCounter.c **** 
+ 381:.\FrequencyCounter.c **** /*******************************************************************************
+ 382:.\FrequencyCounter.c **** * Function Name: Reset_Array
+ 383:.\FrequencyCounter.c **** ********************************************************************************
+ 384:.\FrequencyCounter.c **** *
+ 385:.\FrequencyCounter.c **** * Summary:
+ 386:.\FrequencyCounter.c **** *  Function resets all the bytes in the array to 0x20 (hex value for space) 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 21
+
+
+ 387:.\FrequencyCounter.c **** *
+ 388:.\FrequencyCounter.c **** * Parameters:
+ 389:.\FrequencyCounter.c **** *  DestinationAddress: Pointer to the array whose value needs to be reset to 0x20
+ 390:.\FrequencyCounter.c **** *  noOfBytes: Number of bytes that needs to be reset in the array.
+ 391:.\FrequencyCounter.c **** *
+ 392:.\FrequencyCounter.c **** * Return:
+ 393:.\FrequencyCounter.c **** *  None
+ 394:.\FrequencyCounter.c **** *
+ 395:.\FrequencyCounter.c **** *******************************************************************************/
+ 396:.\FrequencyCounter.c **** void Reset_Array(uint8 *DestinationAddress, uint8 noOfBytes)
+ 397:.\FrequencyCounter.c **** {
+ 745              		.loc 1 397 0
+ 746              		.cfi_startproc
+ 747 0000 80B5     		push	{r7, lr}
+ 748              		.cfi_def_cfa_offset 8
+ 749              		.cfi_offset 7, -8
+ 750              		.cfi_offset 14, -4
+ 751 0002 84B0     		sub	sp, sp, #16
+ 752              		.cfi_def_cfa_offset 24
+ 753 0004 00AF     		add	r7, sp, #0
+ 754              		.cfi_def_cfa_register 7
+ 755 0006 7860     		str	r0, [r7, #4]
+ 756 0008 0A1C     		mov	r2, r1
+ 757 000a FB1C     		add	r3, r7, #3
+ 758 000c 1A70     		strb	r2, [r3]
+ 398:.\FrequencyCounter.c **** 	uint8 loopNo = 0;
+ 759              		.loc 1 398 0
+ 760 000e 0F23     		mov	r3, #15
+ 761 0010 FB18     		add	r3, r7, r3
+ 762 0012 0022     		mov	r2, #0
+ 763 0014 1A70     		strb	r2, [r3]
+ 399:.\FrequencyCounter.c ****  	
+ 400:.\FrequencyCounter.c **** 	/* Reset all the bytes in the array to hexadecimal value of 0x20 */
+ 401:.\FrequencyCounter.c **** 	for(loopNo = 0; loopNo < noOfBytes; loopNo++)
+ 764              		.loc 1 401 0
+ 765 0016 0F23     		mov	r3, #15
+ 766 0018 FB18     		add	r3, r7, r3
+ 767 001a 0022     		mov	r2, #0
+ 768 001c 1A70     		strb	r2, [r3]
+ 769 001e 0CE0     		b	.L43
+ 770              	.L44:
+ 402:.\FrequencyCounter.c **** 	{
+ 403:.\FrequencyCounter.c **** 		*DestinationAddress = ASCII_SPACE;
+ 771              		.loc 1 403 0 discriminator 3
+ 772 0020 7B68     		ldr	r3, [r7, #4]
+ 773 0022 2022     		mov	r2, #32
+ 774 0024 1A70     		strb	r2, [r3]
+ 404:.\FrequencyCounter.c **** 		DestinationAddress++;
+ 775              		.loc 1 404 0 discriminator 3
+ 776 0026 7B68     		ldr	r3, [r7, #4]
+ 777 0028 0133     		add	r3, r3, #1
+ 778 002a 7B60     		str	r3, [r7, #4]
+ 401:.\FrequencyCounter.c **** 	{
+ 779              		.loc 1 401 0 discriminator 3
+ 780 002c 0F23     		mov	r3, #15
+ 781 002e FB18     		add	r3, r7, r3
+ 782 0030 1A78     		ldrb	r2, [r3]
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 22
+
+
+ 783 0032 0F23     		mov	r3, #15
+ 784 0034 FB18     		add	r3, r7, r3
+ 785 0036 0132     		add	r2, r2, #1
+ 786 0038 1A70     		strb	r2, [r3]
+ 787              	.L43:
+ 401:.\FrequencyCounter.c **** 	{
+ 788              		.loc 1 401 0 is_stmt 0 discriminator 1
+ 789 003a 0F23     		mov	r3, #15
+ 790 003c FA18     		add	r2, r7, r3
+ 791 003e FB1C     		add	r3, r7, #3
+ 792 0040 1278     		ldrb	r2, [r2]
+ 793 0042 1B78     		ldrb	r3, [r3]
+ 794 0044 9A42     		cmp	r2, r3
+ 795 0046 EBD3     		bcc	.L44
+ 405:.\FrequencyCounter.c **** 	}
+ 406:.\FrequencyCounter.c **** }
+ 796              		.loc 1 406 0 is_stmt 1
+ 797 0048 BD46     		mov	sp, r7
+ 798 004a 04B0     		add	sp, sp, #16
+ 799              		@ sp needed
+ 800 004c 80BD     		pop	{r7, pc}
+ 801              		.cfi_endproc
+ 802              	.LFE41:
+ 803              		.size	Reset_Array, .-Reset_Array
+ 804 004e C046     		.section	.text.PWM_2s_InterruptHandler,"ax",%progbits
+ 805              		.align	2
+ 806              		.global	PWM_2s_InterruptHandler
+ 807              		.code	16
+ 808              		.thumb_func
+ 809              		.type	PWM_2s_InterruptHandler, %function
+ 810              	PWM_2s_InterruptHandler:
+ 811              	.LFB42:
+ 407:.\FrequencyCounter.c **** 
+ 408:.\FrequencyCounter.c **** /*******************************************************************************
+ 409:.\FrequencyCounter.c **** * Function Name: PWM_2s_InterruptHandler
+ 410:.\FrequencyCounter.c **** ********************************************************************************
+ 411:.\FrequencyCounter.c **** *
+ 412:.\FrequencyCounter.c **** * Summary:
+ 413:.\FrequencyCounter.c **** *   The custom Interrupt Service Routine for PWM_2s ISR.
+ 414:.\FrequencyCounter.c **** *
+ 415:.\FrequencyCounter.c **** * Parameters:  
+ 416:.\FrequencyCounter.c **** *   None
+ 417:.\FrequencyCounter.c **** *
+ 418:.\FrequencyCounter.c **** * Return:
+ 419:.\FrequencyCounter.c **** *   None
+ 420:.\FrequencyCounter.c **** *
+ 421:.\FrequencyCounter.c **** *******************************************************************************/
+ 422:.\FrequencyCounter.c **** CY_ISR(PWM_2s_InterruptHandler)
+ 423:.\FrequencyCounter.c **** {
+ 812              		.loc 1 423 0
+ 813              		.cfi_startproc
+ 814 0000 80B5     		push	{r7, lr}
+ 815              		.cfi_def_cfa_offset 8
+ 816              		.cfi_offset 7, -8
+ 817              		.cfi_offset 14, -4
+ 818 0002 00AF     		add	r7, sp, #0
+ 819              		.cfi_def_cfa_register 7
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 23
+
+
+ 424:.\FrequencyCounter.c **** 	static uint8 FirstTime = 0;
+ 425:.\FrequencyCounter.c **** 	
+ 426:.\FrequencyCounter.c ****     /* Clear ISR for next interrupt */
+ 427:.\FrequencyCounter.c **** 	PWM_2s_ReadStatusRegister();
+ 820              		.loc 1 427 0
+ 821 0004 FFF7FEFF 		bl	PWM_2s_ReadStatusRegister
+ 428:.\FrequencyCounter.c **** 	
+ 429:.\FrequencyCounter.c **** 	/* If this is the first ISR after device reset, do not set the Calculate_Frequency variable */
+ 430:.\FrequencyCounter.c **** 	if(!FirstTime)
+ 822              		.loc 1 430 0
+ 823 0008 064B     		ldr	r3, .L48
+ 824 000a 1B78     		ldrb	r3, [r3]
+ 825 000c 002B     		cmp	r3, #0
+ 826 000e 03D1     		bne	.L46
+ 431:.\FrequencyCounter.c **** 	{
+ 432:.\FrequencyCounter.c **** 		FirstTime = 1;
+ 827              		.loc 1 432 0
+ 828 0010 044B     		ldr	r3, .L48
+ 829 0012 0122     		mov	r2, #1
+ 830 0014 1A70     		strb	r2, [r3]
+ 831 0016 02E0     		b	.L45
+ 832              	.L46:
+ 433:.\FrequencyCounter.c **** 	}
+ 434:.\FrequencyCounter.c **** 	else
+ 435:.\FrequencyCounter.c **** 	{
+ 436:.\FrequencyCounter.c **** 		/* Set the 2s interval flag to indicate CPU to compute the frequency */
+ 437:.\FrequencyCounter.c **** 		Calculate_Frequency = 1;
+ 833              		.loc 1 437 0
+ 834 0018 034B     		ldr	r3, .L48+4
+ 835 001a 0122     		mov	r2, #1
+ 836 001c 1A70     		strb	r2, [r3]
+ 837              	.L45:
+ 438:.\FrequencyCounter.c **** 	}
+ 439:.\FrequencyCounter.c **** }
+ 838              		.loc 1 439 0
+ 839 001e BD46     		mov	sp, r7
+ 840              		@ sp needed
+ 841 0020 80BD     		pop	{r7, pc}
+ 842              	.L49:
+ 843 0022 C046     		.align	2
+ 844              	.L48:
+ 845 0024 00000000 		.word	FirstTime.7653
+ 846 0028 00000000 		.word	Calculate_Frequency
+ 847              		.cfi_endproc
+ 848              	.LFE42:
+ 849              		.size	PWM_2s_InterruptHandler, .-PWM_2s_InterruptHandler
+ 850              		.section	.text.Input_Sig_Ctr_InterruptHandler,"ax",%progbits
+ 851              		.align	2
+ 852              		.global	Input_Sig_Ctr_InterruptHandler
+ 853              		.code	16
+ 854              		.thumb_func
+ 855              		.type	Input_Sig_Ctr_InterruptHandler, %function
+ 856              	Input_Sig_Ctr_InterruptHandler:
+ 857              	.LFB43:
+ 440:.\FrequencyCounter.c **** 
+ 441:.\FrequencyCounter.c **** /*******************************************************************************
+ 442:.\FrequencyCounter.c **** * Function Name: Input_Sig_Ctr_InterruptHandler
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 24
+
+
+ 443:.\FrequencyCounter.c **** ********************************************************************************
+ 444:.\FrequencyCounter.c **** *
+ 445:.\FrequencyCounter.c **** * Summary:
+ 446:.\FrequencyCounter.c **** *   The custom Interrupt Service Routine for Input_Sig_Ctr ISR.
+ 447:.\FrequencyCounter.c **** *
+ 448:.\FrequencyCounter.c **** * Parameters:  
+ 449:.\FrequencyCounter.c **** *   None
+ 450:.\FrequencyCounter.c **** *
+ 451:.\FrequencyCounter.c **** * Return:
+ 452:.\FrequencyCounter.c **** *   None
+ 453:.\FrequencyCounter.c **** *
+ 454:.\FrequencyCounter.c **** *******************************************************************************/
+ 455:.\FrequencyCounter.c **** CY_ISR(Input_Sig_Ctr_InterruptHandler)
+ 456:.\FrequencyCounter.c **** {
+ 858              		.loc 1 456 0
+ 859              		.cfi_startproc
+ 860 0000 80B5     		push	{r7, lr}
+ 861              		.cfi_def_cfa_offset 8
+ 862              		.cfi_offset 7, -8
+ 863              		.cfi_offset 14, -4
+ 864 0002 00AF     		add	r7, sp, #0
+ 865              		.cfi_def_cfa_register 7
+ 457:.\FrequencyCounter.c ****     /* Clear ISR for next interrupt */
+ 458:.\FrequencyCounter.c **** 	Input_Signal_Counter1_ClearInterrupt(Input_Signal_Counter1_INTR_MASK_CC_MATCH);
+ 866              		.loc 1 458 0
+ 867 0004 0220     		mov	r0, #2
+ 868 0006 FFF7FEFF 		bl	Input_Signal_Counter1_ClearInterrupt
+ 459:.\FrequencyCounter.c **** 	
+ 460:.\FrequencyCounter.c **** 	/* Store the captured count value */
+ 461:.\FrequencyCounter.c **** 	Input_Signal_Counter1_Count = Input_Signal_Counter1_ReadCapture();
+ 869              		.loc 1 461 0
+ 870 000a FFF7FEFF 		bl	Input_Signal_Counter1_ReadCapture
+ 871 000e 031C     		mov	r3, r0
+ 872 0010 9AB2     		uxth	r2, r3
+ 873 0012 064B     		ldr	r3, .L51
+ 874 0014 1A80     		strh	r2, [r3]
+ 462:.\FrequencyCounter.c **** 	Input_Signal_Counter2_Count = Input_Signal_Counter2_ReadCapture();
+ 875              		.loc 1 462 0
+ 876 0016 FFF7FEFF 		bl	Input_Signal_Counter2_ReadCapture
+ 877 001a 031C     		mov	r3, r0
+ 878 001c 9AB2     		uxth	r2, r3
+ 879 001e 044B     		ldr	r3, .L51+4
+ 880 0020 1A80     		strh	r2, [r3]
+ 463:.\FrequencyCounter.c **** 	
+ 464:.\FrequencyCounter.c **** 	/* Indicate that a valid capture event is detected */
+ 465:.\FrequencyCounter.c **** 	Input_Sig_Ctr_Capture = 1;
+ 881              		.loc 1 465 0
+ 882 0022 044B     		ldr	r3, .L51+8
+ 883 0024 0122     		mov	r2, #1
+ 884 0026 1A70     		strb	r2, [r3]
+ 466:.\FrequencyCounter.c **** }
+ 885              		.loc 1 466 0
+ 886 0028 BD46     		mov	sp, r7
+ 887              		@ sp needed
+ 888 002a 80BD     		pop	{r7, pc}
+ 889              	.L52:
+ 890              		.align	2
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 25
+
+
+ 891              	.L51:
+ 892 002c 00000000 		.word	Input_Signal_Counter1_Count
+ 893 0030 00000000 		.word	Input_Signal_Counter2_Count
+ 894 0034 00000000 		.word	Input_Sig_Ctr_Capture
+ 895              		.cfi_endproc
+ 896              	.LFE43:
+ 897              		.size	Input_Sig_Ctr_InterruptHandler, .-Input_Sig_Ctr_InterruptHandler
+ 898              		.section	.text.Ref_Clk_Ctr_InterruptHandler,"ax",%progbits
+ 899              		.align	2
+ 900              		.global	Ref_Clk_Ctr_InterruptHandler
+ 901              		.code	16
+ 902              		.thumb_func
+ 903              		.type	Ref_Clk_Ctr_InterruptHandler, %function
+ 904              	Ref_Clk_Ctr_InterruptHandler:
+ 905              	.LFB44:
+ 467:.\FrequencyCounter.c **** 
+ 468:.\FrequencyCounter.c **** /*******************************************************************************
+ 469:.\FrequencyCounter.c **** * Function Name: Ref_Clk_Ctr_InterruptHandler
+ 470:.\FrequencyCounter.c **** ********************************************************************************
+ 471:.\FrequencyCounter.c **** *
+ 472:.\FrequencyCounter.c **** * Summary:
+ 473:.\FrequencyCounter.c **** *   The custom Interrupt Service Routine for Ref_Clk_Ctr ISR.
+ 474:.\FrequencyCounter.c **** *
+ 475:.\FrequencyCounter.c **** * Parameters:  
+ 476:.\FrequencyCounter.c **** *   None
+ 477:.\FrequencyCounter.c **** *
+ 478:.\FrequencyCounter.c **** * Return:
+ 479:.\FrequencyCounter.c **** *   None
+ 480:.\FrequencyCounter.c **** *
+ 481:.\FrequencyCounter.c **** *******************************************************************************/
+ 482:.\FrequencyCounter.c **** CY_ISR(Ref_Clk_Ctr_InterruptHandler)
+ 483:.\FrequencyCounter.c **** {
+ 906              		.loc 1 483 0
+ 907              		.cfi_startproc
+ 908 0000 80B5     		push	{r7, lr}
+ 909              		.cfi_def_cfa_offset 8
+ 910              		.cfi_offset 7, -8
+ 911              		.cfi_offset 14, -4
+ 912 0002 00AF     		add	r7, sp, #0
+ 913              		.cfi_def_cfa_register 7
+ 484:.\FrequencyCounter.c ****     /* Clear ISR for next interrupt */
+ 485:.\FrequencyCounter.c **** 	Ref_Clock_Counter1_ClearInterrupt(Ref_Clock_Counter1_INTR_MASK_CC_MATCH);
+ 914              		.loc 1 485 0
+ 915 0004 0220     		mov	r0, #2
+ 916 0006 FFF7FEFF 		bl	Ref_Clock_Counter1_ClearInterrupt
+ 486:.\FrequencyCounter.c **** 
+ 487:.\FrequencyCounter.c **** 	/* Store the captured count value */
+ 488:.\FrequencyCounter.c **** 	Ref_Clock_Counter1_Count = Ref_Clock_Counter1_ReadCapture();
+ 917              		.loc 1 488 0
+ 918 000a FFF7FEFF 		bl	Ref_Clock_Counter1_ReadCapture
+ 919 000e 031C     		mov	r3, r0
+ 920 0010 9AB2     		uxth	r2, r3
+ 921 0012 064B     		ldr	r3, .L54
+ 922 0014 1A80     		strh	r2, [r3]
+ 489:.\FrequencyCounter.c **** 	Ref_Clock_Counter2_Count = Ref_Clock_Counter2_ReadCapture();
+ 923              		.loc 1 489 0
+ 924 0016 FFF7FEFF 		bl	Ref_Clock_Counter2_ReadCapture
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 26
+
+
+ 925 001a 031C     		mov	r3, r0
+ 926 001c 9AB2     		uxth	r2, r3
+ 927 001e 044B     		ldr	r3, .L54+4
+ 928 0020 1A80     		strh	r2, [r3]
+ 490:.\FrequencyCounter.c **** 
+ 491:.\FrequencyCounter.c **** 	/* Indicate that a valid capture event is detected */
+ 492:.\FrequencyCounter.c **** 	Ref_Clk_Ctr_Capture = 1;
+ 929              		.loc 1 492 0
+ 930 0022 044B     		ldr	r3, .L54+8
+ 931 0024 0122     		mov	r2, #1
+ 932 0026 1A70     		strb	r2, [r3]
+ 493:.\FrequencyCounter.c **** }...
+ 933              		.loc 1 493 0
+ 934 0028 BD46     		mov	sp, r7
+ 935              		@ sp needed
+ 936 002a 80BD     		pop	{r7, pc}
+ 937              	.L55:
+ 938              		.align	2
+ 939              	.L54:
+ 940 002c 00000000 		.word	Ref_Clock_Counter1_Count
+ 941 0030 00000000 		.word	Ref_Clock_Counter2_Count
+ 942 0034 00000000 		.word	Ref_Clk_Ctr_Capture
+ 943              		.cfi_endproc
+ 944              	.LFE44:
+ 945              		.size	Ref_Clk_Ctr_InterruptHandler, .-Ref_Clk_Ctr_InterruptHandler
+ 946              		.bss
+ 947              	FirstTime.7653:
+ 948 0000 00       		.space	1
+ 949              		.text
+ 950              	.Letext0:
+ 951              		.file 2 "Generated_Source\\PSoC4/cytypes.h"
+ 952              		.file 3 "Generated_Source\\PSoC4/BLE_Stack.h"
+ 953              		.section	.debug_info,"",%progbits
+ 954              	.Ldebug_info0:
+ 955 0000 B6040000 		.4byte	0x4b6
+ 956 0004 0400     		.2byte	0x4
+ 957 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 958 000a 04       		.byte	0x4
+ 959 000b 01       		.uleb128 0x1
+ 960 000c 04080000 		.4byte	.LASF114
+ 961 0010 01       		.byte	0x1
+ 962 0011 84090000 		.4byte	.LASF115
+ 963 0015 91060000 		.4byte	.LASF116
+ 964 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 965 001d 00000000 		.4byte	0
+ 966 0021 00000000 		.4byte	.Ldebug_line0
+ 967 0025 02       		.uleb128 0x2
+ 968 0026 01       		.byte	0x1
+ 969 0027 06       		.byte	0x6
+ 970 0028 A3050000 		.4byte	.LASF0
+ 971 002c 02       		.uleb128 0x2
+ 972 002d 01       		.byte	0x1
+ 973 002e 08       		.byte	0x8
+ 974 002f 39050000 		.4byte	.LASF1
+ 975 0033 02       		.uleb128 0x2
+ 976 0034 02       		.byte	0x2
+ 977 0035 05       		.byte	0x5
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 27
+
+
+ 978 0036 C5000000 		.4byte	.LASF2
+ 979 003a 02       		.uleb128 0x2
+ 980 003b 02       		.byte	0x2
+ 981 003c 07       		.byte	0x7
+ 982 003d 6E070000 		.4byte	.LASF3
+ 983 0041 02       		.uleb128 0x2
+ 984 0042 04       		.byte	0x4
+ 985 0043 05       		.byte	0x5
+ 986 0044 CB030000 		.4byte	.LASF4
+ 987 0048 02       		.uleb128 0x2
+ 988 0049 04       		.byte	0x4
+ 989 004a 07       		.byte	0x7
+ 990 004b 34060000 		.4byte	.LASF5
+ 991 004f 02       		.uleb128 0x2
+ 992 0050 08       		.byte	0x8
+ 993 0051 05       		.byte	0x5
+ 994 0052 92010000 		.4byte	.LASF6
+ 995 0056 02       		.uleb128 0x2
+ 996 0057 08       		.byte	0x8
+ 997 0058 07       		.byte	0x7
+ 998 0059 A3030000 		.4byte	.LASF7
+ 999 005d 03       		.uleb128 0x3
+ 1000 005e 04       		.byte	0x4
+ 1001 005f 05       		.byte	0x5
+ 1002 0060 696E7400 		.ascii	"int\000"
+ 1003 0064 02       		.uleb128 0x2
+ 1004 0065 04       		.byte	0x4
+ 1005 0066 07       		.byte	0x7
+ 1006 0067 0C060000 		.4byte	.LASF8
+ 1007 006b 04       		.uleb128 0x4
+ 1008 006c 0D050000 		.4byte	.LASF9
+ 1009 0070 02       		.byte	0x2
+ 1010 0071 9801     		.2byte	0x198
+ 1011 0073 2C000000 		.4byte	0x2c
+ 1012 0077 04       		.uleb128 0x4
+ 1013 0078 3C020000 		.4byte	.LASF10
+ 1014 007c 02       		.byte	0x2
+ 1015 007d 9901     		.2byte	0x199
+ 1016 007f 3A000000 		.4byte	0x3a
+ 1017 0083 04       		.uleb128 0x4
+ 1018 0084 1E090000 		.4byte	.LASF11
+ 1019 0088 02       		.byte	0x2
+ 1020 0089 9A01     		.2byte	0x19a
+ 1021 008b 48000000 		.4byte	0x48
+ 1022 008f 04       		.uleb128 0x4
+ 1023 0090 77090000 		.4byte	.LASF12
+ 1024 0094 02       		.byte	0x2
+ 1025 0095 9D01     		.2byte	0x19d
+ 1026 0097 41000000 		.4byte	0x41
+ 1027 009b 04       		.uleb128 0x4
+ 1028 009c 77000000 		.4byte	.LASF13
+ 1029 00a0 02       		.byte	0x2
+ 1030 00a1 9E01     		.2byte	0x19e
+ 1031 00a3 A7000000 		.4byte	0xa7
+ 1032 00a7 02       		.uleb128 0x2
+ 1033 00a8 04       		.byte	0x4
+ 1034 00a9 04       		.byte	0x4
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 28
+
+
+ 1035 00aa 3A030000 		.4byte	.LASF14
+ 1036 00ae 02       		.uleb128 0x2
+ 1037 00af 08       		.byte	0x8
+ 1038 00b0 04       		.byte	0x4
+ 1039 00b1 7D090000 		.4byte	.LASF15
+ 1040 00b5 02       		.uleb128 0x2
+ 1041 00b6 01       		.byte	0x1
+ 1042 00b7 08       		.byte	0x8
+ 1043 00b8 FF070000 		.4byte	.LASF16
+ 1044 00bc 02       		.uleb128 0x2
+ 1045 00bd 04       		.byte	0x4
+ 1046 00be 07       		.byte	0x7
+ 1047 00bf 1B010000 		.4byte	.LASF17
+ 1048 00c3 05       		.uleb128 0x5
+ 1049 00c4 04       		.byte	0x4
+ 1050 00c5 6B000000 		.4byte	0x6b
+ 1051 00c9 06       		.uleb128 0x6
+ 1052 00ca 01       		.byte	0x1
+ 1053 00cb 03       		.byte	0x3
+ 1054 00cc 4201     		.2byte	0x142
+ 1055 00ce 86020000 		.4byte	0x286
+ 1056 00d2 07       		.uleb128 0x7
+ 1057 00d3 BC020000 		.4byte	.LASF18
+ 1058 00d7 00       		.sleb128 0
+ 1059 00d8 07       		.uleb128 0x7
+ 1060 00d9 0B020000 		.4byte	.LASF19
+ 1061 00dd 01       		.sleb128 1
+ 1062 00de 07       		.uleb128 0x7
+ 1063 00df BE0A0000 		.4byte	.LASF20
+ 1064 00e3 02       		.sleb128 2
+ 1065 00e4 07       		.uleb128 0x7
+ 1066 00e5 D9090000 		.4byte	.LASF21
+ 1067 00e9 03       		.sleb128 3
+ 1068 00ea 07       		.uleb128 0x7
+ 1069 00eb 45010000 		.4byte	.LASF22
+ 1070 00ef 04       		.sleb128 4
+ 1071 00f0 07       		.uleb128 0x7
+ 1072 00f1 5D040000 		.4byte	.LASF23
+ 1073 00f5 05       		.sleb128 5
+ 1074 00f6 07       		.uleb128 0x7
+ 1075 00f7 02010000 		.4byte	.LASF24
+ 1076 00fb 06       		.sleb128 6
+ 1077 00fc 07       		.uleb128 0x7
+ 1078 00fd 370A0000 		.4byte	.LASF25
+ 1079 0101 20       		.sleb128 32
+ 1080 0102 07       		.uleb128 0x7
+ 1081 0103 46060000 		.4byte	.LASF26
+ 1082 0107 21       		.sleb128 33
+ 1083 0108 07       		.uleb128 0x7
+ 1084 0109 00000000 		.4byte	.LASF27
+ 1085 010d 22       		.sleb128 34
+ 1086 010e 07       		.uleb128 0x7
+ 1087 010f 8C040000 		.4byte	.LASF28
+ 1088 0113 23       		.sleb128 35
+ 1089 0114 07       		.uleb128 0x7
+ 1090 0115 F0050000 		.4byte	.LASF29
+ 1091 0119 24       		.sleb128 36
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 29
+
+
+ 1092 011a 07       		.uleb128 0x7
+ 1093 011b CF000000 		.4byte	.LASF30
+ 1094 011f 25       		.sleb128 37
+ 1095 0120 07       		.uleb128 0x7
+ 1096 0121 14040000 		.4byte	.LASF31
+ 1097 0125 26       		.sleb128 38
+ 1098 0126 07       		.uleb128 0x7
+ 1099 0127 F5030000 		.4byte	.LASF32
+ 1100 012b 27       		.sleb128 39
+ 1101 012c 07       		.uleb128 0x7
+ 1102 012d AB0B0000 		.4byte	.LASF33
+ 1103 0131 28       		.sleb128 40
+ 1104 0132 07       		.uleb128 0x7
+ 1105 0133 C4080000 		.4byte	.LASF34
+ 1106 0137 29       		.sleb128 41
+ 1107 0138 07       		.uleb128 0x7
+ 1108 0139 81070000 		.4byte	.LASF35
+ 1109 013d 2A       		.sleb128 42
+ 1110 013e 07       		.uleb128 0x7
+ 1111 013f F40A0000 		.4byte	.LASF36
+ 1112 0143 2B       		.sleb128 43
+ 1113 0144 07       		.uleb128 0x7
+ 1114 0145 58020000 		.4byte	.LASF37
+ 1115 0149 2C       		.sleb128 44
+ 1116 014a 07       		.uleb128 0x7
+ 1117 014b 59030000 		.4byte	.LASF38
+ 1118 014f 2D       		.sleb128 45
+ 1119 0150 07       		.uleb128 0x7
+ 1120 0151 A1000000 		.4byte	.LASF39
+ 1121 0155 2E       		.sleb128 46
+ 1122 0156 07       		.uleb128 0x7
+ 1123 0157 230C0000 		.4byte	.LASF40
+ 1124 015b 2F       		.sleb128 47
+ 1125 015c 07       		.uleb128 0x7
+ 1126 015d 24010000 		.4byte	.LASF41
+ 1127 0161 30       		.sleb128 48
+ 1128 0162 07       		.uleb128 0x7
+ 1129 0163 E9040000 		.4byte	.LASF42
+ 1130 0167 31       		.sleb128 49
+ 1131 0168 07       		.uleb128 0x7
+ 1132 0169 82030000 		.4byte	.LASF43
+ 1133 016d 32       		.sleb128 50
+ 1134 016e 07       		.uleb128 0x7
+ 1135 016f AA070000 		.4byte	.LASF44
+ 1136 0173 33       		.sleb128 51
+ 1137 0174 07       		.uleb128 0x7
+ 1138 0175 5D000000 		.4byte	.LASF45
+ 1139 0179 C000     		.sleb128 64
+ 1140 017b 07       		.uleb128 0x7
+ 1141 017c 19060000 		.4byte	.LASF46
+ 1142 0180 C100     		.sleb128 65
+ 1143 0182 07       		.uleb128 0x7
+ 1144 0183 050C0000 		.4byte	.LASF47
+ 1145 0187 C200     		.sleb128 66
+ 1146 0189 07       		.uleb128 0x7
+ 1147 018a 1E020000 		.4byte	.LASF48
+ 1148 018e C300     		.sleb128 67
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 30
+
+
+ 1149 0190 07       		.uleb128 0x7
+ 1150 0191 A00A0000 		.4byte	.LASF49
+ 1151 0195 C400     		.sleb128 68
+ 1152 0197 07       		.uleb128 0x7
+ 1153 0198 5B0A0000 		.4byte	.LASF50
+ 1154 019c C500     		.sleb128 69
+ 1155 019e 07       		.uleb128 0x7
+ 1156 019f CC010000 		.4byte	.LASF51
+ 1157 01a3 C600     		.sleb128 70
+ 1158 01a5 07       		.uleb128 0x7
+ 1159 01a6 85050000 		.4byte	.LASF52
+ 1160 01aa C700     		.sleb128 71
+ 1161 01ac 07       		.uleb128 0x7
+ 1162 01ad C9050000 		.4byte	.LASF53
+ 1163 01b1 C800     		.sleb128 72
+ 1164 01b3 07       		.uleb128 0x7
+ 1165 01b4 40030000 		.4byte	.LASF54
+ 1166 01b8 C900     		.sleb128 73
+ 1167 01ba 07       		.uleb128 0x7
+ 1168 01bb E1080000 		.4byte	.LASF55
+ 1169 01bf CA00     		.sleb128 74
+ 1170 01c1 07       		.uleb128 0x7
+ 1171 01c2 7C020000 		.4byte	.LASF56
+ 1172 01c6 CB00     		.sleb128 75
+ 1173 01c8 07       		.uleb128 0x7
+ 1174 01c9 AF050000 		.4byte	.LASF57
+ 1175 01cd CC00     		.sleb128 76
+ 1176 01cf 07       		.uleb128 0x7
+ 1177 01d0 37000000 		.4byte	.LASF58
+ 1178 01d4 CD00     		.sleb128 77
+ 1179 01d6 07       		.uleb128 0x7
+ 1180 01d7 820A0000 		.4byte	.LASF59
+ 1181 01db CE00     		.sleb128 78
+ 1182 01dd 07       		.uleb128 0x7
+ 1183 01de 47050000 		.4byte	.LASF60
+ 1184 01e2 CF00     		.sleb128 79
+ 1185 01e4 07       		.uleb128 0x7
+ 1186 01e5 780B0000 		.4byte	.LASF61
+ 1187 01e9 D000     		.sleb128 80
+ 1188 01eb 07       		.uleb128 0x7
+ 1189 01ec FF080000 		.4byte	.LASF62
+ 1190 01f0 D100     		.sleb128 81
+ 1191 01f2 07       		.uleb128 0x7
+ 1192 01f3 3C040000 		.4byte	.LASF63
+ 1193 01f7 D200     		.sleb128 82
+ 1194 01f9 07       		.uleb128 0x7
+ 1195 01fa D4030000 		.4byte	.LASF64
+ 1196 01fe D300     		.sleb128 83
+ 1197 0200 07       		.uleb128 0x7
+ 1198 0201 9B020000 		.4byte	.LASF65
+ 1199 0205 D400     		.sleb128 84
+ 1200 0207 07       		.uleb128 0x7
+ 1201 0208 E10B0000 		.4byte	.LASF66
+ 1202 020c D500     		.sleb128 85
+ 1203 020e 07       		.uleb128 0x7
+ 1204 020f 4A0B0000 		.4byte	.LASF67
+ 1205 0213 D600     		.sleb128 86
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 31
+
+
+ 1206 0215 07       		.uleb128 0x7
+ 1207 0216 210B0000 		.4byte	.LASF68
+ 1208 021a D700     		.sleb128 87
+ 1209 021c 07       		.uleb128 0x7
+ 1210 021d 4B070000 		.4byte	.LASF69
+ 1211 0221 D800     		.sleb128 88
+ 1212 0223 07       		.uleb128 0x7
+ 1213 0224 13050000 		.4byte	.LASF70
+ 1214 0228 F000     		.sleb128 112
+ 1215 022a 07       		.uleb128 0x7
+ 1216 022b 110A0000 		.4byte	.LASF71
+ 1217 022f F100     		.sleb128 113
+ 1218 0231 07       		.uleb128 0x7
+ 1219 0232 92080000 		.4byte	.LASF72
+ 1220 0236 F200     		.sleb128 114
+ 1221 0238 07       		.uleb128 0x7
+ 1222 0239 D3020000 		.4byte	.LASF73
+ 1223 023d F300     		.sleb128 115
+ 1224 023f 07       		.uleb128 0x7
+ 1225 0240 CB040000 		.4byte	.LASF74
+ 1226 0244 F400     		.sleb128 116
+ 1227 0246 07       		.uleb128 0x7
+ 1228 0247 5D060000 		.4byte	.LASF75
+ 1229 024b F500     		.sleb128 117
+ 1230 024d 07       		.uleb128 0x7
+ 1231 024e F1020000 		.4byte	.LASF76
+ 1232 0252 F600     		.sleb128 118
+ 1233 0254 07       		.uleb128 0x7
+ 1234 0255 F2090000 		.4byte	.LASF77
+ 1235 0259 F700     		.sleb128 119
+ 1236 025b 07       		.uleb128 0x7
+ 1237 025c 54090000 		.4byte	.LASF78
+ 1238 0260 F800     		.sleb128 120
+ 1239 0262 07       		.uleb128 0x7
+ 1240 0263 99090000 		.4byte	.LASF79
+ 1241 0267 F900     		.sleb128 121
+ 1242 0269 07       		.uleb128 0x7
+ 1243 026a D00A0000 		.4byte	.LASF80
+ 1244 026e FA00     		.sleb128 122
+ 1245 0270 07       		.uleb128 0x7
+ 1246 0271 ED010000 		.4byte	.LASF81
+ 1247 0275 FA01     		.sleb128 250
+ 1248 0277 07       		.uleb128 0x7
+ 1249 0278 66050000 		.4byte	.LASF82
+ 1250 027c FB01     		.sleb128 251
+ 1251 027e 07       		.uleb128 0x7
+ 1252 027f 130B0000 		.4byte	.LASF83
+ 1253 0283 FF01     		.sleb128 255
+ 1254 0285 00       		.byte	0
+ 1255 0286 08       		.uleb128 0x8
+ 1256 0287 6B000000 		.4byte	0x6b
+ 1257 028b 96020000 		.4byte	0x296
+ 1258 028f 09       		.uleb128 0x9
+ 1259 0290 BC000000 		.4byte	0xbc
+ 1260 0294 09       		.byte	0x9
+ 1261 0295 00       		.byte	0
+ 1262 0296 0A       		.uleb128 0xa
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 32
+
+
+ 1263 0297 76010000 		.4byte	.LASF97
+ 1264 029b 01       		.byte	0x1
+ 1265 029c 66       		.byte	0x66
+ 1266 029d 00000000 		.4byte	.LFB37
+ 1267 02a1 48000000 		.4byte	.LFE37-.LFB37
+ 1268 02a5 01       		.uleb128 0x1
+ 1269 02a6 9C       		.byte	0x9c
+ 1270 02a7 0B       		.uleb128 0xb
+ 1271 02a8 25090000 		.4byte	.LASF86
+ 1272 02ac 01       		.byte	0x1
+ 1273 02ad 8F       		.byte	0x8f
+ 1274 02ae 00000000 		.4byte	.LFB38
+ 1275 02b2 20010000 		.4byte	.LFE38-.LFB38
+ 1276 02b6 01       		.uleb128 0x1
+ 1277 02b7 9C       		.byte	0x9c
+ 1278 02b8 D9020000 		.4byte	0x2d9
+ 1279 02bc 0C       		.uleb128 0xc
+ 1280 02bd AD010000 		.4byte	.LASF84
+ 1281 02c1 01       		.byte	0x1
+ 1282 02c2 92       		.byte	0x92
+ 1283 02c3 9B000000 		.4byte	0x9b
+ 1284 02c7 02       		.uleb128 0x2
+ 1285 02c8 91       		.byte	0x91
+ 1286 02c9 6C       		.sleb128 -20
+ 1287 02ca 0C       		.uleb128 0xc
+ 1288 02cb F0070000 		.4byte	.LASF85
+ 1289 02cf 01       		.byte	0x1
+ 1290 02d0 95       		.byte	0x95
+ 1291 02d1 9B000000 		.4byte	0x9b
+ 1292 02d5 02       		.uleb128 0x2
+ 1293 02d6 91       		.byte	0x91
+ 1294 02d7 68       		.sleb128 -24
+ 1295 02d8 00       		.byte	0
+ 1296 02d9 0B       		.uleb128 0xb
+ 1297 02da 970B0000 		.4byte	.LASF87
+ 1298 02de 01       		.byte	0x1
+ 1299 02df D6       		.byte	0xd6
+ 1300 02e0 00000000 		.4byte	.LFB39
+ 1301 02e4 9C020000 		.4byte	.LFE39-.LFB39
+ 1302 02e8 01       		.uleb128 0x1
+ 1303 02e9 9C       		.byte	0x9c
+ 1304 02ea 0B030000 		.4byte	0x30b
+ 1305 02ee 0D       		.uleb128 0xd
+ 1306 02ef 4D020000 		.4byte	.LASF90
+ 1307 02f3 01       		.byte	0x1
+ 1308 02f4 D6       		.byte	0xd6
+ 1309 02f5 6B000000 		.4byte	0x6b
+ 1310 02f9 02       		.uleb128 0x2
+ 1311 02fa 91       		.byte	0x91
+ 1312 02fb 67       		.sleb128 -25
+ 1313 02fc 0C       		.uleb128 0xc
+ 1314 02fd 90000000 		.4byte	.LASF88
+ 1315 0301 01       		.byte	0x1
+ 1316 0302 D9       		.byte	0xd9
+ 1317 0303 6B000000 		.4byte	0x6b
+ 1318 0307 02       		.uleb128 0x2
+ 1319 0308 91       		.byte	0x91
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 33
+
+
+ 1320 0309 6F       		.sleb128 -17
+ 1321 030a 00       		.byte	0
+ 1322 030b 0E       		.uleb128 0xe
+ 1323 030c 7F000000 		.4byte	.LASF89
+ 1324 0310 01       		.byte	0x1
+ 1325 0311 6C01     		.2byte	0x16c
+ 1326 0313 00000000 		.4byte	.LFB40
+ 1327 0317 4A000000 		.4byte	.LFE40-.LFB40
+ 1328 031b 01       		.uleb128 0x1
+ 1329 031c 9C       		.byte	0x9c
+ 1330 031d 40030000 		.4byte	0x340
+ 1331 0321 0F       		.uleb128 0xf
+ 1332 0322 51000000 		.4byte	.LASF91
+ 1333 0326 01       		.byte	0x1
+ 1334 0327 6C01     		.2byte	0x16c
+ 1335 0329 83000000 		.4byte	0x83
+ 1336 032d 02       		.uleb128 0x2
+ 1337 032e 91       		.byte	0x91
+ 1338 032f 74       		.sleb128 -12
+ 1339 0330 0F       		.uleb128 0xf
+ 1340 0331 7E060000 		.4byte	.LASF92
+ 1341 0335 01       		.byte	0x1
+ 1342 0336 6C01     		.2byte	0x16c
+ 1343 0338 C3000000 		.4byte	0xc3
+ 1344 033c 02       		.uleb128 0x2
+ 1345 033d 91       		.byte	0x91
+ 1346 033e 70       		.sleb128 -16
+ 1347 033f 00       		.byte	0
+ 1348 0340 10       		.uleb128 0x10
+ 1349 0341 6C0B0000 		.4byte	.LASF93
+ 1350 0345 01       		.byte	0x1
+ 1351 0346 8C01     		.2byte	0x18c
+ 1352 0348 00000000 		.4byte	.LFB41
+ 1353 034c 4E000000 		.4byte	.LFE41-.LFB41
+ 1354 0350 01       		.uleb128 0x1
+ 1355 0351 9C       		.byte	0x9c
+ 1356 0352 84030000 		.4byte	0x384
+ 1357 0356 0F       		.uleb128 0xf
+ 1358 0357 7E060000 		.4byte	.LASF92
+ 1359 035b 01       		.byte	0x1
+ 1360 035c 8C01     		.2byte	0x18c
+ 1361 035e C3000000 		.4byte	0xc3
+ 1362 0362 02       		.uleb128 0x2
+ 1363 0363 91       		.byte	0x91
+ 1364 0364 6C       		.sleb128 -20
+ 1365 0365 0F       		.uleb128 0xf
+ 1366 0366 43020000 		.4byte	.LASF94
+ 1367 036a 01       		.byte	0x1
+ 1368 036b 8C01     		.2byte	0x18c
+ 1369 036d 6B000000 		.4byte	0x6b
+ 1370 0371 02       		.uleb128 0x2
+ 1371 0372 91       		.byte	0x91
+ 1372 0373 6B       		.sleb128 -21
+ 1373 0374 11       		.uleb128 0x11
+ 1374 0375 90000000 		.4byte	.LASF88
+ 1375 0379 01       		.byte	0x1
+ 1376 037a 8E01     		.2byte	0x18e
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 34
+
+
+ 1377 037c 6B000000 		.4byte	0x6b
+ 1378 0380 02       		.uleb128 0x2
+ 1379 0381 91       		.byte	0x91
+ 1380 0382 77       		.sleb128 -9
+ 1381 0383 00       		.byte	0
+ 1382 0384 0E       		.uleb128 0xe
+ 1383 0385 12030000 		.4byte	.LASF95
+ 1384 0389 01       		.byte	0x1
+ 1385 038a A601     		.2byte	0x1a6
+ 1386 038c 00000000 		.4byte	.LFB42
+ 1387 0390 2C000000 		.4byte	.LFE42-.LFB42
+ 1388 0394 01       		.uleb128 0x1
+ 1389 0395 9C       		.byte	0x9c
+ 1390 0396 AD030000 		.4byte	0x3ad
+ 1391 039a 11       		.uleb128 0x11
+ 1392 039b 97000000 		.4byte	.LASF96
+ 1393 039f 01       		.byte	0x1
+ 1394 03a0 A801     		.2byte	0x1a8
+ 1395 03a2 6B000000 		.4byte	0x6b
+ 1396 03a6 05       		.uleb128 0x5
+ 1397 03a7 03       		.byte	0x3
+ 1398 03a8 00000000 		.4byte	FirstTime.7653
+ 1399 03ac 00       		.byte	0
+ 1400 03ad 12       		.uleb128 0x12
+ 1401 03ae D1070000 		.4byte	.LASF98
+ 1402 03b2 01       		.byte	0x1
+ 1403 03b3 C701     		.2byte	0x1c7
+ 1404 03b5 00000000 		.4byte	.LFB43
+ 1405 03b9 38000000 		.4byte	.LFE43-.LFB43
+ 1406 03bd 01       		.uleb128 0x1
+ 1407 03be 9C       		.byte	0x9c
+ 1408 03bf 12       		.uleb128 0x12
+ 1409 03c0 37090000 		.4byte	.LASF99
+ 1410 03c4 01       		.byte	0x1
+ 1411 03c5 E201     		.2byte	0x1e2
+ 1412 03c7 00000000 		.4byte	.LFB44
+ 1413 03cb 38000000 		.4byte	.LFE44-.LFB44
+ 1414 03cf 01       		.uleb128 0x1
+ 1415 03d0 9C       		.byte	0x9c
+ 1416 03d1 13       		.uleb128 0x13
+ 1417 03d2 2F070000 		.4byte	.LASF100
+ 1418 03d6 01       		.byte	0x1
+ 1419 03d7 3E       		.byte	0x3e
+ 1420 03d8 77000000 		.4byte	0x77
+ 1421 03dc 05       		.uleb128 0x5
+ 1422 03dd 03       		.byte	0x3
+ 1423 03de 00000000 		.4byte	Input_Signal_Counter1_Count
+ 1424 03e2 13       		.uleb128 0x13
+ 1425 03e3 5A010000 		.4byte	.LASF101
+ 1426 03e7 01       		.byte	0x1
+ 1427 03e8 3E       		.byte	0x3e
+ 1428 03e9 77000000 		.4byte	0x77
+ 1429 03ed 05       		.uleb128 0x5
+ 1430 03ee 03       		.byte	0x3
+ 1431 03ef 00000000 		.4byte	Input_Signal_Counter2_Count
+ 1432 03f3 13       		.uleb128 0x13
+ 1433 03f4 B2040000 		.4byte	.LASF102
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 35
+
+
+ 1434 03f8 01       		.byte	0x1
+ 1435 03f9 3F       		.byte	0x3f
+ 1436 03fa 77000000 		.4byte	0x77
+ 1437 03fe 05       		.uleb128 0x5
+ 1438 03ff 03       		.byte	0x3
+ 1439 0400 00000000 		.4byte	Ref_Clock_Counter1_Count
+ 1440 0404 13       		.uleb128 0x13
+ 1441 0405 E9000000 		.4byte	.LASF103
+ 1442 0409 01       		.byte	0x1
+ 1443 040a 3F       		.byte	0x3f
+ 1444 040b 77000000 		.4byte	0x77
+ 1445 040f 05       		.uleb128 0x5
+ 1446 0410 03       		.byte	0x3
+ 1447 0411 00000000 		.4byte	Ref_Clock_Counter2_Count
+ 1448 0415 13       		.uleb128 0x13
+ 1449 0416 79040000 		.4byte	.LASF104
+ 1450 041a 01       		.byte	0x1
+ 1451 041b 42       		.byte	0x42
+ 1452 041c 83000000 		.4byte	0x83
+ 1453 0420 05       		.uleb128 0x5
+ 1454 0421 03       		.byte	0x3
+ 1455 0422 00000000 		.4byte	Input_Signal_Count
+ 1456 0426 13       		.uleb128 0x13
+ 1457 0427 2A030000 		.4byte	.LASF105
+ 1458 042b 01       		.byte	0x1
+ 1459 042c 42       		.byte	0x42
+ 1460 042d 83000000 		.4byte	0x83
+ 1461 0431 05       		.uleb128 0x5
+ 1462 0432 03       		.byte	0x3
+ 1463 0433 00000000 		.4byte	Ref_Clock_Count
+ 1464 0437 13       		.uleb128 0x13
+ 1465 0438 A0010000 		.4byte	.LASF106
+ 1466 043c 01       		.byte	0x1
+ 1467 043d 45       		.byte	0x45
+ 1468 043e 83000000 		.4byte	0x83
+ 1469 0442 05       		.uleb128 0x5
+ 1470 0443 03       		.byte	0x3
+ 1471 0444 00000000 		.4byte	Freq_Integer
+ 1472 0448 13       		.uleb128 0x13
+ 1473 0449 BC090000 		.4byte	.LASF107
+ 1474 044d 01       		.byte	0x1
+ 1475 044e 46       		.byte	0x46
+ 1476 044f 77000000 		.4byte	0x77
+ 1477 0453 05       		.uleb128 0x5
+ 1478 0454 03       		.byte	0x3
+ 1479 0455 00000000 		.4byte	Freq_Decimal
+ 1480 0459 14       		.uleb128 0x14
+ 1481 045a CD0B0000 		.4byte	.LASF108
+ 1482 045e 01       		.byte	0x1
+ 1483 045f 49       		.byte	0x49
+ 1484 0460 6B000000 		.4byte	0x6b
+ 1485 0464 13       		.uleb128 0x13
+ 1486 0465 AE080000 		.4byte	.LASF109
+ 1487 0469 01       		.byte	0x1
+ 1488 046a 4C       		.byte	0x4c
+ 1489 046b 6B000000 		.4byte	0x6b
+ 1490 046f 05       		.uleb128 0x5
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 36
+
+
+ 1491 0470 03       		.byte	0x3
+ 1492 0471 00000000 		.4byte	Input_Sig_Ctr_Capture
+ 1493 0475 13       		.uleb128 0x13
+ 1494 0476 B8010000 		.4byte	.LASF110
+ 1495 047a 01       		.byte	0x1
+ 1496 047b 4C       		.byte	0x4c
+ 1497 047c 6B000000 		.4byte	0x6b
+ 1498 0480 05       		.uleb128 0x5
+ 1499 0481 03       		.byte	0x3
+ 1500 0482 00000000 		.4byte	Ref_Clk_Ctr_Capture
+ 1501 0486 13       		.uleb128 0x13
+ 1502 0487 C9090000 		.4byte	.LASF111
+ 1503 048b 01       		.byte	0x1
+ 1504 048c 4F       		.byte	0x4f
+ 1505 048d 86020000 		.4byte	0x286
+ 1506 0491 05       		.uleb128 0x5
+ 1507 0492 03       		.byte	0x3
+ 1508 0493 00000000 		.4byte	Input_Frequency
+ 1509 0497 13       		.uleb128 0x13
+ 1510 0498 24000000 		.4byte	.LASF112
+ 1511 049c 01       		.byte	0x1
+ 1512 049d 50       		.byte	0x50
+ 1513 049e 86020000 		.4byte	0x286
+ 1514 04a2 05       		.uleb128 0x5
+ 1515 04a3 03       		.byte	0x3
+ 1516 04a4 00000000 		.4byte	InputCounter_ASCII
+ 1517 04a8 13       		.uleb128 0x13
+ 1518 04a9 BA030000 		.4byte	.LASF113
+ 1519 04ad 01       		.byte	0x1
+ 1520 04ae 51       		.byte	0x51
+ 1521 04af 86020000 		.4byte	0x286
+ 1522 04b3 05       		.uleb128 0x5
+ 1523 04b4 03       		.byte	0x3
+ 1524 04b5 00000000 		.4byte	RefCounter_ASCII
+ 1525 04b9 00       		.byte	0
+ 1526              		.section	.debug_abbrev,"",%progbits
+ 1527              	.Ldebug_abbrev0:
+ 1528 0000 01       		.uleb128 0x1
+ 1529 0001 11       		.uleb128 0x11
+ 1530 0002 01       		.byte	0x1
+ 1531 0003 25       		.uleb128 0x25
+ 1532 0004 0E       		.uleb128 0xe
+ 1533 0005 13       		.uleb128 0x13
+ 1534 0006 0B       		.uleb128 0xb
+ 1535 0007 03       		.uleb128 0x3
+ 1536 0008 0E       		.uleb128 0xe
+ 1537 0009 1B       		.uleb128 0x1b
+ 1538 000a 0E       		.uleb128 0xe
+ 1539 000b 55       		.uleb128 0x55
+ 1540 000c 17       		.uleb128 0x17
+ 1541 000d 11       		.uleb128 0x11
+ 1542 000e 01       		.uleb128 0x1
+ 1543 000f 10       		.uleb128 0x10
+ 1544 0010 17       		.uleb128 0x17
+ 1545 0011 00       		.byte	0
+ 1546 0012 00       		.byte	0
+ 1547 0013 02       		.uleb128 0x2
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 37
+
+
+ 1548 0014 24       		.uleb128 0x24
+ 1549 0015 00       		.byte	0
+ 1550 0016 0B       		.uleb128 0xb
+ 1551 0017 0B       		.uleb128 0xb
+ 1552 0018 3E       		.uleb128 0x3e
+ 1553 0019 0B       		.uleb128 0xb
+ 1554 001a 03       		.uleb128 0x3
+ 1555 001b 0E       		.uleb128 0xe
+ 1556 001c 00       		.byte	0
+ 1557 001d 00       		.byte	0
+ 1558 001e 03       		.uleb128 0x3
+ 1559 001f 24       		.uleb128 0x24
+ 1560 0020 00       		.byte	0
+ 1561 0021 0B       		.uleb128 0xb
+ 1562 0022 0B       		.uleb128 0xb
+ 1563 0023 3E       		.uleb128 0x3e
+ 1564 0024 0B       		.uleb128 0xb
+ 1565 0025 03       		.uleb128 0x3
+ 1566 0026 08       		.uleb128 0x8
+ 1567 0027 00       		.byte	0
+ 1568 0028 00       		.byte	0
+ 1569 0029 04       		.uleb128 0x4
+ 1570 002a 16       		.uleb128 0x16
+ 1571 002b 00       		.byte	0
+ 1572 002c 03       		.uleb128 0x3
+ 1573 002d 0E       		.uleb128 0xe
+ 1574 002e 3A       		.uleb128 0x3a
+ 1575 002f 0B       		.uleb128 0xb
+ 1576 0030 3B       		.uleb128 0x3b
+ 1577 0031 05       		.uleb128 0x5
+ 1578 0032 49       		.uleb128 0x49
+ 1579 0033 13       		.uleb128 0x13
+ 1580 0034 00       		.byte	0
+ 1581 0035 00       		.byte	0
+ 1582 0036 05       		.uleb128 0x5
+ 1583 0037 0F       		.uleb128 0xf
+ 1584 0038 00       		.byte	0
+ 1585 0039 0B       		.uleb128 0xb
+ 1586 003a 0B       		.uleb128 0xb
+ 1587 003b 49       		.uleb128 0x49
+ 1588 003c 13       		.uleb128 0x13
+ 1589 003d 00       		.byte	0
+ 1590 003e 00       		.byte	0
+ 1591 003f 06       		.uleb128 0x6
+ 1592 0040 04       		.uleb128 0x4
+ 1593 0041 01       		.byte	0x1
+ 1594 0042 0B       		.uleb128 0xb
+ 1595 0043 0B       		.uleb128 0xb
+ 1596 0044 3A       		.uleb128 0x3a
+ 1597 0045 0B       		.uleb128 0xb
+ 1598 0046 3B       		.uleb128 0x3b
+ 1599 0047 05       		.uleb128 0x5
+ 1600 0048 01       		.uleb128 0x1
+ 1601 0049 13       		.uleb128 0x13
+ 1602 004a 00       		.byte	0
+ 1603 004b 00       		.byte	0
+ 1604 004c 07       		.uleb128 0x7
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 38
+
+
+ 1605 004d 28       		.uleb128 0x28
+ 1606 004e 00       		.byte	0
+ 1607 004f 03       		.uleb128 0x3
+ 1608 0050 0E       		.uleb128 0xe
+ 1609 0051 1C       		.uleb128 0x1c
+ 1610 0052 0D       		.uleb128 0xd
+ 1611 0053 00       		.byte	0
+ 1612 0054 00       		.byte	0
+ 1613 0055 08       		.uleb128 0x8
+ 1614 0056 01       		.uleb128 0x1
+ 1615 0057 01       		.byte	0x1
+ 1616 0058 49       		.uleb128 0x49
+ 1617 0059 13       		.uleb128 0x13
+ 1618 005a 01       		.uleb128 0x1
+ 1619 005b 13       		.uleb128 0x13
+ 1620 005c 00       		.byte	0
+ 1621 005d 00       		.byte	0
+ 1622 005e 09       		.uleb128 0x9
+ 1623 005f 21       		.uleb128 0x21
+ 1624 0060 00       		.byte	0
+ 1625 0061 49       		.uleb128 0x49
+ 1626 0062 13       		.uleb128 0x13
+ 1627 0063 2F       		.uleb128 0x2f
+ 1628 0064 0B       		.uleb128 0xb
+ 1629 0065 00       		.byte	0
+ 1630 0066 00       		.byte	0
+ 1631 0067 0A       		.uleb128 0xa
+ 1632 0068 2E       		.uleb128 0x2e
+ 1633 0069 00       		.byte	0
+ 1634 006a 3F       		.uleb128 0x3f
+ 1635 006b 19       		.uleb128 0x19
+ 1636 006c 03       		.uleb128 0x3
+ 1637 006d 0E       		.uleb128 0xe
+ 1638 006e 3A       		.uleb128 0x3a
+ 1639 006f 0B       		.uleb128 0xb
+ 1640 0070 3B       		.uleb128 0x3b
+ 1641 0071 0B       		.uleb128 0xb
+ 1642 0072 27       		.uleb128 0x27
+ 1643 0073 19       		.uleb128 0x19
+ 1644 0074 11       		.uleb128 0x11
+ 1645 0075 01       		.uleb128 0x1
+ 1646 0076 12       		.uleb128 0x12
+ 1647 0077 06       		.uleb128 0x6
+ 1648 0078 40       		.uleb128 0x40
+ 1649 0079 18       		.uleb128 0x18
+ 1650 007a 9642     		.uleb128 0x2116
+ 1651 007c 19       		.uleb128 0x19
+ 1652 007d 00       		.byte	0
+ 1653 007e 00       		.byte	0
+ 1654 007f 0B       		.uleb128 0xb
+ 1655 0080 2E       		.uleb128 0x2e
+ 1656 0081 01       		.byte	0x1
+ 1657 0082 3F       		.uleb128 0x3f
+ 1658 0083 19       		.uleb128 0x19
+ 1659 0084 03       		.uleb128 0x3
+ 1660 0085 0E       		.uleb128 0xe
+ 1661 0086 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 39
+
+
+ 1662 0087 0B       		.uleb128 0xb
+ 1663 0088 3B       		.uleb128 0x3b
+ 1664 0089 0B       		.uleb128 0xb
+ 1665 008a 27       		.uleb128 0x27
+ 1666 008b 19       		.uleb128 0x19
+ 1667 008c 11       		.uleb128 0x11
+ 1668 008d 01       		.uleb128 0x1
+ 1669 008e 12       		.uleb128 0x12
+ 1670 008f 06       		.uleb128 0x6
+ 1671 0090 40       		.uleb128 0x40
+ 1672 0091 18       		.uleb128 0x18
+ 1673 0092 9642     		.uleb128 0x2116
+ 1674 0094 19       		.uleb128 0x19
+ 1675 0095 01       		.uleb128 0x1
+ 1676 0096 13       		.uleb128 0x13
+ 1677 0097 00       		.byte	0
+ 1678 0098 00       		.byte	0
+ 1679 0099 0C       		.uleb128 0xc
+ 1680 009a 34       		.uleb128 0x34
+ 1681 009b 00       		.byte	0
+ 1682 009c 03       		.uleb128 0x3
+ 1683 009d 0E       		.uleb128 0xe
+ 1684 009e 3A       		.uleb128 0x3a
+ 1685 009f 0B       		.uleb128 0xb
+ 1686 00a0 3B       		.uleb128 0x3b
+ 1687 00a1 0B       		.uleb128 0xb
+ 1688 00a2 49       		.uleb128 0x49
+ 1689 00a3 13       		.uleb128 0x13
+ 1690 00a4 02       		.uleb128 0x2
+ 1691 00a5 18       		.uleb128 0x18
+ 1692 00a6 00       		.byte	0
+ 1693 00a7 00       		.byte	0
+ 1694 00a8 0D       		.uleb128 0xd
+ 1695 00a9 05       		.uleb128 0x5
+ 1696 00aa 00       		.byte	0
+ 1697 00ab 03       		.uleb128 0x3
+ 1698 00ac 0E       		.uleb128 0xe
+ 1699 00ad 3A       		.uleb128 0x3a
+ 1700 00ae 0B       		.uleb128 0xb
+ 1701 00af 3B       		.uleb128 0x3b
+ 1702 00b0 0B       		.uleb128 0xb
+ 1703 00b1 49       		.uleb128 0x49
+ 1704 00b2 13       		.uleb128 0x13
+ 1705 00b3 02       		.uleb128 0x2
+ 1706 00b4 18       		.uleb128 0x18
+ 1707 00b5 00       		.byte	0
+ 1708 00b6 00       		.byte	0
+ 1709 00b7 0E       		.uleb128 0xe
+ 1710 00b8 2E       		.uleb128 0x2e
+ 1711 00b9 01       		.byte	0x1
+ 1712 00ba 3F       		.uleb128 0x3f
+ 1713 00bb 19       		.uleb128 0x19
+ 1714 00bc 03       		.uleb128 0x3
+ 1715 00bd 0E       		.uleb128 0xe
+ 1716 00be 3A       		.uleb128 0x3a
+ 1717 00bf 0B       		.uleb128 0xb
+ 1718 00c0 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 40
+
+
+ 1719 00c1 05       		.uleb128 0x5
+ 1720 00c2 27       		.uleb128 0x27
+ 1721 00c3 19       		.uleb128 0x19
+ 1722 00c4 11       		.uleb128 0x11
+ 1723 00c5 01       		.uleb128 0x1
+ 1724 00c6 12       		.uleb128 0x12
+ 1725 00c7 06       		.uleb128 0x6
+ 1726 00c8 40       		.uleb128 0x40
+ 1727 00c9 18       		.uleb128 0x18
+ 1728 00ca 9642     		.uleb128 0x2116
+ 1729 00cc 19       		.uleb128 0x19
+ 1730 00cd 01       		.uleb128 0x1
+ 1731 00ce 13       		.uleb128 0x13
+ 1732 00cf 00       		.byte	0
+ 1733 00d0 00       		.byte	0
+ 1734 00d1 0F       		.uleb128 0xf
+ 1735 00d2 05       		.uleb128 0x5
+ 1736 00d3 00       		.byte	0
+ 1737 00d4 03       		.uleb128 0x3
+ 1738 00d5 0E       		.uleb128 0xe
+ 1739 00d6 3A       		.uleb128 0x3a
+ 1740 00d7 0B       		.uleb128 0xb
+ 1741 00d8 3B       		.uleb128 0x3b
+ 1742 00d9 05       		.uleb128 0x5
+ 1743 00da 49       		.uleb128 0x49
+ 1744 00db 13       		.uleb128 0x13
+ 1745 00dc 02       		.uleb128 0x2
+ 1746 00dd 18       		.uleb128 0x18
+ 1747 00de 00       		.byte	0
+ 1748 00df 00       		.byte	0
+ 1749 00e0 10       		.uleb128 0x10
+ 1750 00e1 2E       		.uleb128 0x2e
+ 1751 00e2 01       		.byte	0x1
+ 1752 00e3 3F       		.uleb128 0x3f
+ 1753 00e4 19       		.uleb128 0x19
+ 1754 00e5 03       		.uleb128 0x3
+ 1755 00e6 0E       		.uleb128 0xe
+ 1756 00e7 3A       		.uleb128 0x3a
+ 1757 00e8 0B       		.uleb128 0xb
+ 1758 00e9 3B       		.uleb128 0x3b
+ 1759 00ea 05       		.uleb128 0x5
+ 1760 00eb 27       		.uleb128 0x27
+ 1761 00ec 19       		.uleb128 0x19
+ 1762 00ed 11       		.uleb128 0x11
+ 1763 00ee 01       		.uleb128 0x1
+ 1764 00ef 12       		.uleb128 0x12
+ 1765 00f0 06       		.uleb128 0x6
+ 1766 00f1 40       		.uleb128 0x40
+ 1767 00f2 18       		.uleb128 0x18
+ 1768 00f3 9742     		.uleb128 0x2117
+ 1769 00f5 19       		.uleb128 0x19
+ 1770 00f6 01       		.uleb128 0x1
+ 1771 00f7 13       		.uleb128 0x13
+ 1772 00f8 00       		.byte	0
+ 1773 00f9 00       		.byte	0
+ 1774 00fa 11       		.uleb128 0x11
+ 1775 00fb 34       		.uleb128 0x34
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 41
+
+
+ 1776 00fc 00       		.byte	0
+ 1777 00fd 03       		.uleb128 0x3
+ 1778 00fe 0E       		.uleb128 0xe
+ 1779 00ff 3A       		.uleb128 0x3a
+ 1780 0100 0B       		.uleb128 0xb
+ 1781 0101 3B       		.uleb128 0x3b
+ 1782 0102 05       		.uleb128 0x5
+ 1783 0103 49       		.uleb128 0x49
+ 1784 0104 13       		.uleb128 0x13
+ 1785 0105 02       		.uleb128 0x2
+ 1786 0106 18       		.uleb128 0x18
+ 1787 0107 00       		.byte	0
+ 1788 0108 00       		.byte	0
+ 1789 0109 12       		.uleb128 0x12
+ 1790 010a 2E       		.uleb128 0x2e
+ 1791 010b 00       		.byte	0
+ 1792 010c 3F       		.uleb128 0x3f
+ 1793 010d 19       		.uleb128 0x19
+ 1794 010e 03       		.uleb128 0x3
+ 1795 010f 0E       		.uleb128 0xe
+ 1796 0110 3A       		.uleb128 0x3a
+ 1797 0111 0B       		.uleb128 0xb
+ 1798 0112 3B       		.uleb128 0x3b
+ 1799 0113 05       		.uleb128 0x5
+ 1800 0114 27       		.uleb128 0x27
+ 1801 0115 19       		.uleb128 0x19
+ 1802 0116 11       		.uleb128 0x11
+ 1803 0117 01       		.uleb128 0x1
+ 1804 0118 12       		.uleb128 0x12
+ 1805 0119 06       		.uleb128 0x6
+ 1806 011a 40       		.uleb128 0x40
+ 1807 011b 18       		.uleb128 0x18
+ 1808 011c 9642     		.uleb128 0x2116
+ 1809 011e 19       		.uleb128 0x19
+ 1810 011f 00       		.byte	0
+ 1811 0120 00       		.byte	0
+ 1812 0121 13       		.uleb128 0x13
+ 1813 0122 34       		.uleb128 0x34
+ 1814 0123 00       		.byte	0
+ 1815 0124 03       		.uleb128 0x3
+ 1816 0125 0E       		.uleb128 0xe
+ 1817 0126 3A       		.uleb128 0x3a
+ 1818 0127 0B       		.uleb128 0xb
+ 1819 0128 3B       		.uleb128 0x3b
+ 1820 0129 0B       		.uleb128 0xb
+ 1821 012a 49       		.uleb128 0x49
+ 1822 012b 13       		.uleb128 0x13
+ 1823 012c 3F       		.uleb128 0x3f
+ 1824 012d 19       		.uleb128 0x19
+ 1825 012e 02       		.uleb128 0x2
+ 1826 012f 18       		.uleb128 0x18
+ 1827 0130 00       		.byte	0
+ 1828 0131 00       		.byte	0
+ 1829 0132 14       		.uleb128 0x14
+ 1830 0133 34       		.uleb128 0x34
+ 1831 0134 00       		.byte	0
+ 1832 0135 03       		.uleb128 0x3
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 42
+
+
+ 1833 0136 0E       		.uleb128 0xe
+ 1834 0137 3A       		.uleb128 0x3a
+ 1835 0138 0B       		.uleb128 0xb
+ 1836 0139 3B       		.uleb128 0x3b
+ 1837 013a 0B       		.uleb128 0xb
+ 1838 013b 49       		.uleb128 0x49
+ 1839 013c 13       		.uleb128 0x13
+ 1840 013d 3F       		.uleb128 0x3f
+ 1841 013e 19       		.uleb128 0x19
+ 1842 013f 3C       		.uleb128 0x3c
+ 1843 0140 19       		.uleb128 0x19
+ 1844 0141 00       		.byte	0
+ 1845 0142 00       		.byte	0
+ 1846 0143 00       		.byte	0
+ 1847              		.section	.debug_aranges,"",%progbits
+ 1848 0000 54000000 		.4byte	0x54
+ 1849 0004 0200     		.2byte	0x2
+ 1850 0006 00000000 		.4byte	.Ldebug_info0
+ 1851 000a 04       		.byte	0x4
+ 1852 000b 00       		.byte	0
+ 1853 000c 0000     		.2byte	0
+ 1854 000e 0000     		.2byte	0
+ 1855 0010 00000000 		.4byte	.LFB37
+ 1856 0014 48000000 		.4byte	.LFE37-.LFB37
+ 1857 0018 00000000 		.4byte	.LFB38
+ 1858 001c 20010000 		.4byte	.LFE38-.LFB38
+ 1859 0020 00000000 		.4byte	.LFB39
+ 1860 0024 9C020000 		.4byte	.LFE39-.LFB39
+ 1861 0028 00000000 		.4byte	.LFB40
+ 1862 002c 4A000000 		.4byte	.LFE40-.LFB40
+ 1863 0030 00000000 		.4byte	.LFB41
+ 1864 0034 4E000000 		.4byte	.LFE41-.LFB41
+ 1865 0038 00000000 		.4byte	.LFB42
+ 1866 003c 2C000000 		.4byte	.LFE42-.LFB42
+ 1867 0040 00000000 		.4byte	.LFB43
+ 1868 0044 38000000 		.4byte	.LFE43-.LFB43
+ 1869 0048 00000000 		.4byte	.LFB44
+ 1870 004c 38000000 		.4byte	.LFE44-.LFB44
+ 1871 0050 00000000 		.4byte	0
+ 1872 0054 00000000 		.4byte	0
+ 1873              		.section	.debug_ranges,"",%progbits
+ 1874              	.Ldebug_ranges0:
+ 1875 0000 00000000 		.4byte	.LFB37
+ 1876 0004 48000000 		.4byte	.LFE37
+ 1877 0008 00000000 		.4byte	.LFB38
+ 1878 000c 20010000 		.4byte	.LFE38
+ 1879 0010 00000000 		.4byte	.LFB39
+ 1880 0014 9C020000 		.4byte	.LFE39
+ 1881 0018 00000000 		.4byte	.LFB40
+ 1882 001c 4A000000 		.4byte	.LFE40
+ 1883 0020 00000000 		.4byte	.LFB41
+ 1884 0024 4E000000 		.4byte	.LFE41
+ 1885 0028 00000000 		.4byte	.LFB42
+ 1886 002c 2C000000 		.4byte	.LFE42
+ 1887 0030 00000000 		.4byte	.LFB43
+ 1888 0034 38000000 		.4byte	.LFE43
+ 1889 0038 00000000 		.4byte	.LFB44
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 43
+
+
+ 1890 003c 38000000 		.4byte	.LFE44
+ 1891 0040 00000000 		.4byte	0
+ 1892 0044 00000000 		.4byte	0
+ 1893              		.section	.debug_line,"",%progbits
+ 1894              	.Ldebug_line0:
+ 1895 0000 AA010000 		.section	.debug_str,"MS",%progbits,1
+ 1895      02005E00 
+ 1895      00000201 
+ 1895      FB0E0D00 
+ 1895      01010101 
+ 1896              	.LASF27:
+ 1897 0000 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_ENTRY_REQUEST\000"
+ 1897      455F4556 
+ 1897      545F4741 
+ 1897      505F5041 
+ 1897      53534B45 
+ 1898              	.LASF112:
+ 1899 0024 496E7075 		.ascii	"InputCounter_ASCII\000"
+ 1899      74436F75 
+ 1899      6E746572 
+ 1899      5F415343 
+ 1899      494900
+ 1900              	.LASF58:
+ 1901 0037 4359424C 		.ascii	"CYBLE_EVT_GATTC_WRITE_RSP\000"
+ 1901      455F4556 
+ 1901      545F4741 
+ 1901      5454435F 
+ 1901      57524954 
+ 1902              	.LASF91:
+ 1903 0051 536F7572 		.ascii	"SourceValue\000"
+ 1903      63655661 
+ 1903      6C756500 
+ 1904              	.LASF45:
+ 1905 005d 4359424C 		.ascii	"CYBLE_EVT_GATTC_ERROR_RSP\000"
+ 1905      455F4556 
+ 1905      545F4741 
+ 1905      5454435F 
+ 1905      4552524F 
+ 1906              	.LASF13:
+ 1907 0077 666C6F61 		.ascii	"float32\000"
+ 1907      74333200 
+ 1908              	.LASF89:
+ 1909 007f 436F6E76 		.ascii	"Convert_HextoDec\000"
+ 1909      6572745F 
+ 1909      48657874 
+ 1909      6F446563 
+ 1909      00
+ 1910              	.LASF88:
+ 1911 0090 6C6F6F70 		.ascii	"loopNo\000"
+ 1911      4E6F00
+ 1912              	.LASF96:
+ 1913 0097 46697273 		.ascii	"FirstTime\000"
+ 1913      7454696D 
+ 1913      6500
+ 1914              	.LASF39:
+ 1915 00a1 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYPRESS_NOTIFICATION\000"
+ 1915      455F4556 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 44
+
+
+ 1915      545F4741 
+ 1915      505F4B45 
+ 1915      59505245 
+ 1916              	.LASF2:
+ 1917 00c5 73686F72 		.ascii	"short int\000"
+ 1917      7420696E 
+ 1917      7400
+ 1918              	.LASF30:
+ 1919 00cf 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_FAILED\000"
+ 1919      455F4556 
+ 1919      545F4741 
+ 1919      505F4155 
+ 1919      54485F46 
+ 1920              	.LASF103:
+ 1921 00e9 5265665F 		.ascii	"Ref_Clock_Counter2_Count\000"
+ 1921      436C6F63 
+ 1921      6B5F436F 
+ 1921      756E7465 
+ 1921      72325F43 
+ 1922              	.LASF24:
+ 1923 0102 4359424C 		.ascii	"CYBLE_EVT_MEMORY_REQUEST\000"
+ 1923      455F4556 
+ 1923      545F4D45 
+ 1923      4D4F5259 
+ 1923      5F524551 
+ 1924              	.LASF17:
+ 1925 011b 73697A65 		.ascii	"sizetype\000"
+ 1925      74797065 
+ 1925      00
+ 1926              	.LASF41:
+ 1927 0124 4359424C 		.ascii	"CYBLE_EVT_GAP_DATA_LENGTH_CHANGE\000"
+ 1927      455F4556 
+ 1927      545F4741 
+ 1927      505F4441 
+ 1927      54415F4C 
+ 1928              	.LASF22:
+ 1929 0145 4359424C 		.ascii	"CYBLE_EVT_HCI_STATUS\000"
+ 1929      455F4556 
+ 1929      545F4843 
+ 1929      495F5354 
+ 1929      41545553 
+ 1930              	.LASF101:
+ 1931 015a 496E7075 		.ascii	"Input_Signal_Counter2_Count\000"
+ 1931      745F5369 
+ 1931      676E616C 
+ 1931      5F436F75 
+ 1931      6E746572 
+ 1932              	.LASF97:
+ 1933 0176 496E6974 		.ascii	"Initialize_Freq_Meas_System\000"
+ 1933      69616C69 
+ 1933      7A655F46 
+ 1933      7265715F 
+ 1933      4D656173 
+ 1934              	.LASF6:
+ 1935 0192 6C6F6E67 		.ascii	"long long int\000"
+ 1935      206C6F6E 
+ 1935      6720696E 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 45
+
+
+ 1935      7400
+ 1936              	.LASF106:
+ 1937 01a0 46726571 		.ascii	"Freq_Integer\000"
+ 1937      5F496E74 
+ 1937      65676572 
+ 1937      00
+ 1938              	.LASF84:
+ 1939 01ad 436F756E 		.ascii	"CountRatio\000"
+ 1939      74526174 
+ 1939      696F00
+ 1940              	.LASF110:
+ 1941 01b8 5265665F 		.ascii	"Ref_Clk_Ctr_Capture\000"
+ 1941      436C6B5F 
+ 1941      4374725F 
+ 1941      43617074 
+ 1941      75726500 
+ 1942              	.LASF51:
+ 1943 01cc 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_TYPE_RSP\000"
+ 1943      455F4556 
+ 1943      545F4741 
+ 1943      5454435F 
+ 1943      52454144 
+ 1944              	.LASF81:
+ 1945 01ed 4359424C 		.ascii	"CYBLE_EVT_PENDING_FLASH_WRITE\000"
+ 1945      455F4556 
+ 1945      545F5045 
+ 1945      4E44494E 
+ 1945      475F464C 
+ 1946              	.LASF19:
+ 1947 020b 4359424C 		.ascii	"CYBLE_EVT_STACK_ON\000"
+ 1947      455F4556 
+ 1947      545F5354 
+ 1947      41434B5F 
+ 1947      4F4E00
+ 1948              	.LASF48:
+ 1949 021e 4359424C 		.ascii	"CYBLE_EVT_GATTS_XCNHG_MTU_REQ\000"
+ 1949      455F4556 
+ 1949      545F4741 
+ 1949      5454535F 
+ 1949      58434E48 
+ 1950              	.LASF10:
+ 1951 023c 75696E74 		.ascii	"uint16\000"
+ 1951      313600
+ 1952              	.LASF94:
+ 1953 0243 6E6F4F66 		.ascii	"noOfBytes\000"
+ 1953      42797465 
+ 1953      7300
+ 1954              	.LASF90:
+ 1955 024d 466F726D 		.ascii	"FormatType\000"
+ 1955      61745479 
+ 1955      706500
+ 1956              	.LASF37:
+ 1957 0258 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYINFO_EXCHNGE_CMPLT\000"
+ 1957      455F4556 
+ 1957      545F4741 
+ 1957      505F4B45 
+ 1957      59494E46 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 46
+
+
+ 1958              	.LASF56:
+ 1959 027c 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_MULTI_RSP\000"
+ 1959      455F4556 
+ 1959      545F4741 
+ 1959      5454435F 
+ 1959      52454144 
+ 1960              	.LASF65:
+ 1961 029b 4359424C 		.ascii	"CYBLE_EVT_GATTS_HANDLE_VALUE_CNF\000"
+ 1961      455F4556 
+ 1961      545F4741 
+ 1961      5454535F 
+ 1961      48414E44 
+ 1962              	.LASF18:
+ 1963 02bc 4359424C 		.ascii	"CYBLE_EVT_HOST_INVALID\000"
+ 1963      455F4556 
+ 1963      545F484F 
+ 1963      53545F49 
+ 1963      4E56414C 
+ 1964              	.LASF73:
+ 1965 02d3 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_IND\000"
+ 1965      455F4556 
+ 1965      545F4C32 
+ 1965      4341505F 
+ 1965      43424643 
+ 1966              	.LASF76:
+ 1967 02f1 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_CNF\000"
+ 1967      455F4556 
+ 1967      545F4C32 
+ 1967      4341505F 
+ 1967      43424643 
+ 1968              	.LASF95:
+ 1969 0312 50574D5F 		.ascii	"PWM_2s_InterruptHandler\000"
+ 1969      32735F49 
+ 1969      6E746572 
+ 1969      72757074 
+ 1969      48616E64 
+ 1970              	.LASF105:
+ 1971 032a 5265665F 		.ascii	"Ref_Clock_Count\000"
+ 1971      436C6F63 
+ 1971      6B5F436F 
+ 1971      756E7400 
+ 1972              	.LASF14:
+ 1973 033a 666C6F61 		.ascii	"float\000"
+ 1973      7400
+ 1974              	.LASF54:
+ 1975 0340 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_RSP\000"
+ 1975      455F4556 
+ 1975      545F4741 
+ 1975      5454435F 
+ 1975      52454144 
+ 1976              	.LASF38:
+ 1977 0359 4359424C 		.ascii	"CYBLE_EVT_GAP_NUMERIC_COMPARISON_REQUEST\000"
+ 1977      455F4556 
+ 1977      545F4741 
+ 1977      505F4E55 
+ 1977      4D455249 
+ 1978              	.LASF43:
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 47
+
+
+ 1979 0382 4359424C 		.ascii	"CYBLE_EVT_GAPC_DIRECT_ADV_REPORT\000"
+ 1979      455F4556 
+ 1979      545F4741 
+ 1979      50435F44 
+ 1979      49524543 
+ 1980              	.LASF7:
+ 1981 03a3 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1981      206C6F6E 
+ 1981      6720756E 
+ 1981      7369676E 
+ 1981      65642069 
+ 1982              	.LASF113:
+ 1983 03ba 52656643 		.ascii	"RefCounter_ASCII\000"
+ 1983      6F756E74 
+ 1983      65725F41 
+ 1983      53434949 
+ 1983      00
+ 1984              	.LASF4:
+ 1985 03cb 6C6F6E67 		.ascii	"long int\000"
+ 1985      20696E74 
+ 1985      00
+ 1986              	.LASF64:
+ 1987 03d4 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_IND\000"
+ 1987      455F4556 
+ 1987      545F4741 
+ 1987      5454435F 
+ 1987      48414E44 
+ 1988              	.LASF32:
+ 1989 03f5 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_CONNECTED\000"
+ 1989      455F4556 
+ 1989      545F4741 
+ 1989      505F4445 
+ 1989      56494345 
+ 1990              	.LASF31:
+ 1991 0414 4359424C 		.ascii	"CYBLE_EVT_GAPP_ADVERTISEMENT_START_STOP\000"
+ 1991      455F4556 
+ 1991      545F4741 
+ 1991      50505F41 
+ 1991      44564552 
+ 1992              	.LASF63:
+ 1993 043c 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_NTF\000"
+ 1993      455F4556 
+ 1993      545F4741 
+ 1993      5454435F 
+ 1993      48414E44 
+ 1994              	.LASF23:
+ 1995 045d 4359424C 		.ascii	"CYBLE_EVT_STACK_BUSY_STATUS\000"
+ 1995      455F4556 
+ 1995      545F5354 
+ 1995      41434B5F 
+ 1995      42555359 
+ 1996              	.LASF104:
+ 1997 0479 496E7075 		.ascii	"Input_Signal_Count\000"
+ 1997      745F5369 
+ 1997      676E616C 
+ 1997      5F436F75 
+ 1997      6E7400
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 48
+
+
+ 1998              	.LASF28:
+ 1999 048c 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_DISPLAY_REQUEST\000"
+ 1999      455F4556 
+ 1999      545F4741 
+ 1999      505F5041 
+ 1999      53534B45 
+ 2000              	.LASF102:
+ 2001 04b2 5265665F 		.ascii	"Ref_Clock_Counter1_Count\000"
+ 2001      436C6F63 
+ 2001      6B5F436F 
+ 2001      756E7465 
+ 2001      72315F43 
+ 2002              	.LASF74:
+ 2003 04cb 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_CNF\000"
+ 2003      455F4556 
+ 2003      545F4C32 
+ 2003      4341505F 
+ 2003      43424643 
+ 2004              	.LASF42:
+ 2005 04e9 4359424C 		.ascii	"CYBLE_EVT_GAP_ENHANCE_CONN_COMPLETE\000"
+ 2005      455F4556 
+ 2005      545F4741 
+ 2005      505F454E 
+ 2005      48414E43 
+ 2006              	.LASF9:
+ 2007 050d 75696E74 		.ascii	"uint8\000"
+ 2007      3800
+ 2008              	.LASF70:
+ 2009 0513 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_REQ\000"
+ 2009      455F4556 
+ 2009      545F4C32 
+ 2009      4341505F 
+ 2009      434F4E4E 
+ 2010              	.LASF1:
+ 2011 0539 756E7369 		.ascii	"unsigned char\000"
+ 2011      676E6564 
+ 2011      20636861 
+ 2011      7200
+ 2012              	.LASF60:
+ 2013 0547 4359424C 		.ascii	"CYBLE_EVT_GATTS_PREP_WRITE_REQ\000"
+ 2013      455F4556 
+ 2013      545F4741 
+ 2013      5454535F 
+ 2013      50524550 
+ 2014              	.LASF82:
+ 2015 0566 4359424C 		.ascii	"CYBLE_EVT_LE_PING_AUTH_TIMEOUT\000"
+ 2015      455F4556 
+ 2015      545F4C45 
+ 2015      5F50494E 
+ 2015      475F4155 
+ 2016              	.LASF52:
+ 2017 0585 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_INFO_RSP\000"
+ 2017      455F4556 
+ 2017      545F4741 
+ 2017      5454435F 
+ 2017      46494E44 
+ 2018              	.LASF0:
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 49
+
+
+ 2019 05a3 7369676E 		.ascii	"signed char\000"
+ 2019      65642063 
+ 2019      68617200 
+ 2020              	.LASF57:
+ 2021 05af 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_REQ\000"
+ 2021      455F4556 
+ 2021      545F4741 
+ 2021      5454535F 
+ 2021      57524954 
+ 2022              	.LASF53:
+ 2023 05c9 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_BY_TYPE_VALUE_RSP\000"
+ 2023      455F4556 
+ 2023      545F4741 
+ 2023      5454435F 
+ 2023      46494E44 
+ 2024              	.LASF29:
+ 2025 05f0 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_COMPLETE\000"
+ 2025      455F4556 
+ 2025      545F4741 
+ 2025      505F4155 
+ 2025      54485F43 
+ 2026              	.LASF8:
+ 2027 060c 756E7369 		.ascii	"unsigned int\000"
+ 2027      676E6564 
+ 2027      20696E74 
+ 2027      00
+ 2028              	.LASF46:
+ 2029 0619 4359424C 		.ascii	"CYBLE_EVT_GATT_CONNECT_IND\000"
+ 2029      455F4556 
+ 2029      545F4741 
+ 2029      54545F43 
+ 2029      4F4E4E45 
+ 2030              	.LASF5:
+ 2031 0634 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2031      20756E73 
+ 2031      69676E65 
+ 2031      6420696E 
+ 2031      7400
+ 2032              	.LASF26:
+ 2033 0646 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_REQ\000"
+ 2033      455F4556 
+ 2033      545F4741 
+ 2033      505F4155 
+ 2033      54485F52 
+ 2034              	.LASF75:
+ 2035 065d 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_IND\000"
+ 2035      455F4556 
+ 2035      545F4C32 
+ 2035      4341505F 
+ 2035      43424643 
+ 2036              	.LASF92:
+ 2037 067e 44657374 		.ascii	"DestinationAddress\000"
+ 2037      696E6174 
+ 2037      696F6E41 
+ 2037      64647265 
+ 2037      737300
+ 2038              	.LASF116:
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 50
+
+
+ 2039 0691 433A5C55 		.ascii	"C:\\Users\\owono\\Documents\\PSoC Creator\\Frequenc"
+ 2039      73657273 
+ 2039      5C6F776F 
+ 2039      6E6F5C44 
+ 2039      6F63756D 
+ 2040 06bf 795F4D65 		.ascii	"y_Measurement_Using_PSoC4_BLE\\Frequency_Measuremen"
+ 2040      61737572 
+ 2040      656D656E 
+ 2040      745F5573 
+ 2040      696E675F 
+ 2041 06f1 745F5573 		.ascii	"t_Using_PSoC4_BLE\\Frequency_Measurement_Using_PSoC"
+ 2041      696E675F 
+ 2041      50536F43 
+ 2041      345F424C 
+ 2041      455C4672 
+ 2042 0723 345F424C 		.ascii	"4_BLE.cydsn\000"
+ 2042      452E6379 
+ 2042      64736E00 
+ 2043              	.LASF100:
+ 2044 072f 496E7075 		.ascii	"Input_Signal_Counter1_Count\000"
+ 2044      745F5369 
+ 2044      676E616C 
+ 2044      5F436F75 
+ 2044      6E746572 
+ 2045              	.LASF69:
+ 2046 074b 4359424C 		.ascii	"CYBLE_EVT_GATTC_LONG_PROCEDURE_END\000"
+ 2046      455F4556 
+ 2046      545F4741 
+ 2046      5454435F 
+ 2046      4C4F4E47 
+ 2047              	.LASF3:
+ 2048 076e 73686F72 		.ascii	"short unsigned int\000"
+ 2048      7420756E 
+ 2048      7369676E 
+ 2048      65642069 
+ 2048      6E7400
+ 2049              	.LASF35:
+ 2050 0781 4359424C 		.ascii	"CYBLE_EVT_GAP_CONNECTION_UPDATE_COMPLETE\000"
+ 2050      455F4556 
+ 2050      545F4741 
+ 2050      505F434F 
+ 2050      4E4E4543 
+ 2051              	.LASF44:
+ 2052 07aa 4359424C 		.ascii	"CYBLE_EVT_GAP_SMP_NEGOTIATED_AUTH_INFO\000"
+ 2052      455F4556 
+ 2052      545F4741 
+ 2052      505F534D 
+ 2052      505F4E45 
+ 2053              	.LASF98:
+ 2054 07d1 496E7075 		.ascii	"Input_Sig_Ctr_InterruptHandler\000"
+ 2054      745F5369 
+ 2054      675F4374 
+ 2054      725F496E 
+ 2054      74657272 
+ 2055              	.LASF85:
+ 2056 07f0 46726571 		.ascii	"Frequency_Temp\000"
+ 2056      75656E63 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 51
+
+
+ 2056      795F5465 
+ 2056      6D7000
+ 2057              	.LASF16:
+ 2058 07ff 63686172 		.ascii	"char\000"
+ 2058      00
+ 2059              	.LASF114:
+ 2060 0804 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 2060      4320342E 
+ 2060      392E3320 
+ 2060      32303135 
+ 2060      30333033 
+ 2061 0837 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m0 -mthumb -g -O"
+ 2061      20726576 
+ 2061      6973696F 
+ 2061      6E203232 
+ 2061      31323230 
+ 2062 086a 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 2062      66756E63 
+ 2062      74696F6E 
+ 2062      2D736563 
+ 2062      74696F6E 
+ 2063              	.LASF72:
+ 2064 0892 4359424C 		.ascii	"CYBLE_EVT_L2CAP_COMMAND_REJ\000"
+ 2064      455F4556 
+ 2064      545F4C32 
+ 2064      4341505F 
+ 2064      434F4D4D 
+ 2065              	.LASF109:
+ 2066 08ae 496E7075 		.ascii	"Input_Sig_Ctr_Capture\000"
+ 2066      745F5369 
+ 2066      675F4374 
+ 2066      725F4361 
+ 2066      70747572 
+ 2067              	.LASF34:
+ 2068 08c4 4359424C 		.ascii	"CYBLE_EVT_GAP_ENCRYPT_CHANGE\000"
+ 2068      455F4556 
+ 2068      545F4741 
+ 2068      505F454E 
+ 2068      43525950 
+ 2069              	.LASF55:
+ 2070 08e1 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BLOB_RSP\000"
+ 2070      455F4556 
+ 2070      545F4741 
+ 2070      5454435F 
+ 2070      52454144 
+ 2071              	.LASF62:
+ 2072 08ff 4359424C 		.ascii	"CYBLE_EVT_GATTC_EXEC_WRITE_RSP\000"
+ 2072      455F4556 
+ 2072      545F4741 
+ 2072      5454435F 
+ 2072      45584543 
+ 2073              	.LASF11:
+ 2074 091e 75696E74 		.ascii	"uint32\000"
+ 2074      333200
+ 2075              	.LASF86:
+ 2076 0925 436F6D70 		.ascii	"Compute_Frequency\000"
+ 2076      7574655F 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 52
+
+
+ 2076      46726571 
+ 2076      75656E63 
+ 2076      7900
+ 2077              	.LASF99:
+ 2078 0937 5265665F 		.ascii	"Ref_Clk_Ctr_InterruptHandler\000"
+ 2078      436C6B5F 
+ 2078      4374725F 
+ 2078      496E7465 
+ 2078      72727570 
+ 2079              	.LASF78:
+ 2080 0954 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_RX_CREDIT_IND\000"
+ 2080      455F4556 
+ 2080      545F4C32 
+ 2080      4341505F 
+ 2080      43424643 
+ 2081              	.LASF12:
+ 2082 0977 696E7433 		.ascii	"int32\000"
+ 2082      3200
+ 2083              	.LASF15:
+ 2084 097d 646F7562 		.ascii	"double\000"
+ 2084      6C6500
+ 2085              	.LASF115:
+ 2086 0984 2E5C4672 		.ascii	".\\FrequencyCounter.c\000"
+ 2086      65717565 
+ 2086      6E637943 
+ 2086      6F756E74 
+ 2086      65722E63 
+ 2087              	.LASF79:
+ 2088 0999 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_TX_CREDIT_IND\000"
+ 2088      455F4556 
+ 2088      545F4C32 
+ 2088      4341505F 
+ 2088      43424643 
+ 2089              	.LASF107:
+ 2090 09bc 46726571 		.ascii	"Freq_Decimal\000"
+ 2090      5F446563 
+ 2090      696D616C 
+ 2090      00
+ 2091              	.LASF111:
+ 2092 09c9 496E7075 		.ascii	"Input_Frequency\000"
+ 2092      745F4672 
+ 2092      65717565 
+ 2092      6E637900 
+ 2093              	.LASF21:
+ 2094 09d9 4359424C 		.ascii	"CYBLE_EVT_HARDWARE_ERROR\000"
+ 2094      455F4556 
+ 2094      545F4841 
+ 2094      52445741 
+ 2094      52455F45 
+ 2095              	.LASF77:
+ 2096 09f2 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_READ\000"
+ 2096      455F4556 
+ 2096      545F4C32 
+ 2096      4341505F 
+ 2096      43424643 
+ 2097              	.LASF71:
+ 2098 0a11 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_RSP\000"
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 53
+
+
+ 2098      455F4556 
+ 2098      545F4C32 
+ 2098      4341505F 
+ 2098      434F4E4E 
+ 2099              	.LASF25:
+ 2100 0a37 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_PROGRESS_RESULT\000"
+ 2100      455F4556 
+ 2100      545F4741 
+ 2100      50435F53 
+ 2100      43414E5F 
+ 2101              	.LASF50:
+ 2102 0a5b 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_GROUP_TYPE_RSP\000"
+ 2102      455F4556 
+ 2102      545F4741 
+ 2102      5454435F 
+ 2102      52454144 
+ 2103              	.LASF59:
+ 2104 0a82 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_CMD_REQ\000"
+ 2104      455F4556 
+ 2104      545F4741 
+ 2104      5454535F 
+ 2104      57524954 
+ 2105              	.LASF49:
+ 2106 0aa0 4359424C 		.ascii	"CYBLE_EVT_GATTC_XCHNG_MTU_RSP\000"
+ 2106      455F4556 
+ 2106      545F4741 
+ 2106      5454435F 
+ 2106      5843484E 
+ 2107              	.LASF20:
+ 2108 0abe 4359424C 		.ascii	"CYBLE_EVT_TIMEOUT\000"
+ 2108      455F4556 
+ 2108      545F5449 
+ 2108      4D454F55 
+ 2108      5400
+ 2109              	.LASF80:
+ 2110 0ad0 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_WRITE_IND\000"
+ 2110      455F4556 
+ 2110      545F4C32 
+ 2110      4341505F 
+ 2110      43424643 
+ 2111              	.LASF36:
+ 2112 0af4 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_START_STOP\000"
+ 2112      455F4556 
+ 2112      545F4741 
+ 2112      50435F53 
+ 2112      43414E5F 
+ 2113              	.LASF83:
+ 2114 0b13 4359424C 		.ascii	"CYBLE_EVT_MAX\000"
+ 2114      455F4556 
+ 2114      545F4D41 
+ 2114      5800
+ 2115              	.LASF68:
+ 2116 0b21 4359424C 		.ascii	"CYBLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ\000"
+ 2116      455F4556 
+ 2116      545F4741 
+ 2116      5454535F 
+ 2116      52454144 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccQUw5d5.s 			page 54
+
+
+ 2117              	.LASF67:
+ 2118 0b4a 4359424C 		.ascii	"CYBLE_EVT_GATTC_STOP_CMD_COMPLETE\000"
+ 2118      455F4556 
+ 2118      545F4741 
+ 2118      5454435F 
+ 2118      53544F50 
+ 2119              	.LASF93:
+ 2120 0b6c 52657365 		.ascii	"Reset_Array\000"
+ 2120      745F4172 
+ 2120      72617900 
+ 2121              	.LASF61:
+ 2122 0b78 4359424C 		.ascii	"CYBLE_EVT_GATTS_EXEC_WRITE_REQ\000"
+ 2122      455F4556 
+ 2122      545F4741 
+ 2122      5454535F 
+ 2122      45584543 
+ 2123              	.LASF87:
+ 2124 0b97 466F726D 		.ascii	"FormatFrequencyData\000"
+ 2124      61744672 
+ 2124      65717565 
+ 2124      6E637944 
+ 2124      61746100 
+ 2125              	.LASF33:
+ 2126 0bab 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_DISCONNECTED\000"
+ 2126      455F4556 
+ 2126      545F4741 
+ 2126      505F4445 
+ 2126      56494345 
+ 2127              	.LASF108:
+ 2128 0bcd 43616C63 		.ascii	"Calculate_Frequency\000"
+ 2128      756C6174 
+ 2128      655F4672 
+ 2128      65717565 
+ 2128      6E637900 
+ 2129              	.LASF66:
+ 2130 0be1 4359424C 		.ascii	"CYBLE_EVT_GATTS_DATA_SIGNED_CMD_REQ\000"
+ 2130      455F4556 
+ 2130      545F4741 
+ 2130      5454535F 
+ 2130      44415441 
+ 2131              	.LASF47:
+ 2132 0c05 4359424C 		.ascii	"CYBLE_EVT_GATT_DISCONNECT_IND\000"
+ 2132      455F4556 
+ 2132      545F4741 
+ 2132      54545F44 
+ 2132      4953434F 
+ 2133              	.LASF40:
+ 2134 0c23 4359424C 		.ascii	"CYBLE_EVT_GAP_OOB_GENERATED_NOTIFICATION\000"
+ 2134      455F4556 
+ 2134      545F4741 
+ 2134      505F4F4F 
+ 2134      425F4745 
+ 2135              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

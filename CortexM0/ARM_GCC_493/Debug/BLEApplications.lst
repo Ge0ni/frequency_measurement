@@ -1,0 +1,3106 @@
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 1
+
+
+   1              		.cpu cortex-m0
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"BLEApplications.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.global	deviceConnected
+  18              		.bss
+  19              		.type	deviceConnected, %object
+  20              		.size	deviceConnected, 1
+  21              	deviceConnected:
+  22 0000 00       		.space	1
+  23              		.global	startNotification
+  24              		.type	startNotification, %object
+  25              		.size	startNotification, 1
+  26              	startNotification:
+  27 0001 00       		.space	1
+  28              		.comm	connectionHandle,2,4
+  29              		.global	restartAdvertisement
+  30              		.type	restartAdvertisement, %object
+  31              		.size	restartAdvertisement, 1
+  32              	restartAdvertisement:
+  33 0002 00       		.space	1
+  34              		.global	updateNotificationCCCAttribute
+  35              		.type	updateNotificationCCCAttribute, %object
+  36              		.size	updateNotificationCCCAttribute, 1
+  37              	updateNotificationCCCAttribute:
+  38 0003 00       		.space	1
+  39              		.data
+  40              		.type	isConnectionUpdateRequested, %object
+  41              		.size	isConnectionUpdateRequested, 1
+  42              	isConnectionUpdateRequested:
+  43 0000 01       		.byte	1
+  44 0001 000000   		.align	2
+  45              		.type	ConnectionParam, %object
+  46              		.size	ConnectionParam, 8
+  47              	ConnectionParam:
+  48 0004 4006     		.short	1600
+  49 0006 4006     		.short	1600
+  50 0008 0000     		.short	0
+  51 000a 5802     		.short	600
+  52              		.global	busyStatus
+  53              		.bss
+  54              		.type	busyStatus, %object
+  55              		.size	busyStatus, 1
+  56              	busyStatus:
+  57 0004 00       		.space	1
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 2
+
+
+  58              		.section	.text.InitializeBLESystem,"ax",%progbits
+  59              		.align	2
+  60              		.global	InitializeBLESystem
+  61              		.code	16
+  62              		.thumb_func
+  63              		.type	InitializeBLESystem, %function
+  64              	InitializeBLESystem:
+  65              	.LFB37:
+  66              		.file 1 ".\\BLEApplications.c"
+   1:.\BLEApplications.c **** /***************************************************************************//**
+   2:.\BLEApplications.c **** * @file    BLEApplications.c
+   3:.\BLEApplications.c **** * @version 1.0
+   4:.\BLEApplications.c **** * @author  Chethan (dche@cypress.com)
+   5:.\BLEApplications.c **** *
+   6:.\BLEApplications.c **** * @par Description
+   7:.\BLEApplications.c **** *     This file contains the source code for the APIs used for BLE communication.
+   8:.\BLEApplications.c **** *
+   9:.\BLEApplications.c **** * @par Notes
+  10:.\BLEApplications.c **** *	None
+  11:.\BLEApplications.c **** *
+  12:.\BLEApplications.c **** * @par Hardware Dependency
+  13:.\BLEApplications.c **** *    1. CY8CKIT-042 BLE Pioneer Kit
+  14:.\BLEApplications.c **** *
+  15:.\BLEApplications.c **** * @par References
+  16:.\BLEApplications.c **** *    1. 001-32359: AN2283 "PSoC1: Frequency Measurement"
+  17:.\BLEApplications.c **** *
+  18:.\BLEApplications.c **** * @par Code Tested With
+  19:.\BLEApplications.c **** *    1. PSoC Creator  3.1 SP2 (3.1.0.2177)
+  20:.\BLEApplications.c **** *    2. GCC 4.8.4
+  21:.\BLEApplications.c **** *
+  22:.\BLEApplications.c **** **//****************************************************************************
+  23:.\BLEApplications.c **** * Copyright (2015), Cypress Semiconductor Corporation.
+  24:.\BLEApplications.c **** ********************************************************************************
+  25:.\BLEApplications.c **** * All rights reserved. 
+  26:.\BLEApplications.c **** * This software, including source code, documentation and related 
+  27:.\BLEApplications.c **** * materials (“Software”), is owned by Cypress Semiconductor 
+  28:.\BLEApplications.c **** * Corporation (“Cypress”) and is protected by and subject to worldwide 
+  29:.\BLEApplications.c **** * patent protection (United States and foreign), United States copyright 
+  30:.\BLEApplications.c **** * laws and international treaty provisions. Therefore, you may use this 
+  31:.\BLEApplications.c **** * Software only as provided in the license agreement accompanying the 
+  32:.\BLEApplications.c **** * software package from which you obtained this Software (“EULA”). 
+  33:.\BLEApplications.c **** *
+  34:.\BLEApplications.c **** * If no EULA applies, Cypress hereby grants you a personal, non-exclusive, 
+  35:.\BLEApplications.c **** * non-transferable license to copy, modify and compile the Software source code
+  36:.\BLEApplications.c **** * solely for your use in connection with Cypress's integrated circuit products.
+  37:.\BLEApplications.c **** * Any reproduction, modification, translation, compilation, or representation
+  38:.\BLEApplications.c **** * of this Software except as specified above is prohibited without the express
+  39:.\BLEApplications.c **** * written permission of Cypress.
+  40:.\BLEApplications.c **** 
+  41:.\BLEApplications.c **** * Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
+  42:.\BLEApplications.c **** * EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
+  43:.\BLEApplications.c **** * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  44:.\BLEApplications.c **** * Cypress reserves the right to make changes to the Software without notice. 
+  45:.\BLEApplications.c **** * Cypress does not assume any liability arising out of the application or use 
+  46:.\BLEApplications.c **** * of the Software or any product or circuit described in the Software. Cypress
+  47:.\BLEApplications.c **** * does not authorize its products for use in any products where a malfunction
+  48:.\BLEApplications.c **** * or failure of the Cypress product may reasonably be expected to result in 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 3
+
+
+  49:.\BLEApplications.c **** * significant property damage, injury or death (“High Risk Product”). By 
+  50:.\BLEApplications.c **** * including Cypress’s product in a High Risk Product, the manufacturer of such  
+  51:.\BLEApplications.c **** * system or application assumes all risk of such use and in doing so agrees to  
+  52:.\BLEApplications.c **** * indemnify Cypress against all liability. 
+  53:.\BLEApplications.c **** *******************************************************************************/
+  54:.\BLEApplications.c **** 
+  55:.\BLEApplications.c **** /******************************************************************************
+  56:.\BLEApplications.c **** * Contains BLE application functions definitions such as EventHandler and Macro
+  57:.\BLEApplications.c **** * definitions
+  58:.\BLEApplications.c **** ******************************************************************************/
+  59:.\BLEApplications.c **** #include "main.h"
+  60:.\BLEApplications.c **** 
+  61:.\BLEApplications.c **** /**************************Variable Declarations*****************************/
+  62:.\BLEApplications.c **** /*'deviceConnected' flag is used by application to know whether a Central device  
+  63:.\BLEApplications.c **** * has been connected. This is updated in BLE event callback */
+  64:.\BLEApplications.c **** uint8 deviceConnected = FALSE;	
+  65:.\BLEApplications.c **** 
+  66:.\BLEApplications.c **** /*'startNotification' flag is set when the central device writes to CCC (Client 
+  67:.\BLEApplications.c **** * Characteristic Configuration) of the Custom characteristic to 
+  68:.\BLEApplications.c **** * enable notifications */
+  69:.\BLEApplications.c **** uint8 startNotification = FALSE;		
+  70:.\BLEApplications.c **** 
+  71:.\BLEApplications.c **** /* 'connectionHandle' is handle to store BLE connection parameters */
+  72:.\BLEApplications.c **** CYBLE_CONN_HANDLE_T  connectionHandle;	
+  73:.\BLEApplications.c **** 
+  74:.\BLEApplications.c **** /* 'restartAdvertisement' flag provided the present state of power mode in firmware */
+  75:.\BLEApplications.c **** uint8 restartAdvertisement = FALSE;
+  76:.\BLEApplications.c **** 
+  77:.\BLEApplications.c **** /* This flag is used to let application update the CCCD value for correct read 
+  78:.\BLEApplications.c **** * operation by connected Central device */
+  79:.\BLEApplications.c **** uint8 updateNotificationCCCAttribute = FALSE;
+  80:.\BLEApplications.c **** 
+  81:.\BLEApplications.c **** /* This flag is used to let application send a L2CAP connection update request
+  82:.\BLEApplications.c **** * to Central device */
+  83:.\BLEApplications.c **** static uint8 isConnectionUpdateRequested = TRUE;
+  84:.\BLEApplications.c **** 
+  85:.\BLEApplications.c **** /* Connection Parameter update values. This values are used by the BLE component
+  86:.\BLEApplications.c **** * to update the connector parameter, including connection interval, to desired 
+  87:.\BLEApplications.c **** * value */
+  88:.\BLEApplications.c **** static CYBLE_GAP_CONN_UPDATE_PARAM_T ConnectionParam =
+  89:.\BLEApplications.c **** {
+  90:.\BLEApplications.c ****     CONN_PARAM_UPDATE_MIN_CONN_INTERVAL,  		      
+  91:.\BLEApplications.c ****     CONN_PARAM_UPDATE_MAX_CONN_INTERVAL,		       
+  92:.\BLEApplications.c ****     CONN_PARAM_UPDATE_SLAVE_LATENCY,			    
+  93:.\BLEApplications.c ****     CONN_PARAM_UPDATE_SUPRV_TIMEOUT 			         	
+  94:.\BLEApplications.c **** };
+  95:.\BLEApplications.c **** 
+  96:.\BLEApplications.c **** /* Status flag for the Stack Busy state. This flag is used to notify the application 
+  97:.\BLEApplications.c **** * whether there is stack buffer free to push more data or not */
+  98:.\BLEApplications.c **** uint8 busyStatus = 0;
+  99:.\BLEApplications.c **** /****************************************************************************/
+ 100:.\BLEApplications.c **** 
+ 101:.\BLEApplications.c **** /*******************************************************************************
+ 102:.\BLEApplications.c **** * Function Name: InitializeBLESystem
+ 103:.\BLEApplications.c **** ********************************************************************************
+ 104:.\BLEApplications.c **** * Summary:
+ 105:.\BLEApplications.c **** *  Starts the BLE component and wakeup_button_ISR
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 4
+
+
+ 106:.\BLEApplications.c **** *
+ 107:.\BLEApplications.c **** * Parameters:
+ 108:.\BLEApplications.c **** *  void
+ 109:.\BLEApplications.c **** *
+ 110:.\BLEApplications.c **** * Return:
+ 111:.\BLEApplications.c **** *  void
+ 112:.\BLEApplications.c **** *
+ 113:.\BLEApplications.c **** *******************************************************************************/
+ 114:.\BLEApplications.c **** void InitializeBLESystem(void)
+ 115:.\BLEApplications.c **** {
+  67              		.loc 1 115 0
+  68              		.cfi_startproc
+  69 0000 80B5     		push	{r7, lr}
+  70              		.cfi_def_cfa_offset 8
+  71              		.cfi_offset 7, -8
+  72              		.cfi_offset 14, -4
+  73 0002 00AF     		add	r7, sp, #0
+  74              		.cfi_def_cfa_register 7
+ 116:.\BLEApplications.c **** 	/* Start BLE component and register the CustomEventHandler function. This 
+ 117:.\BLEApplications.c **** 	* function exposes the events from BLE component for application use */
+ 118:.\BLEApplications.c **** 	CyBle_Start(CustomEventHandler);					
+  75              		.loc 1 118 0
+  76 0004 044B     		ldr	r3, .L2
+  77 0006 181C     		mov	r0, r3
+  78 0008 FFF7FEFF 		bl	CyBle_Start
+ 119:.\BLEApplications.c **** 	
+ 120:.\BLEApplications.c **** 	/* Set drive mode of the status LED pin to Strong*/
+ 121:.\BLEApplications.c **** 	Status_LED_SetDriveMode(Status_LED_DM_STRONG);	
+  79              		.loc 1 121 0
+  80 000c 0620     		mov	r0, #6
+  81 000e FFF7FEFF 		bl	Status_LED_SetDriveMode
+ 122:.\BLEApplications.c **** }
+  82              		.loc 1 122 0
+  83 0012 BD46     		mov	sp, r7
+  84              		@ sp needed
+  85 0014 80BD     		pop	{r7, pc}
+  86              	.L3:
+  87 0016 C046     		.align	2
+  88              	.L2:
+  89 0018 00000000 		.word	CustomEventHandler
+  90              		.cfi_endproc
+  91              	.LFE37:
+  92              		.size	InitializeBLESystem, .-InitializeBLESystem
+  93              		.section	.text.CustomEventHandler,"ax",%progbits
+  94              		.align	2
+  95              		.global	CustomEventHandler
+  96              		.code	16
+  97              		.thumb_func
+  98              		.type	CustomEventHandler, %function
+  99              	CustomEventHandler:
+ 100              	.LFB38:
+ 123:.\BLEApplications.c **** 
+ 124:.\BLEApplications.c **** /*******************************************************************************
+ 125:.\BLEApplications.c **** * Function Name: CustomEventHandler
+ 126:.\BLEApplications.c **** ********************************************************************************
+ 127:.\BLEApplications.c **** * Summary:
+ 128:.\BLEApplications.c **** *  Call back event function to handle various events from BLE stack
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 5
+
+
+ 129:.\BLEApplications.c **** *
+ 130:.\BLEApplications.c **** * Parameters:
+ 131:.\BLEApplications.c **** *  event:		event returned
+ 132:.\BLEApplications.c **** *  eventParam:	link to value of the event parameter returned
+ 133:.\BLEApplications.c **** *
+ 134:.\BLEApplications.c **** * Return:
+ 135:.\BLEApplications.c **** *  void
+ 136:.\BLEApplications.c **** *
+ 137:.\BLEApplications.c **** *******************************************************************************/
+ 138:.\BLEApplications.c **** void CustomEventHandler(uint32 event, void *eventParam)
+ 139:.\BLEApplications.c **** {
+ 101              		.loc 1 139 0
+ 102              		.cfi_startproc
+ 103 0000 80B5     		push	{r7, lr}
+ 104              		.cfi_def_cfa_offset 8
+ 105              		.cfi_offset 7, -8
+ 106              		.cfi_offset 14, -4
+ 107 0002 84B0     		sub	sp, sp, #16
+ 108              		.cfi_def_cfa_offset 24
+ 109 0004 00AF     		add	r7, sp, #0
+ 110              		.cfi_def_cfa_register 7
+ 111 0006 7860     		str	r0, [r7, #4]
+ 112 0008 3960     		str	r1, [r7]
+ 140:.\BLEApplications.c ****     CYBLE_GATTS_WRITE_REQ_PARAM_T *wrReqParam;
+ 141:.\BLEApplications.c **** 	
+ 142:.\BLEApplications.c ****     switch(event)
+ 113              		.loc 1 142 0
+ 114 000a 7B68     		ldr	r3, [r7, #4]
+ 115 000c 282B     		cmp	r3, #40
+ 116 000e 20D0     		beq	.L6
+ 117 0010 07D8     		bhi	.L7
+ 118 0012 052B     		cmp	r3, #5
+ 119 0014 00D1     		bne	.LCB48
+ 120 0016 64E0     		b	.L8	@long jump
+ 121              	.LCB48:
+ 122 0018 262B     		cmp	r3, #38
+ 123 001a 11D0     		beq	.L9
+ 124 001c 012B     		cmp	r3, #1
+ 125 001e 0BD0     		beq	.L10
+ 143:.\BLEApplications.c **** 	{
+ 144:.\BLEApplications.c ****         /**********************************************************
+ 145:.\BLEApplications.c ****         *                       General Events
+ 146:.\BLEApplications.c ****         ***********************************************************/
+ 147:.\BLEApplications.c **** 		case CYBLE_EVT_STACK_ON:
+ 148:.\BLEApplications.c **** 			/* This event is received when component is Started */
+ 149:.\BLEApplications.c **** 
+ 150:.\BLEApplications.c **** 			/* Set restartAdvertisement flag to allow calling Advertisement 
+ 151:.\BLEApplications.c **** 			* API from main function */
+ 152:.\BLEApplications.c **** 			restartAdvertisement = TRUE;
+ 153:.\BLEApplications.c **** 			
+ 154:.\BLEApplications.c **** 			break;
+ 155:.\BLEApplications.c **** 		
+ 156:.\BLEApplications.c ****         /**********************************************************
+ 157:.\BLEApplications.c ****         *                       GAP Events
+ 158:.\BLEApplications.c ****         ***********************************************************/
+ 159:.\BLEApplications.c **** 		
+ 160:.\BLEApplications.c ****         case CYBLE_EVT_GAPP_ADVERTISEMENT_START_STOP:
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 6
+
+
+ 161:.\BLEApplications.c **** 			
+ 162:.\BLEApplications.c **** 			if(CyBle_GetState() == CYBLE_STATE_DISCONNECTED)
+ 163:.\BLEApplications.c **** 			{
+ 164:.\BLEApplications.c **** 				/* Set restartAdvertisement flag to allow calling Advertisement 
+ 165:.\BLEApplications.c **** 				* API from main function */
+ 166:.\BLEApplications.c **** 				restartAdvertisement = TRUE;
+ 167:.\BLEApplications.c **** 			}
+ 168:.\BLEApplications.c **** 			break;
+ 169:.\BLEApplications.c **** 		
+ 170:.\BLEApplications.c ****         case CYBLE_EVT_GAP_DEVICE_DISCONNECTED:		
+ 171:.\BLEApplications.c **** 			/* This event is received when device is disconnected */
+ 172:.\BLEApplications.c **** 			
+ 173:.\BLEApplications.c **** 			/* Set restartAdvertisement flag to allow calling Advertisement 
+ 174:.\BLEApplications.c **** 			* API from main function */
+ 175:.\BLEApplications.c **** 			restartAdvertisement = TRUE;
+ 176:.\BLEApplications.c **** 
+ 177:.\BLEApplications.c ****             break;
+ 178:.\BLEApplications.c **** 
+ 179:.\BLEApplications.c ****         /**********************************************************
+ 180:.\BLEApplications.c ****         *                       GATT Events
+ 181:.\BLEApplications.c ****         ***********************************************************/
+ 182:.\BLEApplications.c ****         case CYBLE_EVT_GATT_CONNECT_IND:
+ 183:.\BLEApplications.c **** 			/* This event is received when device is connected over GATT level */
+ 184:.\BLEApplications.c **** 			
+ 185:.\BLEApplications.c **** 			/* Update attribute handle on GATT Connection*/
+ 186:.\BLEApplications.c ****             connectionHandle = *(CYBLE_CONN_HANDLE_T *)eventParam;	
+ 187:.\BLEApplications.c **** 			
+ 188:.\BLEApplications.c **** 			/* This flag is used in application to check connection status */
+ 189:.\BLEApplications.c **** 			deviceConnected = TRUE;	
+ 190:.\BLEApplications.c **** 	
+ 191:.\BLEApplications.c ****             break;
+ 192:.\BLEApplications.c **** 			
+ 193:.\BLEApplications.c ****         case CYBLE_EVT_GATT_DISCONNECT_IND:	
+ 194:.\BLEApplications.c **** 			/*This event is received when device is disconnected. 
+ 195:.\BLEApplications.c **** 			* Update connection flag accordingly */
+ 196:.\BLEApplications.c **** 			deviceConnected = FALSE;
+ 197:.\BLEApplications.c **** 			
+ 198:.\BLEApplications.c **** 			/* Reset notification flag to prevent further notifications
+ 199:.\BLEApplications.c **** 			 * being sent to Central device after next connection. */
+ 200:.\BLEApplications.c **** 			startNotification = FALSE;
+ 201:.\BLEApplications.c **** 			
+ 202:.\BLEApplications.c **** 			/* Reset the CCCD value to disable notifications */
+ 203:.\BLEApplications.c **** 			updateNotificationCCCAttribute = TRUE;
+ 204:.\BLEApplications.c **** 			UpdateNotificationCCCD();
+ 205:.\BLEApplications.c **** 			
+ 206:.\BLEApplications.c **** 			/* Reset the isConnectionUpdateRequested flag to allow sending
+ 207:.\BLEApplications.c **** 			* connection parameter update request in next connection */
+ 208:.\BLEApplications.c **** 			isConnectionUpdateRequested = TRUE;
+ 209:.\BLEApplications.c **** 			break;    
+ 210:.\BLEApplications.c ****             
+ 211:.\BLEApplications.c ****         case CYBLE_EVT_GATTS_WRITE_REQ:				
+ 212:.\BLEApplications.c **** 			/*When this event is triggered, the peripheral has received 
+ 213:.\BLEApplications.c **** 			* a write command on the custom characteristic */
+ 214:.\BLEApplications.c **** 			
+ 215:.\BLEApplications.c **** 			/* Extract the write value from the event parameter */
+ 216:.\BLEApplications.c ****             wrReqParam = (CYBLE_GATTS_WRITE_REQ_PARAM_T *) eventParam;
+ 217:.\BLEApplications.c **** 			
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 7
+
+
+ 218:.\BLEApplications.c **** 			/* Check if the returned handle is matching to Frequency Measurement Client custom configuration
+ 219:.\BLEApplications.c ****             if(CYBLE_PSOC4_FREQ_MEASUREMENT_FREQ_MEASUREMENT_CLIENT_CHARACTERISTIC_CONFIGURATION_DE
+ 220:.\BLEApplications.c ****             {
+ 221:.\BLEApplications.c ****                 /* Set flag so that application can start  sending notifications.*/
+ 222:.\BLEApplications.c **** 				startNotification = wrReqParam->handleValPair.value.val[CYBLE_PSOC4_FREQ_MEASUREMENT_FREQ_MEASU
+ 223:.\BLEApplications.c **** 				
+ 224:.\BLEApplications.c **** 				if(startNotification == 1)
+ 225:.\BLEApplications.c **** 				{
+ 226:.\BLEApplications.c **** 					/* After the connection, send new connection parameter to the Client device 
+ 227:.\BLEApplications.c **** 					* to run the BLE communication on desired interval. This affects the data rate 
+ 228:.\BLEApplications.c **** 					* and power consumption. High connection interval will have lower data rate but 
+ 229:.\BLEApplications.c **** 					* lower power consumption. Low connection interval will have higher data rate at
+ 230:.\BLEApplications.c **** 					* expense of higher power. This function is called only once per connection. */
+ 231:.\BLEApplications.c **** 					UpdateConnectionParam();
+ 232:.\BLEApplications.c **** 				}
+ 233:.\BLEApplications.c **** 				/* Set flag to allow CCCD to be updated for next read operation */
+ 234:.\BLEApplications.c **** 				updateNotificationCCCAttribute = TRUE;
+ 235:.\BLEApplications.c **** 			}
+ 236:.\BLEApplications.c ****            
+ 237:.\BLEApplications.c **** 			/* Send the response to the write command received. */
+ 238:.\BLEApplications.c **** 			CyBle_GattsWriteRsp(connectionHandle);
+ 239:.\BLEApplications.c **** 			
+ 240:.\BLEApplications.c ****             break;
+ 241:.\BLEApplications.c **** 			
+ 242:.\BLEApplications.c **** 		case CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_RSP:
+ 243:.\BLEApplications.c **** 				/* If L2CAP connection parameter update response received, reset application flag */
+ 244:.\BLEApplications.c ****             	isConnectionUpdateRequested = FALSE;
+ 245:.\BLEApplications.c ****             break;
+ 246:.\BLEApplications.c **** 		
+ 247:.\BLEApplications.c **** 		case CYBLE_EVT_STACK_BUSY_STATUS:
+ 248:.\BLEApplications.c **** 			/* This event is generated when the internal stack buffer is full and no more
+ 249:.\BLEApplications.c **** 			* data can be accepted or the stack has buffer available and can accept data.
+ 250:.\BLEApplications.c **** 			* This event is used by application to prevent pushing lot of data to stack. */
+ 251:.\BLEApplications.c **** 			
+ 252:.\BLEApplications.c **** 			/* Extract the present stack status */
+ 253:.\BLEApplications.c ****             busyStatus = * (uint8*)eventParam;
+ 254:.\BLEApplications.c ****             break;
+ 255:.\BLEApplications.c **** 			
+ 256:.\BLEApplications.c ****         default:
+ 257:.\BLEApplications.c ****                         
+ 258:.\BLEApplications.c ****             break;
+ 126              		.loc 1 258 0
+ 127 0020 64E0     		b	.L4
+ 128              	.L7:
+ 142:.\BLEApplications.c **** 	{
+ 129              		.loc 1 142 0
+ 130 0022 422B     		cmp	r3, #66
+ 131 0024 27D0     		beq	.L11
+ 132 0026 02D8     		bhi	.L12
+ 133 0028 412B     		cmp	r3, #65
+ 134 002a 16D0     		beq	.L13
+ 135              		.loc 1 258 0
+ 136 002c 5EE0     		b	.L4
+ 137              	.L12:
+ 142:.\BLEApplications.c **** 	{
+ 138              		.loc 1 142 0
+ 139 002e 4C2B     		cmp	r3, #76
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 8
+
+
+ 140 0030 30D0     		beq	.L14
+ 141 0032 712B     		cmp	r3, #113
+ 142 0034 51D0     		beq	.L15
+ 143              		.loc 1 258 0
+ 144 0036 59E0     		b	.L4
+ 145              	.L10:
+ 152:.\BLEApplications.c **** 			
+ 146              		.loc 1 152 0
+ 147 0038 2E4B     		ldr	r3, .L20
+ 148 003a 0122     		mov	r2, #1
+ 149 003c 1A70     		strb	r2, [r3]
+ 154:.\BLEApplications.c **** 		
+ 150              		.loc 1 154 0
+ 151 003e 55E0     		b	.L4
+ 152              	.L9:
+ 162:.\BLEApplications.c **** 			{
+ 153              		.loc 1 162 0
+ 154 0040 2D4B     		ldr	r3, .L20+4
+ 155 0042 1B78     		ldrb	r3, [r3]
+ 156 0044 042B     		cmp	r3, #4
+ 157 0046 03D1     		bne	.L17
+ 166:.\BLEApplications.c **** 			}
+ 158              		.loc 1 166 0
+ 159 0048 2A4B     		ldr	r3, .L20
+ 160 004a 0122     		mov	r2, #1
+ 161 004c 1A70     		strb	r2, [r3]
+ 168:.\BLEApplications.c **** 		
+ 162              		.loc 1 168 0
+ 163 004e 4DE0     		b	.L4
+ 164              	.L17:
+ 165 0050 4CE0     		b	.L4
+ 166              	.L6:
+ 175:.\BLEApplications.c **** 
+ 167              		.loc 1 175 0
+ 168 0052 284B     		ldr	r3, .L20
+ 169 0054 0122     		mov	r2, #1
+ 170 0056 1A70     		strb	r2, [r3]
+ 177:.\BLEApplications.c **** 
+ 171              		.loc 1 177 0
+ 172 0058 48E0     		b	.L4
+ 173              	.L13:
+ 186:.\BLEApplications.c **** 			
+ 174              		.loc 1 186 0
+ 175 005a 284A     		ldr	r2, .L20+8
+ 176 005c 3B68     		ldr	r3, [r7]
+ 177 005e 111C     		mov	r1, r2
+ 178 0060 1A1C     		mov	r2, r3
+ 179 0062 0223     		mov	r3, #2
+ 180 0064 081C     		mov	r0, r1
+ 181 0066 111C     		mov	r1, r2
+ 182 0068 1A1C     		mov	r2, r3
+ 183 006a FFF7FEFF 		bl	memcpy
+ 189:.\BLEApplications.c **** 	
+ 184              		.loc 1 189 0
+ 185 006e 244B     		ldr	r3, .L20+12
+ 186 0070 0122     		mov	r2, #1
+ 187 0072 1A70     		strb	r2, [r3]
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 9
+
+
+ 191:.\BLEApplications.c **** 			
+ 188              		.loc 1 191 0
+ 189 0074 3AE0     		b	.L4
+ 190              	.L11:
+ 196:.\BLEApplications.c **** 			
+ 191              		.loc 1 196 0
+ 192 0076 224B     		ldr	r3, .L20+12
+ 193 0078 0022     		mov	r2, #0
+ 194 007a 1A70     		strb	r2, [r3]
+ 200:.\BLEApplications.c **** 			
+ 195              		.loc 1 200 0
+ 196 007c 214B     		ldr	r3, .L20+16
+ 197 007e 0022     		mov	r2, #0
+ 198 0080 1A70     		strb	r2, [r3]
+ 203:.\BLEApplications.c **** 			UpdateNotificationCCCD();
+ 199              		.loc 1 203 0
+ 200 0082 214B     		ldr	r3, .L20+20
+ 201 0084 0122     		mov	r2, #1
+ 202 0086 1A70     		strb	r2, [r3]
+ 204:.\BLEApplications.c **** 			
+ 203              		.loc 1 204 0
+ 204 0088 FFF7FEFF 		bl	UpdateNotificationCCCD
+ 208:.\BLEApplications.c **** 			break;    
+ 205              		.loc 1 208 0
+ 206 008c 1F4B     		ldr	r3, .L20+24
+ 207 008e 0122     		mov	r2, #1
+ 208 0090 1A70     		strb	r2, [r3]
+ 209:.\BLEApplications.c ****             
+ 209              		.loc 1 209 0
+ 210 0092 2BE0     		b	.L4
+ 211              	.L14:
+ 216:.\BLEApplications.c **** 			
+ 212              		.loc 1 216 0
+ 213 0094 3B68     		ldr	r3, [r7]
+ 214 0096 FB60     		str	r3, [r7, #12]
+ 219:.\BLEApplications.c ****             {
+ 215              		.loc 1 219 0
+ 216 0098 FB68     		ldr	r3, [r7, #12]
+ 217 009a 9B89     		ldrh	r3, [r3, #12]
+ 218 009c 0F2B     		cmp	r3, #15
+ 219 009e 0DD1     		bne	.L18
+ 222:.\BLEApplications.c **** 				
+ 220              		.loc 1 222 0
+ 221 00a0 FB68     		ldr	r3, [r7, #12]
+ 222 00a2 5B68     		ldr	r3, [r3, #4]
+ 223 00a4 1A78     		ldrb	r2, [r3]
+ 224 00a6 174B     		ldr	r3, .L20+16
+ 225 00a8 1A70     		strb	r2, [r3]
+ 224:.\BLEApplications.c **** 				{
+ 226              		.loc 1 224 0
+ 227 00aa 164B     		ldr	r3, .L20+16
+ 228 00ac 1B78     		ldrb	r3, [r3]
+ 229 00ae 012B     		cmp	r3, #1
+ 230 00b0 01D1     		bne	.L19
+ 231:.\BLEApplications.c **** 				}
+ 231              		.loc 1 231 0
+ 232 00b2 FFF7FEFF 		bl	UpdateConnectionParam
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 10
+
+
+ 233              	.L19:
+ 234:.\BLEApplications.c **** 			}
+ 234              		.loc 1 234 0
+ 235 00b6 144B     		ldr	r3, .L20+20
+ 236 00b8 0122     		mov	r2, #1
+ 237 00ba 1A70     		strb	r2, [r3]
+ 238              	.L18:
+ 238:.\BLEApplications.c **** 			
+ 239              		.loc 1 238 0
+ 240 00bc 0F4B     		ldr	r3, .L20+8
+ 241 00be 1A78     		ldrb	r2, [r3]
+ 242 00c0 5B78     		ldrb	r3, [r3, #1]
+ 243 00c2 1B02     		lsl	r3, r3, #8
+ 244 00c4 1A43     		orr	r2, r3
+ 245 00c6 0023     		mov	r3, #0
+ 246 00c8 1204     		lsl	r2, r2, #16
+ 247 00ca 120C     		lsr	r2, r2, #16
+ 248 00cc 1B0C     		lsr	r3, r3, #16
+ 249 00ce 1B04     		lsl	r3, r3, #16
+ 250 00d0 1343     		orr	r3, r2
+ 251 00d2 181C     		mov	r0, r3
+ 252 00d4 FFF7FEFF 		bl	CyBle_GattsWriteRsp
+ 240:.\BLEApplications.c **** 			
+ 253              		.loc 1 240 0
+ 254 00d8 08E0     		b	.L4
+ 255              	.L15:
+ 244:.\BLEApplications.c ****             break;
+ 256              		.loc 1 244 0
+ 257 00da 0C4B     		ldr	r3, .L20+24
+ 258 00dc 0022     		mov	r2, #0
+ 259 00de 1A70     		strb	r2, [r3]
+ 245:.\BLEApplications.c **** 		
+ 260              		.loc 1 245 0
+ 261 00e0 04E0     		b	.L4
+ 262              	.L8:
+ 253:.\BLEApplications.c ****             break;
+ 263              		.loc 1 253 0
+ 264 00e2 3B68     		ldr	r3, [r7]
+ 265 00e4 1A78     		ldrb	r2, [r3]
+ 266 00e6 0A4B     		ldr	r3, .L20+28
+ 267 00e8 1A70     		strb	r2, [r3]
+ 254:.\BLEApplications.c **** 			
+ 268              		.loc 1 254 0
+ 269 00ea C046     		mov	r8, r8
+ 270              	.L4:
+ 259:.\BLEApplications.c **** 	} /* switch(event)*/
+ 260:.\BLEApplications.c **** }
+ 271              		.loc 1 260 0
+ 272 00ec BD46     		mov	sp, r7
+ 273 00ee 04B0     		add	sp, sp, #16
+ 274              		@ sp needed
+ 275 00f0 80BD     		pop	{r7, pc}
+ 276              	.L21:
+ 277 00f2 C046     		.align	2
+ 278              	.L20:
+ 279 00f4 00000000 		.word	restartAdvertisement
+ 280 00f8 00000000 		.word	cyBle_state
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 11
+
+
+ 281 00fc 00000000 		.word	connectionHandle
+ 282 0100 00000000 		.word	deviceConnected
+ 283 0104 00000000 		.word	startNotification
+ 284 0108 00000000 		.word	updateNotificationCCCAttribute
+ 285 010c 00000000 		.word	isConnectionUpdateRequested
+ 286 0110 00000000 		.word	busyStatus
+ 287              		.cfi_endproc
+ 288              	.LFE38:
+ 289              		.size	CustomEventHandler, .-CustomEventHandler
+ 290              		.section	.text.SendDataOverFreqCounterNotification,"ax",%progbits
+ 291              		.align	2
+ 292              		.global	SendDataOverFreqCounterNotification
+ 293              		.code	16
+ 294              		.thumb_func
+ 295              		.type	SendDataOverFreqCounterNotification, %function
+ 296              	SendDataOverFreqCounterNotification:
+ 297              	.LFB39:
+ 261:.\BLEApplications.c **** 
+ 262:.\BLEApplications.c **** /*******************************************************************************
+ 263:.\BLEApplications.c **** * Function Name: SendDataOverFreqCounterNotification
+ 264:.\BLEApplications.c **** ********************************************************************************
+ 265:.\BLEApplications.c **** * Summary:
+ 266:.\BLEApplications.c **** *   Update the data handle for notification and report it to BLE so that
+ 267:.\BLEApplications.c **** *	data can be sent over notifications
+ 268:.\BLEApplications.c **** *
+ 269:.\BLEApplications.c **** * Parameters:
+ 270:.\BLEApplications.c **** *  Frequency_Ptr: Pointer to the first byte of the array where frequency value 
+ 271:.\BLEApplications.c **** *  is stored.
+ 272:.\BLEApplications.c **** *
+ 273:.\BLEApplications.c **** * Return:
+ 274:.\BLEApplications.c **** *  void
+ 275:.\BLEApplications.c **** *
+ 276:.\BLEApplications.c **** *******************************************************************************/
+ 277:.\BLEApplications.c **** void SendDataOverFreqCounterNotification(uint8* Frequency_Ptr)
+ 278:.\BLEApplications.c **** {
+ 298              		.loc 1 278 0
+ 299              		.cfi_startproc
+ 300 0000 80B5     		push	{r7, lr}
+ 301              		.cfi_def_cfa_offset 8
+ 302              		.cfi_offset 7, -8
+ 303              		.cfi_offset 14, -4
+ 304 0002 86B0     		sub	sp, sp, #24
+ 305              		.cfi_def_cfa_offset 32
+ 306 0004 00AF     		add	r7, sp, #0
+ 307              		.cfi_def_cfa_register 7
+ 308 0006 7860     		str	r0, [r7, #4]
+ 279:.\BLEApplications.c **** 	/* 'notificationHandle' is handle to store notification data parameters */
+ 280:.\BLEApplications.c **** 	CYBLE_GATTS_HANDLE_VALUE_NTF_T		notificationHandle; 
+ 281:.\BLEApplications.c **** 	
+ 282:.\BLEApplications.c **** 	/* If stack is not busy, then send the notification */
+ 283:.\BLEApplications.c **** 	if(busyStatus == CYBLE_STACK_STATE_FREE)
+ 309              		.loc 1 283 0
+ 310 0008 114B     		ldr	r3, .L24
+ 311 000a 1B78     		ldrb	r3, [r3]
+ 312 000c 002B     		cmp	r3, #0
+ 313 000e 1BD1     		bne	.L22
+ 284:.\BLEApplications.c **** 	{
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 12
+
+
+ 285:.\BLEApplications.c **** 		/* Update Notification handle with frequency data*/
+ 286:.\BLEApplications.c **** 		notificationHandle.attrHandle = CYBLE_PSOC4_FREQ_MEASUREMENT_FREQ_MEASUREMENT_CHAR_HANDLE;				
+ 314              		.loc 1 286 0
+ 315 0010 0C23     		mov	r3, #12
+ 316 0012 FB18     		add	r3, r7, r3
+ 317 0014 0E22     		mov	r2, #14
+ 318 0016 1A81     		strh	r2, [r3, #8]
+ 287:.\BLEApplications.c **** 		notificationHandle.value.val = Frequency_Ptr;
+ 319              		.loc 1 287 0
+ 320 0018 0C23     		mov	r3, #12
+ 321 001a FB18     		add	r3, r7, r3
+ 322 001c 7A68     		ldr	r2, [r7, #4]
+ 323 001e 1A60     		str	r2, [r3]
+ 288:.\BLEApplications.c **** 		notificationHandle.value.len = FREQUENCY_NOTIFICATION_DATA_LEN;
+ 324              		.loc 1 288 0
+ 325 0020 0C23     		mov	r3, #12
+ 326 0022 FB18     		add	r3, r7, r3
+ 327 0024 0A22     		mov	r2, #10
+ 328 0026 9A80     		strh	r2, [r3, #4]
+ 289:.\BLEApplications.c **** 		
+ 290:.\BLEApplications.c **** 		/* Report data to BLE component for sending data by notifications*/
+ 291:.\BLEApplications.c **** 		CyBle_GattsNotification(connectionHandle,&notificationHandle);
+ 329              		.loc 1 291 0
+ 330 0028 0A4B     		ldr	r3, .L24+4
+ 331 002a 0C22     		mov	r2, #12
+ 332 002c B918     		add	r1, r7, r2
+ 333 002e 1A78     		ldrb	r2, [r3]
+ 334 0030 5B78     		ldrb	r3, [r3, #1]
+ 335 0032 1B02     		lsl	r3, r3, #8
+ 336 0034 1A43     		orr	r2, r3
+ 337 0036 0023     		mov	r3, #0
+ 338 0038 1204     		lsl	r2, r2, #16
+ 339 003a 120C     		lsr	r2, r2, #16
+ 340 003c 1B0C     		lsr	r3, r3, #16
+ 341 003e 1B04     		lsl	r3, r3, #16
+ 342 0040 1343     		orr	r3, r2
+ 343 0042 181C     		mov	r0, r3
+ 344 0044 FFF7FEFF 		bl	CyBle_GattsNotification
+ 345              	.L22:
+ 292:.\BLEApplications.c **** 	}
+ 293:.\BLEApplications.c **** }
+ 346              		.loc 1 293 0
+ 347 0048 BD46     		mov	sp, r7
+ 348 004a 06B0     		add	sp, sp, #24
+ 349              		@ sp needed
+ 350 004c 80BD     		pop	{r7, pc}
+ 351              	.L25:
+ 352 004e C046     		.align	2
+ 353              	.L24:
+ 354 0050 00000000 		.word	busyStatus
+ 355 0054 00000000 		.word	connectionHandle
+ 356              		.cfi_endproc
+ 357              	.LFE39:
+ 358              		.size	SendDataOverFreqCounterNotification, .-SendDataOverFreqCounterNotification
+ 359              		.section	.text.UpdateConnectionParam,"ax",%progbits
+ 360              		.align	2
+ 361              		.global	UpdateConnectionParam
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 13
+
+
+ 362              		.code	16
+ 363              		.thumb_func
+ 364              		.type	UpdateConnectionParam, %function
+ 365              	UpdateConnectionParam:
+ 366              	.LFB40:
+ 294:.\BLEApplications.c **** 
+ 295:.\BLEApplications.c **** /*******************************************************************************
+ 296:.\BLEApplications.c **** * Function Name: UpdateConnectionParam
+ 297:.\BLEApplications.c **** ********************************************************************************
+ 298:.\BLEApplications.c **** * Summary:
+ 299:.\BLEApplications.c **** *  Send the Connection Update Request to Client device after connection 
+ 300:.\BLEApplications.c **** *  and modify the connection interval for low power operation.
+ 301:.\BLEApplications.c **** *
+ 302:.\BLEApplications.c **** * Parameters:
+ 303:.\BLEApplications.c **** *  void
+ 304:.\BLEApplications.c **** *
+ 305:.\BLEApplications.c **** * Return:
+ 306:.\BLEApplications.c **** *  void
+ 307:.\BLEApplications.c **** *
+ 308:.\BLEApplications.c **** *******************************************************************************/
+ 309:.\BLEApplications.c **** void UpdateConnectionParam(void)
+ 310:.\BLEApplications.c **** {
+ 367              		.loc 1 310 0
+ 368              		.cfi_startproc
+ 369 0000 80B5     		push	{r7, lr}
+ 370              		.cfi_def_cfa_offset 8
+ 371              		.cfi_offset 7, -8
+ 372              		.cfi_offset 14, -4
+ 373 0002 00AF     		add	r7, sp, #0
+ 374              		.cfi_def_cfa_register 7
+ 311:.\BLEApplications.c **** 	/* If device is connected and Update connection parameter not updated yet,
+ 312:.\BLEApplications.c **** 	* then send the Connection Parameter Update request to Client. */
+ 313:.\BLEApplications.c ****     if(deviceConnected && isConnectionUpdateRequested)
+ 375              		.loc 1 313 0
+ 376 0004 094B     		ldr	r3, .L28
+ 377 0006 1B78     		ldrb	r3, [r3]
+ 378 0008 002B     		cmp	r3, #0
+ 379 000a 0DD0     		beq	.L26
+ 380              		.loc 1 313 0 is_stmt 0 discriminator 1
+ 381 000c 084B     		ldr	r3, .L28+4
+ 382 000e 1B78     		ldrb	r3, [r3]
+ 383 0010 002B     		cmp	r3, #0
+ 384 0012 09D0     		beq	.L26
+ 314:.\BLEApplications.c **** 	{
+ 315:.\BLEApplications.c **** 		/* Reset the flag to indicate that connection Update request has been sent */
+ 316:.\BLEApplications.c **** 		isConnectionUpdateRequested = FALSE;
+ 385              		.loc 1 316 0 is_stmt 1
+ 386 0014 064B     		ldr	r3, .L28+4
+ 387 0016 0022     		mov	r2, #0
+ 388 0018 1A70     		strb	r2, [r3]
+ 317:.\BLEApplications.c **** 		
+ 318:.\BLEApplications.c **** 		/* Send Connection Update request with set Parameter */
+ 319:.\BLEApplications.c **** 		CyBle_L2capLeConnectionParamUpdateRequest(connectionHandle.bdHandle, &ConnectionParam);
+ 389              		.loc 1 319 0
+ 390 001a 064B     		ldr	r3, .L28+8
+ 391 001c 1A78     		ldrb	r2, [r3]
+ 392 001e 064B     		ldr	r3, .L28+12
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 14
+
+
+ 393 0020 101C     		mov	r0, r2
+ 394 0022 191C     		mov	r1, r3
+ 395 0024 FFF7FEFF 		bl	CyBle_L2capLeConnectionParamUpdateRequest
+ 396              	.L26:
+ 320:.\BLEApplications.c **** 	}
+ 321:.\BLEApplications.c **** }
+ 397              		.loc 1 321 0
+ 398 0028 BD46     		mov	sp, r7
+ 399              		@ sp needed
+ 400 002a 80BD     		pop	{r7, pc}
+ 401              	.L29:
+ 402              		.align	2
+ 403              	.L28:
+ 404 002c 00000000 		.word	deviceConnected
+ 405 0030 00000000 		.word	isConnectionUpdateRequested
+ 406 0034 00000000 		.word	connectionHandle
+ 407 0038 04000000 		.word	ConnectionParam
+ 408              		.cfi_endproc
+ 409              	.LFE40:
+ 410              		.size	UpdateConnectionParam, .-UpdateConnectionParam
+ 411              		.section	.text.UpdateNotificationCCCD,"ax",%progbits
+ 412              		.align	2
+ 413              		.global	UpdateNotificationCCCD
+ 414              		.code	16
+ 415              		.thumb_func
+ 416              		.type	UpdateNotificationCCCD, %function
+ 417              	UpdateNotificationCCCD:
+ 418              	.LFB41:
+ 322:.\BLEApplications.c **** 
+ 323:.\BLEApplications.c **** /*******************************************************************************
+ 324:.\BLEApplications.c **** * Function Name: UpdateNotificationCCCD
+ 325:.\BLEApplications.c **** ********************************************************************************
+ 326:.\BLEApplications.c **** * Summary:
+ 327:.\BLEApplications.c **** *  Update the data handle for notification status and report it to BLE 
+ 328:.\BLEApplications.c **** *  component so that it can be read by Central device.
+ 329:.\BLEApplications.c **** *
+ 330:.\BLEApplications.c **** * Parameters:
+ 331:.\BLEApplications.c **** *  void
+ 332:.\BLEApplications.c **** *
+ 333:.\BLEApplications.c **** * Return:
+ 334:.\BLEApplications.c **** *  void
+ 335:.\BLEApplications.c **** *
+ 336:.\BLEApplications.c **** *******************************************************************************/
+ 337:.\BLEApplications.c **** void UpdateNotificationCCCD(void)
+ 338:.\BLEApplications.c **** {
+ 419              		.loc 1 338 0
+ 420              		.cfi_startproc
+ 421 0000 80B5     		push	{r7, lr}
+ 422              		.cfi_def_cfa_offset 8
+ 423              		.cfi_offset 7, -8
+ 424              		.cfi_offset 14, -4
+ 425 0002 84B0     		sub	sp, sp, #16
+ 426              		.cfi_def_cfa_offset 24
+ 427 0004 00AF     		add	r7, sp, #0
+ 428              		.cfi_def_cfa_register 7
+ 339:.\BLEApplications.c **** 	/* Local variable to store the current CCCD value */
+ 340:.\BLEApplications.c **** 	uint8 CCCDvalue[2];
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 15
+
+
+ 341:.\BLEApplications.c **** 	
+ 342:.\BLEApplications.c **** 	/* Handle value to update the CCCD */
+ 343:.\BLEApplications.c **** 	CYBLE_GATT_HANDLE_VALUE_PAIR_T notificationCCCDhandle;
+ 344:.\BLEApplications.c **** 
+ 345:.\BLEApplications.c **** 	/* Update notification attribute only when there has been change */
+ 346:.\BLEApplications.c **** 	if(updateNotificationCCCAttribute)
+ 429              		.loc 1 346 0
+ 430 0006 124B     		ldr	r3, .L32
+ 431 0008 1B78     		ldrb	r3, [r3]
+ 432 000a 002B     		cmp	r3, #0
+ 433 000c 1DD0     		beq	.L30
+ 347:.\BLEApplications.c **** 	{
+ 348:.\BLEApplications.c **** 		updateNotificationCCCAttribute = FALSE;
+ 434              		.loc 1 348 0
+ 435 000e 104B     		ldr	r3, .L32
+ 436 0010 0022     		mov	r2, #0
+ 437 0012 1A70     		strb	r2, [r3]
+ 349:.\BLEApplications.c **** 	
+ 350:.\BLEApplications.c **** 		/* Write the present notification status to the local variable */
+ 351:.\BLEApplications.c **** 		CCCDvalue[0] = startNotification;
+ 438              		.loc 1 351 0
+ 439 0014 0F4B     		ldr	r3, .L32+4
+ 440 0016 1A78     		ldrb	r2, [r3]
+ 441 0018 0C23     		mov	r3, #12
+ 442 001a FB18     		add	r3, r7, r3
+ 443 001c 1A70     		strb	r2, [r3]
+ 352:.\BLEApplications.c **** 		CCCDvalue[1] = 0x00;
+ 444              		.loc 1 352 0
+ 445 001e 0C23     		mov	r3, #12
+ 446 0020 FB18     		add	r3, r7, r3
+ 447 0022 0022     		mov	r2, #0
+ 448 0024 5A70     		strb	r2, [r3, #1]
+ 353:.\BLEApplications.c **** 		
+ 354:.\BLEApplications.c **** 		/* Update CCCD handle with notification status data*/
+ 355:.\BLEApplications.c **** 		notificationCCCDhandle.attrHandle = CYBLE_PSOC4_FREQ_MEASUREMENT_FREQ_MEASUREMENT_CLIENT_CHARACTE
+ 449              		.loc 1 355 0
+ 450 0026 3B1C     		mov	r3, r7
+ 451 0028 0F22     		mov	r2, #15
+ 452 002a 1A81     		strh	r2, [r3, #8]
+ 356:.\BLEApplications.c **** 		notificationCCCDhandle.value.val = CCCDvalue;
+ 453              		.loc 1 356 0
+ 454 002c 3B1C     		mov	r3, r7
+ 455 002e 0C22     		mov	r2, #12
+ 456 0030 BA18     		add	r2, r7, r2
+ 457 0032 1A60     		str	r2, [r3]
+ 357:.\BLEApplications.c **** 		notificationCCCDhandle.value.len = CCC_DATA_LEN;
+ 458              		.loc 1 357 0
+ 459 0034 3B1C     		mov	r3, r7
+ 460 0036 0222     		mov	r2, #2
+ 461 0038 9A80     		strh	r2, [r3, #4]
+ 358:.\BLEApplications.c **** 		
+ 359:.\BLEApplications.c **** 		/* Report data to BLE component for sending data when read by Central device */
+ 360:.\BLEApplications.c **** 		CyBle_GattsWriteAttributeValue(&notificationCCCDhandle, ZERO, &connectionHandle, CYBLE_GATT_DB_LO
+ 462              		.loc 1 360 0
+ 463 003a 3A1C     		mov	r2, r7
+ 464 003c 064B     		ldr	r3, .L32+8
+ 465 003e 101C     		mov	r0, r2
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 16
+
+
+ 466 0040 0021     		mov	r1, #0
+ 467 0042 1A1C     		mov	r2, r3
+ 468 0044 0023     		mov	r3, #0
+ 469 0046 FFF7FEFF 		bl	CyBle_GattsWriteAttributeValue
+ 470              	.L30:
+ 361:.\BLEApplications.c **** 	}	
+ 362:.\BLEApplications.c **** }
+ 471              		.loc 1 362 0
+ 472 004a BD46     		mov	sp, r7
+ 473 004c 04B0     		add	sp, sp, #16
+ 474              		@ sp needed
+ 475 004e 80BD     		pop	{r7, pc}
+ 476              	.L33:
+ 477              		.align	2
+ 478              	.L32:
+ 479 0050 00000000 		.word	updateNotificationCCCAttribute
+ 480 0054 00000000 		.word	startNotification
+ 481 0058 00000000 		.word	connectionHandle
+ 482              		.cfi_endproc
+ 483              	.LFE41:
+ 484              		.size	UpdateNotificationCCCD, .-UpdateNotificationCCCD
+ 485              		.section	.text.HandleStatusLED,"ax",%progbits
+ 486              		.align	2
+ 487              		.global	HandleStatusLED
+ 488              		.code	16
+ 489              		.thumb_func
+ 490              		.type	HandleStatusLED, %function
+ 491              	HandleStatusLED:
+ 492              	.LFB42:
+ 363:.\BLEApplications.c **** 
+ 364:.\BLEApplications.c **** /*******************************************************************************
+ 365:.\BLEApplications.c **** * Function Name: HandleStatusLED
+ 366:.\BLEApplications.c **** ********************************************************************************
+ 367:.\BLEApplications.c **** * Summary:
+ 368:.\BLEApplications.c **** *  Handle LED status, such as blinking, ON or OFF depending on BLE state.
+ 369:.\BLEApplications.c **** *
+ 370:.\BLEApplications.c **** * Parameters:
+ 371:.\BLEApplications.c **** *  void
+ 372:.\BLEApplications.c **** *
+ 373:.\BLEApplications.c **** * Return:
+ 374:.\BLEApplications.c **** *  void
+ 375:.\BLEApplications.c **** *
+ 376:.\BLEApplications.c **** *******************************************************************************/
+ 377:.\BLEApplications.c **** void HandleStatusLED(void)
+ 378:.\BLEApplications.c **** {
+ 493              		.loc 1 378 0
+ 494              		.cfi_startproc
+ 495 0000 80B5     		push	{r7, lr}
+ 496              		.cfi_def_cfa_offset 8
+ 497              		.cfi_offset 7, -8
+ 498              		.cfi_offset 14, -4
+ 499 0002 00AF     		add	r7, sp, #0
+ 500              		.cfi_def_cfa_register 7
+ 379:.\BLEApplications.c **** 	/* Local static counter to handle the periodic toggling of LED or keeping LED ON
+ 380:.\BLEApplications.c **** 	* for some time. */
+ 381:.\BLEApplications.c **** 	static uint32 led_counter = TRUE;
+ 382:.\BLEApplications.c **** 	
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 17
+
+
+ 383:.\BLEApplications.c **** 	/* Local static variable that stores the last BLE state in which firmware was */
+ 384:.\BLEApplications.c **** 	static uint8 state = 0xFF;
+ 385:.\BLEApplications.c **** 	
+ 386:.\BLEApplications.c **** 	if(state != CyBle_GetState())
+ 501              		.loc 1 386 0
+ 502 0004 234B     		ldr	r3, .L43
+ 503 0006 1A78     		ldrb	r2, [r3]
+ 504 0008 234B     		ldr	r3, .L43+4
+ 505 000a 1B78     		ldrb	r3, [r3]
+ 506 000c 9A42     		cmp	r2, r3
+ 507 000e 06D0     		beq	.L35
+ 387:.\BLEApplications.c **** 	{
+ 388:.\BLEApplications.c **** 		/* If the present BLE state is different from the new BLE state reset the local counter */
+ 389:.\BLEApplications.c **** 				
+ 390:.\BLEApplications.c **** 		if(CyBle_GetState() == CYBLE_STATE_ADVERTISING)
+ 508              		.loc 1 390 0
+ 509 0010 214B     		ldr	r3, .L43+4
+ 510 0012 1B78     		ldrb	r3, [r3]
+ 511 0014 032B     		cmp	r3, #3
+ 512 0016 02D1     		bne	.L35
+ 391:.\BLEApplications.c **** 		{
+ 392:.\BLEApplications.c **** 			led_counter = TRUE;
+ 513              		.loc 1 392 0
+ 514 0018 204B     		ldr	r3, .L43+8
+ 515 001a 0122     		mov	r2, #1
+ 516 001c 1A60     		str	r2, [r3]
+ 517              	.L35:
+ 393:.\BLEApplications.c **** 		}
+ 394:.\BLEApplications.c **** 	}
+ 395:.\BLEApplications.c **** 	
+ 396:.\BLEApplications.c **** 	/* Store the new BLE state into the present state variable */
+ 397:.\BLEApplications.c **** 	state = CyBle_GetState();
+ 518              		.loc 1 397 0
+ 519 001e 1E4B     		ldr	r3, .L43+4
+ 520 0020 1A78     		ldrb	r2, [r3]
+ 521 0022 1C4B     		ldr	r3, .L43
+ 522 0024 1A70     		strb	r2, [r3]
+ 398:.\BLEApplications.c **** 		
+ 399:.\BLEApplications.c **** 	switch(state)
+ 523              		.loc 1 399 0
+ 524 0026 1B4B     		ldr	r3, .L43
+ 525 0028 1B78     		ldrb	r3, [r3]
+ 526 002a 032B     		cmp	r3, #3
+ 527 002c 08D0     		beq	.L37
+ 528 002e 042B     		cmp	r3, #4
+ 529 0030 26D0     		beq	.L38
+ 530 0032 022B     		cmp	r3, #2
+ 531 0034 00D0     		beq	.L39
+ 400:.\BLEApplications.c **** 	{
+ 401:.\BLEApplications.c **** 		case CYBLE_STATE_CONNECTED:
+ 402:.\BLEApplications.c **** 				/* Set the drive mode of LED to Strong to allow driving the LED */
+ 403:.\BLEApplications.c **** 				Status_LED_SetDriveMode(Status_LED_DM_ALG_HIZ);
+ 404:.\BLEApplications.c **** 
+ 405:.\BLEApplications.c **** 		break;
+ 406:.\BLEApplications.c **** 		
+ 407:.\BLEApplications.c **** 		case CYBLE_STATE_ADVERTISING:
+ 408:.\BLEApplications.c **** 			/* If the present BLE state is advertising, toggle the LED
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 18
+
+
+ 409:.\BLEApplications.c **** 			* at pre-determined period to indicate advertising. */
+ 410:.\BLEApplications.c **** 			if((--led_counter) == FALSE)
+ 411:.\BLEApplications.c **** 			{
+ 412:.\BLEApplications.c **** 				Status_LED_SetDriveMode(Status_LED_DM_STRONG);
+ 413:.\BLEApplications.c **** 				
+ 414:.\BLEApplications.c **** 				if(Status_LED_Read() == LED_OFF)
+ 415:.\BLEApplications.c **** 				{
+ 416:.\BLEApplications.c **** 					Status_LED_Write(LED_ON);
+ 417:.\BLEApplications.c **** 					led_counter	= LED_ADV_BLINK_PERIOD_ON;
+ 418:.\BLEApplications.c **** 				}
+ 419:.\BLEApplications.c **** 				else
+ 420:.\BLEApplications.c **** 				{
+ 421:.\BLEApplications.c **** 					Status_LED_Write(LED_OFF);
+ 422:.\BLEApplications.c **** 					led_counter	= LED_ADV_BLINK_PERIOD_OFF;
+ 423:.\BLEApplications.c **** 				}
+ 424:.\BLEApplications.c **** 			}
+ 425:.\BLEApplications.c **** 		break;
+ 426:.\BLEApplications.c **** 		
+ 427:.\BLEApplications.c **** 		case CYBLE_STATE_DISCONNECTED:
+ 428:.\BLEApplications.c **** 			/* If the present BLE state is disconnected, switch off LED
+ 429:.\BLEApplications.c **** 			* and set the drive mode of LED to Hi-Z (Analog)*/
+ 430:.\BLEApplications.c **** 			Status_LED_Write(LED_OFF);
+ 431:.\BLEApplications.c **** 			Status_LED_SetDriveMode(Status_LED_DM_ALG_HIZ);
+ 432:.\BLEApplications.c **** 		break;
+ 433:.\BLEApplications.c **** 		
+ 434:.\BLEApplications.c **** 		default:
+ 435:.\BLEApplications.c **** 
+ 436:.\BLEApplications.c **** 		break;
+ 532              		.loc 1 436 0
+ 533 0036 2AE0     		b	.L34
+ 534              	.L39:
+ 403:.\BLEApplications.c **** 
+ 535              		.loc 1 403 0
+ 536 0038 0020     		mov	r0, #0
+ 537 003a FFF7FEFF 		bl	Status_LED_SetDriveMode
+ 405:.\BLEApplications.c **** 		
+ 538              		.loc 1 405 0
+ 539 003e 26E0     		b	.L34
+ 540              	.L37:
+ 410:.\BLEApplications.c **** 			{
+ 541              		.loc 1 410 0
+ 542 0040 164B     		ldr	r3, .L43+8
+ 543 0042 1B68     		ldr	r3, [r3]
+ 544 0044 5A1E     		sub	r2, r3, #1
+ 545 0046 154B     		ldr	r3, .L43+8
+ 546 0048 1A60     		str	r2, [r3]
+ 547 004a 144B     		ldr	r3, .L43+8
+ 548 004c 1B68     		ldr	r3, [r3]
+ 549 004e 002B     		cmp	r3, #0
+ 550 0050 15D1     		bne	.L41
+ 412:.\BLEApplications.c **** 				
+ 551              		.loc 1 412 0
+ 552 0052 0620     		mov	r0, #6
+ 553 0054 FFF7FEFF 		bl	Status_LED_SetDriveMode
+ 414:.\BLEApplications.c **** 				{
+ 554              		.loc 1 414 0
+ 555 0058 FFF7FEFF 		bl	Status_LED_Read
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 19
+
+
+ 556 005c 031E     		sub	r3, r0, #0
+ 557 005e 012B     		cmp	r3, #1
+ 558 0060 06D1     		bne	.L42
+ 416:.\BLEApplications.c **** 					led_counter	= LED_ADV_BLINK_PERIOD_ON;
+ 559              		.loc 1 416 0
+ 560 0062 0020     		mov	r0, #0
+ 561 0064 FFF7FEFF 		bl	Status_LED_Write
+ 417:.\BLEApplications.c **** 				}
+ 562              		.loc 1 417 0
+ 563 0068 0C4B     		ldr	r3, .L43+8
+ 564 006a 0522     		mov	r2, #5
+ 565 006c 1A60     		str	r2, [r3]
+ 566 006e 06E0     		b	.L41
+ 567              	.L42:
+ 421:.\BLEApplications.c **** 					led_counter	= LED_ADV_BLINK_PERIOD_OFF;
+ 568              		.loc 1 421 0
+ 569 0070 0120     		mov	r0, #1
+ 570 0072 FFF7FEFF 		bl	Status_LED_Write
+ 422:.\BLEApplications.c **** 				}
+ 571              		.loc 1 422 0
+ 572 0076 094B     		ldr	r3, .L43+8
+ 573 0078 1422     		mov	r2, #20
+ 574 007a 1A60     		str	r2, [r3]
+ 425:.\BLEApplications.c **** 		
+ 575              		.loc 1 425 0
+ 576 007c 07E0     		b	.L34
+ 577              	.L41:
+ 578 007e 06E0     		b	.L34
+ 579              	.L38:
+ 430:.\BLEApplications.c **** 			Status_LED_SetDriveMode(Status_LED_DM_ALG_HIZ);
+ 580              		.loc 1 430 0
+ 581 0080 0120     		mov	r0, #1
+ 582 0082 FFF7FEFF 		bl	Status_LED_Write
+ 431:.\BLEApplications.c **** 		break;
+ 583              		.loc 1 431 0
+ 584 0086 0020     		mov	r0, #0
+ 585 0088 FFF7FEFF 		bl	Status_LED_SetDriveMode
+ 432:.\BLEApplications.c **** 		
+ 586              		.loc 1 432 0
+ 587 008c C046     		mov	r8, r8
+ 588              	.L34:
+ 437:.\BLEApplications.c **** 	}
+ 438:.\BLEApplications.c **** }
+ 589              		.loc 1 438 0
+ 590 008e BD46     		mov	sp, r7
+ 591              		@ sp needed
+ 592 0090 80BD     		pop	{r7, pc}
+ 593              	.L44:
+ 594 0092 C046     		.align	2
+ 595              	.L43:
+ 596 0094 0C000000 		.word	state.7633
+ 597 0098 00000000 		.word	cyBle_state
+ 598 009c 10000000 		.word	led_counter.7632
+ 599              		.cfi_endproc
+ 600              	.LFE42:
+ 601              		.size	HandleStatusLED, .-HandleStatusLED
+ 602              		.data
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 20
+
+
+ 603              		.type	state.7633, %object
+ 604              		.size	state.7633, 1
+ 605              	state.7633:
+ 606 000c FF       		.byte	-1
+ 607 000d 000000   		.align	2
+ 608              		.type	led_counter.7632, %object
+ 609              		.size	led_counter.7632, 4
+ 610              	led_counter.7632:
+ 611 0010 01000000 		.word	1
+ 612              		.text
+ 613              	.Letext0:
+ 614              		.file 2 "Generated_Source\\PSoC4/cytypes.h"
+ 615              		.file 3 "Generated_Source\\PSoC4/BLE_StackGap.h"
+ 616              		.file 4 "Generated_Source\\PSoC4/BLE_StackGatt.h"
+ 617              		.file 5 "Generated_Source\\PSoC4/BLE_StackGattServer.h"
+ 618              		.file 6 "Generated_Source\\PSoC4/BLE_Stack.h"
+ 619              		.file 7 "Generated_Source\\PSoC4/BLE_eventHandler.h"
+ 620              		.section	.debug_info,"",%progbits
+ 621              	.Ldebug_info0:
+ 622 0000 7D050000 		.4byte	0x57d
+ 623 0004 0400     		.2byte	0x4
+ 624 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 625 000a 04       		.byte	0x4
+ 626 000b 01       		.uleb128 0x1
+ 627 000c F60B0000 		.4byte	.LASF130
+ 628 0010 01       		.byte	0x1
+ 629 0011 F30A0000 		.4byte	.LASF131
+ 630 0015 C2050000 		.4byte	.LASF132
+ 631 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 632 001d 00000000 		.4byte	0
+ 633 0021 00000000 		.4byte	.Ldebug_line0
+ 634 0025 02       		.uleb128 0x2
+ 635 0026 01       		.byte	0x1
+ 636 0027 06       		.byte	0x6
+ 637 0028 8B020000 		.4byte	.LASF0
+ 638 002c 02       		.uleb128 0x2
+ 639 002d 01       		.byte	0x1
+ 640 002e 08       		.byte	0x8
+ 641 002f 74090000 		.4byte	.LASF1
+ 642 0033 02       		.uleb128 0x2
+ 643 0034 02       		.byte	0x2
+ 644 0035 05       		.byte	0x5
+ 645 0036 AD090000 		.4byte	.LASF2
+ 646 003a 02       		.uleb128 0x2
+ 647 003b 02       		.byte	0x2
+ 648 003c 07       		.byte	0x7
+ 649 003d 61050000 		.4byte	.LASF3
+ 650 0041 02       		.uleb128 0x2
+ 651 0042 04       		.byte	0x4
+ 652 0043 05       		.byte	0x5
+ 653 0044 B0010000 		.4byte	.LASF4
+ 654 0048 02       		.uleb128 0x2
+ 655 0049 04       		.byte	0x4
+ 656 004a 07       		.byte	0x7
+ 657 004b 9E040000 		.4byte	.LASF5
+ 658 004f 02       		.uleb128 0x2
+ 659 0050 08       		.byte	0x8
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 21
+
+
+ 660 0051 05       		.byte	0x5
+ 661 0052 7D020000 		.4byte	.LASF6
+ 662 0056 02       		.uleb128 0x2
+ 663 0057 08       		.byte	0x8
+ 664 0058 07       		.byte	0x7
+ 665 0059 B9010000 		.4byte	.LASF7
+ 666 005d 03       		.uleb128 0x3
+ 667 005e 04       		.byte	0x4
+ 668 005f 05       		.byte	0x5
+ 669 0060 696E7400 		.ascii	"int\000"
+ 670 0064 02       		.uleb128 0x2
+ 671 0065 04       		.byte	0x4
+ 672 0066 07       		.byte	0x7
+ 673 0067 72040000 		.4byte	.LASF8
+ 674 006b 04       		.uleb128 0x4
+ 675 006c 9B030000 		.4byte	.LASF9
+ 676 0070 02       		.byte	0x2
+ 677 0071 9801     		.2byte	0x198
+ 678 0073 2C000000 		.4byte	0x2c
+ 679 0077 04       		.uleb128 0x4
+ 680 0078 82090000 		.4byte	.LASF10
+ 681 007c 02       		.byte	0x2
+ 682 007d 9901     		.2byte	0x199
+ 683 007f 3A000000 		.4byte	0x3a
+ 684 0083 04       		.uleb128 0x4
+ 685 0084 F2030000 		.4byte	.LASF11
+ 686 0088 02       		.byte	0x2
+ 687 0089 9A01     		.2byte	0x19a
+ 688 008b 48000000 		.4byte	0x48
+ 689 008f 02       		.uleb128 0x2
+ 690 0090 04       		.byte	0x4
+ 691 0091 04       		.byte	0x4
+ 692 0092 51090000 		.4byte	.LASF12
+ 693 0096 02       		.uleb128 0x2
+ 694 0097 08       		.byte	0x8
+ 695 0098 04       		.byte	0x4
+ 696 0099 C0030000 		.4byte	.LASF13
+ 697 009d 02       		.uleb128 0x2
+ 698 009e 01       		.byte	0x1
+ 699 009f 08       		.byte	0x8
+ 700 00a0 A30A0000 		.4byte	.LASF14
+ 701 00a4 02       		.uleb128 0x2
+ 702 00a5 04       		.byte	0x4
+ 703 00a6 07       		.byte	0x7
+ 704 00a7 8F070000 		.4byte	.LASF15
+ 705 00ab 05       		.uleb128 0x5
+ 706 00ac 04       		.byte	0x4
+ 707 00ad 06       		.uleb128 0x6
+ 708 00ae 04       		.byte	0x4
+ 709 00af 6B000000 		.4byte	0x6b
+ 710 00b3 07       		.uleb128 0x7
+ 711 00b4 01       		.byte	0x1
+ 712 00b5 06       		.byte	0x6
+ 713 00b6 4201     		.2byte	0x142
+ 714 00b8 70020000 		.4byte	0x270
+ 715 00bc 08       		.uleb128 0x8
+ 716 00bd 74050000 		.4byte	.LASF16
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 22
+
+
+ 717 00c1 00       		.sleb128 0
+ 718 00c2 08       		.uleb128 0x8
+ 719 00c3 97020000 		.4byte	.LASF17
+ 720 00c7 01       		.sleb128 1
+ 721 00c8 08       		.uleb128 0x8
+ 722 00c9 9E010000 		.4byte	.LASF18
+ 723 00cd 02       		.sleb128 2
+ 724 00ce 08       		.uleb128 0x8
+ 725 00cf 2A0B0000 		.4byte	.LASF19
+ 726 00d3 03       		.sleb128 3
+ 727 00d4 08       		.uleb128 0x8
+ 728 00d5 E3010000 		.4byte	.LASF20
+ 729 00d9 04       		.sleb128 4
+ 730 00da 08       		.uleb128 0x8
+ 731 00db 23000000 		.4byte	.LASF21
+ 732 00df 05       		.sleb128 5
+ 733 00e0 08       		.uleb128 0x8
+ 734 00e1 A9050000 		.4byte	.LASF22
+ 735 00e5 06       		.sleb128 6
+ 736 00e6 08       		.uleb128 0x8
+ 737 00e7 12070000 		.4byte	.LASF23
+ 738 00eb 20       		.sleb128 32
+ 739 00ec 08       		.uleb128 0x8
+ 740 00ed D3020000 		.4byte	.LASF24
+ 741 00f1 21       		.sleb128 33
+ 742 00f2 08       		.uleb128 0x8
+ 743 00f3 60060000 		.4byte	.LASF25
+ 744 00f7 22       		.sleb128 34
+ 745 00f8 08       		.uleb128 0x8
+ 746 00f9 AF060000 		.4byte	.LASF26
+ 747 00fd 23       		.sleb128 35
+ 748 00fe 08       		.uleb128 0x8
+ 749 00ff AB080000 		.4byte	.LASF27
+ 750 0103 24       		.sleb128 36
+ 751 0104 08       		.uleb128 0x8
+ 752 0105 FC070000 		.4byte	.LASF28
+ 753 0109 25       		.sleb128 37
+ 754 010a 08       		.uleb128 0x8
+ 755 010b 60030000 		.4byte	.LASF29
+ 756 010f 26       		.sleb128 38
+ 757 0110 08       		.uleb128 0x8
+ 758 0111 84060000 		.4byte	.LASF30
+ 759 0115 27       		.sleb128 39
+ 760 0116 08       		.uleb128 0x8
+ 761 0117 A80A0000 		.4byte	.LASF31
+ 762 011b 28       		.sleb128 40
+ 763 011c 08       		.uleb128 0x8
+ 764 011d 0D0A0000 		.4byte	.LASF32
+ 765 0121 29       		.sleb128 41
+ 766 0122 08       		.uleb128 0x8
+ 767 0123 C6000000 		.4byte	.LASF33
+ 768 0127 2A       		.sleb128 42
+ 769 0128 08       		.uleb128 0x8
+ 770 0129 AA020000 		.4byte	.LASF34
+ 771 012d 2B       		.sleb128 43
+ 772 012e 08       		.uleb128 0x8
+ 773 012f AB0C0000 		.4byte	.LASF35
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 23
+
+
+ 774 0133 2C       		.sleb128 44
+ 775 0134 08       		.uleb128 0x8
+ 776 0135 3C020000 		.4byte	.LASF36
+ 777 0139 2D       		.sleb128 45
+ 778 013a 08       		.uleb128 0x8
+ 779 013b 89090000 		.4byte	.LASF37
+ 780 013f 2E       		.sleb128 46
+ 781 0140 08       		.uleb128 0x8
+ 782 0141 10010000 		.4byte	.LASF38
+ 783 0145 2F       		.sleb128 47
+ 784 0146 08       		.uleb128 0x8
+ 785 0147 67080000 		.4byte	.LASF39
+ 786 014b 30       		.sleb128 48
+ 787 014c 08       		.uleb128 0x8
+ 788 014d FE0C0000 		.4byte	.LASF40
+ 789 0151 31       		.sleb128 49
+ 790 0152 08       		.uleb128 0x8
+ 791 0153 46080000 		.4byte	.LASF41
+ 792 0157 32       		.sleb128 50
+ 793 0158 08       		.uleb128 0x8
+ 794 0159 7C0A0000 		.4byte	.LASF42
+ 795 015d 33       		.sleb128 51
+ 796 015e 08       		.uleb128 0x8
+ 797 015f 620A0000 		.4byte	.LASF43
+ 798 0163 C000     		.sleb128 64
+ 799 0165 08       		.uleb128 0x8
+ 800 0166 D5060000 		.4byte	.LASF44
+ 801 016a C100     		.sleb128 65
+ 802 016c 08       		.uleb128 0x8
+ 803 016d 4A0D0000 		.4byte	.LASF45
+ 804 0171 C200     		.sleb128 66
+ 805 0173 08       		.uleb128 0x8
+ 806 0174 510B0000 		.4byte	.LASF46
+ 807 0178 C300     		.sleb128 67
+ 808 017a 08       		.uleb128 0x8
+ 809 017b E8040000 		.4byte	.LASF47
+ 810 017f C400     		.sleb128 68
+ 811 0181 08       		.uleb128 0x8
+ 812 0182 77010000 		.4byte	.LASF48
+ 813 0186 C500     		.sleb128 69
+ 814 0188 08       		.uleb128 0x8
+ 815 0189 6E070000 		.4byte	.LASF49
+ 816 018d C600     		.sleb128 70
+ 817 018f 08       		.uleb128 0x8
+ 818 0190 8B050000 		.4byte	.LASF50
+ 819 0194 C700     		.sleb128 71
+ 820 0196 08       		.uleb128 0x8
+ 821 0197 840C0000 		.4byte	.LASF51
+ 822 019b C800     		.sleb128 72
+ 823 019d 08       		.uleb128 0x8
+ 824 019e EA020000 		.4byte	.LASF52
+ 825 01a2 C900     		.sleb128 73
+ 826 01a4 08       		.uleb128 0x8
+ 827 01a5 B90B0000 		.4byte	.LASF53
+ 828 01a9 CA00     		.sleb128 74
+ 829 01ab 08       		.uleb128 0x8
+ 830 01ac 39010000 		.4byte	.LASF54
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 24
+
+
+ 831 01b0 CB00     		.sleb128 75
+ 832 01b2 08       		.uleb128 0x8
+ 833 01b3 CE040000 		.4byte	.LASF55
+ 834 01b7 CC00     		.sleb128 76
+ 835 01b9 08       		.uleb128 0x8
+ 836 01ba 2C080000 		.4byte	.LASF56
+ 837 01be CD00     		.sleb128 77
+ 838 01c0 08       		.uleb128 0x8
+ 839 01c1 19030000 		.4byte	.LASF57
+ 840 01c5 CE00     		.sleb128 78
+ 841 01c7 08       		.uleb128 0x8
+ 842 01c8 EE090000 		.4byte	.LASF58
+ 843 01cc CF00     		.sleb128 79
+ 844 01ce 08       		.uleb128 0x8
+ 845 01cf 58010000 		.4byte	.LASF59
+ 846 01d3 D000     		.sleb128 80
+ 847 01d5 08       		.uleb128 0x8
+ 848 01d6 A1030000 		.4byte	.LASF60
+ 849 01da D100     		.sleb128 81
+ 850 01dc 08       		.uleb128 0x8
+ 851 01dd E7080000 		.4byte	.LASF61
+ 852 01e1 D200     		.sleb128 82
+ 853 01e3 08       		.uleb128 0x8
+ 854 01e4 B7090000 		.4byte	.LASF62
+ 855 01e8 D300     		.sleb128 83
+ 856 01ea 08       		.uleb128 0x8
+ 857 01eb 410A0000 		.4byte	.LASF63
+ 858 01ef D400     		.sleb128 84
+ 859 01f1 08       		.uleb128 0x8
+ 860 01f2 06050000 		.4byte	.LASF64
+ 861 01f6 D500     		.sleb128 85
+ 862 01f8 08       		.uleb128 0x8
+ 863 01f9 50040000 		.4byte	.LASF65
+ 864 01fd D600     		.sleb128 86
+ 865 01ff 08       		.uleb128 0x8
+ 866 0200 CA0A0000 		.4byte	.LASF66
+ 867 0204 D700     		.sleb128 87
+ 868 0206 08       		.uleb128 0x8
+ 869 0207 2A050000 		.4byte	.LASF67
+ 870 020b D800     		.sleb128 88
+ 871 020d 08       		.uleb128 0x8
+ 872 020e 16020000 		.4byte	.LASF68
+ 873 0212 F000     		.sleb128 112
+ 874 0214 08       		.uleb128 0x8
+ 875 0215 D80C0000 		.4byte	.LASF69
+ 876 0219 F100     		.sleb128 113
+ 877 021b 08       		.uleb128 0x8
+ 878 021c F6060000 		.4byte	.LASF70
+ 879 0220 F200     		.sleb128 114
+ 880 0222 08       		.uleb128 0x8
+ 881 0223 50070000 		.4byte	.LASF71
+ 882 0227 F300     		.sleb128 115
+ 883 0229 08       		.uleb128 0x8
+ 884 022a 27090000 		.4byte	.LASF72
+ 885 022e F400     		.sleb128 116
+ 886 0230 08       		.uleb128 0x8
+ 887 0231 C7030000 		.4byte	.LASF73
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 25
+
+
+ 888 0235 F500     		.sleb128 117
+ 889 0237 08       		.uleb128 0x8
+ 890 0238 EF000000 		.4byte	.LASF74
+ 891 023c F600     		.sleb128 118
+ 892 023e 08       		.uleb128 0x8
+ 893 023f 77000000 		.4byte	.LASF75
+ 894 0243 F700     		.sleb128 119
+ 895 0245 08       		.uleb128 0x8
+ 896 0246 00000000 		.4byte	.LASF76
+ 897 024a F800     		.sleb128 120
+ 898 024c 08       		.uleb128 0x8
+ 899 024d 070B0000 		.4byte	.LASF77
+ 900 0251 F900     		.sleb128 121
+ 901 0253 08       		.uleb128 0x8
+ 902 0254 1B040000 		.4byte	.LASF78
+ 903 0258 FA00     		.sleb128 122
+ 904 025a 08       		.uleb128 0x8
+ 905 025b F8010000 		.4byte	.LASF79
+ 906 025f FA01     		.sleb128 250
+ 907 0261 08       		.uleb128 0x8
+ 908 0262 7F040000 		.4byte	.LASF80
+ 909 0266 FB01     		.sleb128 251
+ 910 0268 08       		.uleb128 0x8
+ 911 0269 EE070000 		.4byte	.LASF81
+ 912 026d FF01     		.sleb128 255
+ 913 026f 00       		.byte	0
+ 914 0270 09       		.uleb128 0x9
+ 915 0271 08       		.byte	0x8
+ 916 0272 03       		.byte	0x3
+ 917 0273 3C03     		.2byte	0x33c
+ 918 0275 AE020000 		.4byte	0x2ae
+ 919 0279 0A       		.uleb128 0xa
+ 920 027a 45090000 		.4byte	.LASF82
+ 921 027e 03       		.byte	0x3
+ 922 027f 4303     		.2byte	0x343
+ 923 0281 77000000 		.4byte	0x77
+ 924 0285 00       		.byte	0
+ 925 0286 0A       		.uleb128 0xa
+ 926 0287 DB080000 		.4byte	.LASF83
+ 927 028b 03       		.byte	0x3
+ 928 028c 4A03     		.2byte	0x34a
+ 929 028e 77000000 		.4byte	0x77
+ 930 0292 02       		.byte	0x2
+ 931 0293 0A       		.uleb128 0xa
+ 932 0294 44070000 		.4byte	.LASF84
+ 933 0298 03       		.byte	0x3
+ 934 0299 4F03     		.2byte	0x34f
+ 935 029b 77000000 		.4byte	0x77
+ 936 029f 04       		.byte	0x4
+ 937 02a0 0A       		.uleb128 0xa
+ 938 02a1 4D050000 		.4byte	.LASF85
+ 939 02a5 03       		.byte	0x3
+ 940 02a6 5503     		.2byte	0x355
+ 941 02a8 77000000 		.4byte	0x77
+ 942 02ac 06       		.byte	0x6
+ 943 02ad 00       		.byte	0
+ 944 02ae 04       		.uleb128 0x4
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 26
+
+
+ 945 02af B0040000 		.4byte	.LASF86
+ 946 02b3 03       		.byte	0x3
+ 947 02b4 5703     		.2byte	0x357
+ 948 02b6 70020000 		.4byte	0x270
+ 949 02ba 04       		.uleb128 0x4
+ 950 02bb 220D0000 		.4byte	.LASF87
+ 951 02bf 04       		.byte	0x4
+ 952 02c0 9201     		.2byte	0x192
+ 953 02c2 77000000 		.4byte	0x77
+ 954 02c6 09       		.uleb128 0x9
+ 955 02c7 02       		.byte	0x2
+ 956 02c8 04       		.byte	0x4
+ 957 02c9 9C01     		.2byte	0x19c
+ 958 02cb EA020000 		.4byte	0x2ea
+ 959 02cf 0A       		.uleb128 0xa
+ 960 02d0 CF0C0000 		.4byte	.LASF88
+ 961 02d4 04       		.byte	0x4
+ 962 02d5 A301     		.2byte	0x1a3
+ 963 02d7 6B000000 		.4byte	0x6b
+ 964 02db 00       		.byte	0
+ 965 02dc 0A       		.uleb128 0xa
+ 966 02dd F0060000 		.4byte	.LASF89
+ 967 02e1 04       		.byte	0x4
+ 968 02e2 A901     		.2byte	0x1a9
+ 969 02e4 6B000000 		.4byte	0x6b
+ 970 02e8 01       		.byte	0x1
+ 971 02e9 00       		.byte	0
+ 972 02ea 04       		.uleb128 0x4
+ 973 02eb 96000000 		.4byte	.LASF90
+ 974 02ef 04       		.byte	0x4
+ 975 02f0 AB01     		.2byte	0x1ab
+ 976 02f2 C6020000 		.4byte	0x2c6
+ 977 02f6 09       		.uleb128 0x9
+ 978 02f7 08       		.byte	0x8
+ 979 02f8 04       		.byte	0x4
+ 980 02f9 C701     		.2byte	0x1c7
+ 981 02fb 27030000 		.4byte	0x327
+ 982 02ff 0B       		.uleb128 0xb
+ 983 0300 76616C00 		.ascii	"val\000"
+ 984 0304 04       		.byte	0x4
+ 985 0305 CA01     		.2byte	0x1ca
+ 986 0307 AD000000 		.4byte	0xad
+ 987 030b 00       		.byte	0
+ 988 030c 0B       		.uleb128 0xb
+ 989 030d 6C656E00 		.ascii	"len\000"
+ 990 0311 04       		.byte	0x4
+ 991 0312 CD01     		.2byte	0x1cd
+ 992 0314 77000000 		.4byte	0x77
+ 993 0318 04       		.byte	0x4
+ 994 0319 0A       		.uleb128 0xa
+ 995 031a C9020000 		.4byte	.LASF91
+ 996 031e 04       		.byte	0x4
+ 997 031f D401     		.2byte	0x1d4
+ 998 0321 77000000 		.4byte	0x77
+ 999 0325 06       		.byte	0x6
+ 1000 0326 00       		.byte	0
+ 1001 0327 04       		.uleb128 0x4
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 27
+
+
+ 1002 0328 D0010000 		.4byte	.LASF92
+ 1003 032c 04       		.byte	0x4
+ 1004 032d D601     		.2byte	0x1d6
+ 1005 032f F6020000 		.4byte	0x2f6
+ 1006 0333 09       		.uleb128 0x9
+ 1007 0334 0C       		.byte	0xc
+ 1008 0335 04       		.byte	0x4
+ 1009 0336 D901     		.2byte	0x1d9
+ 1010 0338 57030000 		.4byte	0x357
+ 1011 033c 0A       		.uleb128 0xa
+ 1012 033d 4A040000 		.4byte	.LASF93
+ 1013 0341 04       		.byte	0x4
+ 1014 0342 DC01     		.2byte	0x1dc
+ 1015 0344 27030000 		.4byte	0x327
+ 1016 0348 00       		.byte	0
+ 1017 0349 0A       		.uleb128 0xa
+ 1018 034a 3F040000 		.4byte	.LASF94
+ 1019 034e 04       		.byte	0x4
+ 1020 034f DF01     		.2byte	0x1df
+ 1021 0351 BA020000 		.4byte	0x2ba
+ 1022 0355 08       		.byte	0x8
+ 1023 0356 00       		.byte	0
+ 1024 0357 04       		.uleb128 0x4
+ 1025 0358 08090000 		.4byte	.LASF95
+ 1026 035c 04       		.byte	0x4
+ 1027 035d E101     		.2byte	0x1e1
+ 1028 035f 33030000 		.4byte	0x333
+ 1029 0363 0C       		.uleb128 0xc
+ 1030 0364 B6070000 		.4byte	.LASF96
+ 1031 0368 05       		.byte	0x5
+ 1032 0369 34       		.byte	0x34
+ 1033 036a 57030000 		.4byte	0x357
+ 1034 036e 0D       		.uleb128 0xd
+ 1035 036f 10       		.byte	0x10
+ 1036 0370 05       		.byte	0x5
+ 1037 0371 8A       		.byte	0x8a
+ 1038 0372 8F030000 		.4byte	0x38f
+ 1039 0376 0E       		.uleb128 0xe
+ 1040 0377 AA000000 		.4byte	.LASF97
+ 1041 037b 05       		.byte	0x5
+ 1042 037c 8D       		.byte	0x8d
+ 1043 037d EA020000 		.4byte	0x2ea
+ 1044 0381 00       		.byte	0
+ 1045 0382 0E       		.uleb128 0xe
+ 1046 0383 36070000 		.4byte	.LASF98
+ 1047 0387 05       		.byte	0x5
+ 1048 0388 90       		.byte	0x90
+ 1049 0389 57030000 		.4byte	0x357
+ 1050 038d 04       		.byte	0x4
+ 1051 038e 00       		.byte	0
+ 1052 038f 0C       		.uleb128 0xc
+ 1053 0390 98070000 		.4byte	.LASF99
+ 1054 0394 05       		.byte	0x5
+ 1055 0395 92       		.byte	0x92
+ 1056 0396 6E030000 		.4byte	0x36e
+ 1057 039a 07       		.uleb128 0x7
+ 1058 039b 01       		.byte	0x1
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 28
+
+
+ 1059 039c 07       		.byte	0x7
+ 1060 039d BF07     		.2byte	0x7bf
+ 1061 039f C2030000 		.4byte	0x3c2
+ 1062 03a3 08       		.uleb128 0x8
+ 1063 03a4 3F000000 		.4byte	.LASF100
+ 1064 03a8 00       		.sleb128 0
+ 1065 03a9 08       		.uleb128 0x8
+ 1066 03aa D5070000 		.4byte	.LASF101
+ 1067 03ae 01       		.sleb128 1
+ 1068 03af 08       		.uleb128 0x8
+ 1069 03b0 D8090000 		.4byte	.LASF102
+ 1070 03b4 02       		.sleb128 2
+ 1071 03b5 08       		.uleb128 0x8
+ 1072 03b6 65020000 		.4byte	.LASF103
+ 1073 03ba 03       		.sleb128 3
+ 1074 03bb 08       		.uleb128 0x8
+ 1075 03bc 47030000 		.4byte	.LASF104
+ 1076 03c0 04       		.sleb128 4
+ 1077 03c1 00       		.byte	0
+ 1078 03c2 04       		.uleb128 0x4
+ 1079 03c3 7A0B0000 		.4byte	.LASF105
+ 1080 03c7 07       		.byte	0x7
+ 1081 03c8 CD07     		.2byte	0x7cd
+ 1082 03ca 9A030000 		.4byte	0x39a
+ 1083 03ce 0F       		.uleb128 0xf
+ 1084 03cf C7080000 		.4byte	.LASF113
+ 1085 03d3 01       		.byte	0x1
+ 1086 03d4 72       		.byte	0x72
+ 1087 03d5 00000000 		.4byte	.LFB37
+ 1088 03d9 1C000000 		.4byte	.LFE37-.LFB37
+ 1089 03dd 01       		.uleb128 0x1
+ 1090 03de 9C       		.byte	0x9c
+ 1091 03df 10       		.uleb128 0x10
+ 1092 03e0 88080000 		.4byte	.LASF108
+ 1093 03e4 01       		.byte	0x1
+ 1094 03e5 8A       		.byte	0x8a
+ 1095 03e6 00000000 		.4byte	.LFB38
+ 1096 03ea 14010000 		.4byte	.LFE38-.LFB38
+ 1097 03ee 01       		.uleb128 0x1
+ 1098 03ef 9C       		.byte	0x9c
+ 1099 03f0 1F040000 		.4byte	0x41f
+ 1100 03f4 11       		.uleb128 0x11
+ 1101 03f5 5B050000 		.4byte	.LASF106
+ 1102 03f9 01       		.byte	0x1
+ 1103 03fa 8A       		.byte	0x8a
+ 1104 03fb 83000000 		.4byte	0x83
+ 1105 03ff 02       		.uleb128 0x2
+ 1106 0400 91       		.byte	0x91
+ 1107 0401 6C       		.sleb128 -20
+ 1108 0402 11       		.uleb128 0x11
+ 1109 0403 6F0B0000 		.4byte	.LASF107
+ 1110 0407 01       		.byte	0x1
+ 1111 0408 8A       		.byte	0x8a
+ 1112 0409 AB000000 		.4byte	0xab
+ 1113 040d 02       		.uleb128 0x2
+ 1114 040e 91       		.byte	0x91
+ 1115 040f 68       		.sleb128 -24
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 29
+
+
+ 1116 0410 12       		.uleb128 0x12
+ 1117 0411 10040000 		.4byte	.LASF111
+ 1118 0415 01       		.byte	0x1
+ 1119 0416 8C       		.byte	0x8c
+ 1120 0417 1F040000 		.4byte	0x41f
+ 1121 041b 02       		.uleb128 0x2
+ 1122 041c 91       		.byte	0x91
+ 1123 041d 74       		.sleb128 -12
+ 1124 041e 00       		.byte	0
+ 1125 041f 06       		.uleb128 0x6
+ 1126 0420 04       		.byte	0x4
+ 1127 0421 8F030000 		.4byte	0x38f
+ 1128 0425 13       		.uleb128 0x13
+ 1129 0426 53000000 		.4byte	.LASF109
+ 1130 042a 01       		.byte	0x1
+ 1131 042b 1501     		.2byte	0x115
+ 1132 042d 00000000 		.4byte	.LFB39
+ 1133 0431 58000000 		.4byte	.LFE39-.LFB39
+ 1134 0435 01       		.uleb128 0x1
+ 1135 0436 9C       		.byte	0x9c
+ 1136 0437 5A040000 		.4byte	0x45a
+ 1137 043b 14       		.uleb128 0x14
+ 1138 043c 430B0000 		.4byte	.LASF110
+ 1139 0440 01       		.byte	0x1
+ 1140 0441 1501     		.2byte	0x115
+ 1141 0443 AD000000 		.4byte	0xad
+ 1142 0447 02       		.uleb128 0x2
+ 1143 0448 91       		.byte	0x91
+ 1144 0449 64       		.sleb128 -28
+ 1145 044a 15       		.uleb128 0x15
+ 1146 044b 88030000 		.4byte	.LASF112
+ 1147 044f 01       		.byte	0x1
+ 1148 0450 1801     		.2byte	0x118
+ 1149 0452 63030000 		.4byte	0x363
+ 1150 0456 02       		.uleb128 0x2
+ 1151 0457 91       		.byte	0x91
+ 1152 0458 6C       		.sleb128 -20
+ 1153 0459 00       		.byte	0
+ 1154 045a 16       		.uleb128 0x16
+ 1155 045b 16080000 		.4byte	.LASF114
+ 1156 045f 01       		.byte	0x1
+ 1157 0460 3501     		.2byte	0x135
+ 1158 0462 00000000 		.4byte	.LFB40
+ 1159 0466 3C000000 		.4byte	.LFE40-.LFB40
+ 1160 046a 01       		.uleb128 0x1
+ 1161 046b 9C       		.byte	0x9c
+ 1162 046c 13       		.uleb128 0x13
+ 1163 046d F9030000 		.4byte	.LASF115
+ 1164 0471 01       		.byte	0x1
+ 1165 0472 5101     		.2byte	0x151
+ 1166 0474 00000000 		.4byte	.LFB41
+ 1167 0478 5C000000 		.4byte	.LFE41-.LFB41
+ 1168 047c 01       		.uleb128 0x1
+ 1169 047d 9C       		.byte	0x9c
+ 1170 047e A1040000 		.4byte	0x4a1
+ 1171 0482 15       		.uleb128 0x15
+ 1172 0483 E8030000 		.4byte	.LASF116
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 30
+
+
+ 1173 0487 01       		.byte	0x1
+ 1174 0488 5401     		.2byte	0x154
+ 1175 048a A1040000 		.4byte	0x4a1
+ 1176 048e 02       		.uleb128 0x2
+ 1177 048f 91       		.byte	0x91
+ 1178 0490 74       		.sleb128 -12
+ 1179 0491 15       		.uleb128 0x15
+ 1180 0492 2A0A0000 		.4byte	.LASF117
+ 1181 0496 01       		.byte	0x1
+ 1182 0497 5701     		.2byte	0x157
+ 1183 0499 57030000 		.4byte	0x357
+ 1184 049d 02       		.uleb128 0x2
+ 1185 049e 91       		.byte	0x91
+ 1186 049f 68       		.sleb128 -24
+ 1187 04a0 00       		.byte	0
+ 1188 04a1 17       		.uleb128 0x17
+ 1189 04a2 6B000000 		.4byte	0x6b
+ 1190 04a6 B1040000 		.4byte	0x4b1
+ 1191 04aa 18       		.uleb128 0x18
+ 1192 04ab A4000000 		.4byte	0xa4
+ 1193 04af 01       		.byte	0x1
+ 1194 04b0 00       		.byte	0
+ 1195 04b1 13       		.uleb128 0x13
+ 1196 04b2 37030000 		.4byte	.LASF118
+ 1197 04b6 01       		.byte	0x1
+ 1198 04b7 7901     		.2byte	0x179
+ 1199 04b9 00000000 		.4byte	.LFB42
+ 1200 04bd A0000000 		.4byte	.LFE42-.LFB42
+ 1201 04c1 01       		.uleb128 0x1
+ 1202 04c2 9C       		.byte	0x9c
+ 1203 04c3 EC040000 		.4byte	0x4ec
+ 1204 04c7 15       		.uleb128 0x15
+ 1205 04c8 3E0D0000 		.4byte	.LASF119
+ 1206 04cc 01       		.byte	0x1
+ 1207 04cd 7D01     		.2byte	0x17d
+ 1208 04cf 83000000 		.4byte	0x83
+ 1209 04d3 05       		.uleb128 0x5
+ 1210 04d4 03       		.byte	0x3
+ 1211 04d5 10000000 		.4byte	led_counter.7632
+ 1212 04d9 15       		.uleb128 0x15
+ 1213 04da 13030000 		.4byte	.LASF120
+ 1214 04de 01       		.byte	0x1
+ 1215 04df 8001     		.2byte	0x180
+ 1216 04e1 6B000000 		.4byte	0x6b
+ 1217 04e5 05       		.uleb128 0x5
+ 1218 04e6 03       		.byte	0x3
+ 1219 04e7 0C000000 		.4byte	state.7633
+ 1220 04eb 00       		.byte	0
+ 1221 04ec 12       		.uleb128 0x12
+ 1222 04ed 880B0000 		.4byte	.LASF121
+ 1223 04f1 01       		.byte	0x1
+ 1224 04f2 53       		.byte	0x53
+ 1225 04f3 6B000000 		.4byte	0x6b
+ 1226 04f7 05       		.uleb128 0x5
+ 1227 04f8 03       		.byte	0x3
+ 1228 04f9 00000000 		.4byte	isConnectionUpdateRequested
+ 1229 04fd 12       		.uleb128 0x12
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 31
+
+
+ 1230 04fe 03030000 		.4byte	.LASF122
+ 1231 0502 01       		.byte	0x1
+ 1232 0503 58       		.byte	0x58
+ 1233 0504 AE020000 		.4byte	0x2ae
+ 1234 0508 05       		.uleb128 0x5
+ 1235 0509 03       		.byte	0x3
+ 1236 050a 04000000 		.4byte	ConnectionParam
+ 1237 050e 19       		.uleb128 0x19
+ 1238 050f A3060000 		.4byte	.LASF123
+ 1239 0513 07       		.byte	0x7
+ 1240 0514 DA09     		.2byte	0x9da
+ 1241 0516 C2030000 		.4byte	0x3c2
+ 1242 051a 1A       		.uleb128 0x1a
+ 1243 051b 9B080000 		.4byte	.LASF124
+ 1244 051f 01       		.byte	0x1
+ 1245 0520 40       		.byte	0x40
+ 1246 0521 6B000000 		.4byte	0x6b
+ 1247 0525 05       		.uleb128 0x5
+ 1248 0526 03       		.byte	0x3
+ 1249 0527 00000000 		.4byte	deviceConnected
+ 1250 052b 1A       		.uleb128 0x1a
+ 1251 052c 57090000 		.4byte	.LASF125
+ 1252 0530 01       		.byte	0x1
+ 1253 0531 45       		.byte	0x45
+ 1254 0532 6B000000 		.4byte	0x6b
+ 1255 0536 05       		.uleb128 0x5
+ 1256 0537 03       		.byte	0x3
+ 1257 0538 00000000 		.4byte	startNotification
+ 1258 053c 1A       		.uleb128 0x1a
+ 1259 053d B5000000 		.4byte	.LASF126
+ 1260 0541 01       		.byte	0x1
+ 1261 0542 48       		.byte	0x48
+ 1262 0543 EA020000 		.4byte	0x2ea
+ 1263 0547 05       		.uleb128 0x5
+ 1264 0548 03       		.byte	0x3
+ 1265 0549 00000000 		.4byte	connectionHandle
+ 1266 054d 1A       		.uleb128 0x1a
+ 1267 054e A40B0000 		.4byte	.LASF127
+ 1268 0552 01       		.byte	0x1
+ 1269 0553 4B       		.byte	0x4b
+ 1270 0554 6B000000 		.4byte	0x6b
+ 1271 0558 05       		.uleb128 0x5
+ 1272 0559 03       		.byte	0x3
+ 1273 055a 00000000 		.4byte	restartAdvertisement
+ 1274 055e 1A       		.uleb128 0x1a
+ 1275 055f D70B0000 		.4byte	.LASF128
+ 1276 0563 01       		.byte	0x1
+ 1277 0564 4F       		.byte	0x4f
+ 1278 0565 6B000000 		.4byte	0x6b
+ 1279 0569 05       		.uleb128 0x5
+ 1280 056a 03       		.byte	0x3
+ 1281 056b 00000000 		.4byte	updateNotificationCCCAttribute
+ 1282 056f 1A       		.uleb128 0x1a
+ 1283 0570 69090000 		.4byte	.LASF129
+ 1284 0574 01       		.byte	0x1
+ 1285 0575 62       		.byte	0x62
+ 1286 0576 6B000000 		.4byte	0x6b
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 32
+
+
+ 1287 057a 05       		.uleb128 0x5
+ 1288 057b 03       		.byte	0x3
+ 1289 057c 00000000 		.4byte	busyStatus
+ 1290 0580 00       		.byte	0
+ 1291              		.section	.debug_abbrev,"",%progbits
+ 1292              	.Ldebug_abbrev0:
+ 1293 0000 01       		.uleb128 0x1
+ 1294 0001 11       		.uleb128 0x11
+ 1295 0002 01       		.byte	0x1
+ 1296 0003 25       		.uleb128 0x25
+ 1297 0004 0E       		.uleb128 0xe
+ 1298 0005 13       		.uleb128 0x13
+ 1299 0006 0B       		.uleb128 0xb
+ 1300 0007 03       		.uleb128 0x3
+ 1301 0008 0E       		.uleb128 0xe
+ 1302 0009 1B       		.uleb128 0x1b
+ 1303 000a 0E       		.uleb128 0xe
+ 1304 000b 55       		.uleb128 0x55
+ 1305 000c 17       		.uleb128 0x17
+ 1306 000d 11       		.uleb128 0x11
+ 1307 000e 01       		.uleb128 0x1
+ 1308 000f 10       		.uleb128 0x10
+ 1309 0010 17       		.uleb128 0x17
+ 1310 0011 00       		.byte	0
+ 1311 0012 00       		.byte	0
+ 1312 0013 02       		.uleb128 0x2
+ 1313 0014 24       		.uleb128 0x24
+ 1314 0015 00       		.byte	0
+ 1315 0016 0B       		.uleb128 0xb
+ 1316 0017 0B       		.uleb128 0xb
+ 1317 0018 3E       		.uleb128 0x3e
+ 1318 0019 0B       		.uleb128 0xb
+ 1319 001a 03       		.uleb128 0x3
+ 1320 001b 0E       		.uleb128 0xe
+ 1321 001c 00       		.byte	0
+ 1322 001d 00       		.byte	0
+ 1323 001e 03       		.uleb128 0x3
+ 1324 001f 24       		.uleb128 0x24
+ 1325 0020 00       		.byte	0
+ 1326 0021 0B       		.uleb128 0xb
+ 1327 0022 0B       		.uleb128 0xb
+ 1328 0023 3E       		.uleb128 0x3e
+ 1329 0024 0B       		.uleb128 0xb
+ 1330 0025 03       		.uleb128 0x3
+ 1331 0026 08       		.uleb128 0x8
+ 1332 0027 00       		.byte	0
+ 1333 0028 00       		.byte	0
+ 1334 0029 04       		.uleb128 0x4
+ 1335 002a 16       		.uleb128 0x16
+ 1336 002b 00       		.byte	0
+ 1337 002c 03       		.uleb128 0x3
+ 1338 002d 0E       		.uleb128 0xe
+ 1339 002e 3A       		.uleb128 0x3a
+ 1340 002f 0B       		.uleb128 0xb
+ 1341 0030 3B       		.uleb128 0x3b
+ 1342 0031 05       		.uleb128 0x5
+ 1343 0032 49       		.uleb128 0x49
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 33
+
+
+ 1344 0033 13       		.uleb128 0x13
+ 1345 0034 00       		.byte	0
+ 1346 0035 00       		.byte	0
+ 1347 0036 05       		.uleb128 0x5
+ 1348 0037 0F       		.uleb128 0xf
+ 1349 0038 00       		.byte	0
+ 1350 0039 0B       		.uleb128 0xb
+ 1351 003a 0B       		.uleb128 0xb
+ 1352 003b 00       		.byte	0
+ 1353 003c 00       		.byte	0
+ 1354 003d 06       		.uleb128 0x6
+ 1355 003e 0F       		.uleb128 0xf
+ 1356 003f 00       		.byte	0
+ 1357 0040 0B       		.uleb128 0xb
+ 1358 0041 0B       		.uleb128 0xb
+ 1359 0042 49       		.uleb128 0x49
+ 1360 0043 13       		.uleb128 0x13
+ 1361 0044 00       		.byte	0
+ 1362 0045 00       		.byte	0
+ 1363 0046 07       		.uleb128 0x7
+ 1364 0047 04       		.uleb128 0x4
+ 1365 0048 01       		.byte	0x1
+ 1366 0049 0B       		.uleb128 0xb
+ 1367 004a 0B       		.uleb128 0xb
+ 1368 004b 3A       		.uleb128 0x3a
+ 1369 004c 0B       		.uleb128 0xb
+ 1370 004d 3B       		.uleb128 0x3b
+ 1371 004e 05       		.uleb128 0x5
+ 1372 004f 01       		.uleb128 0x1
+ 1373 0050 13       		.uleb128 0x13
+ 1374 0051 00       		.byte	0
+ 1375 0052 00       		.byte	0
+ 1376 0053 08       		.uleb128 0x8
+ 1377 0054 28       		.uleb128 0x28
+ 1378 0055 00       		.byte	0
+ 1379 0056 03       		.uleb128 0x3
+ 1380 0057 0E       		.uleb128 0xe
+ 1381 0058 1C       		.uleb128 0x1c
+ 1382 0059 0D       		.uleb128 0xd
+ 1383 005a 00       		.byte	0
+ 1384 005b 00       		.byte	0
+ 1385 005c 09       		.uleb128 0x9
+ 1386 005d 13       		.uleb128 0x13
+ 1387 005e 01       		.byte	0x1
+ 1388 005f 0B       		.uleb128 0xb
+ 1389 0060 0B       		.uleb128 0xb
+ 1390 0061 3A       		.uleb128 0x3a
+ 1391 0062 0B       		.uleb128 0xb
+ 1392 0063 3B       		.uleb128 0x3b
+ 1393 0064 05       		.uleb128 0x5
+ 1394 0065 01       		.uleb128 0x1
+ 1395 0066 13       		.uleb128 0x13
+ 1396 0067 00       		.byte	0
+ 1397 0068 00       		.byte	0
+ 1398 0069 0A       		.uleb128 0xa
+ 1399 006a 0D       		.uleb128 0xd
+ 1400 006b 00       		.byte	0
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 34
+
+
+ 1401 006c 03       		.uleb128 0x3
+ 1402 006d 0E       		.uleb128 0xe
+ 1403 006e 3A       		.uleb128 0x3a
+ 1404 006f 0B       		.uleb128 0xb
+ 1405 0070 3B       		.uleb128 0x3b
+ 1406 0071 05       		.uleb128 0x5
+ 1407 0072 49       		.uleb128 0x49
+ 1408 0073 13       		.uleb128 0x13
+ 1409 0074 38       		.uleb128 0x38
+ 1410 0075 0B       		.uleb128 0xb
+ 1411 0076 00       		.byte	0
+ 1412 0077 00       		.byte	0
+ 1413 0078 0B       		.uleb128 0xb
+ 1414 0079 0D       		.uleb128 0xd
+ 1415 007a 00       		.byte	0
+ 1416 007b 03       		.uleb128 0x3
+ 1417 007c 08       		.uleb128 0x8
+ 1418 007d 3A       		.uleb128 0x3a
+ 1419 007e 0B       		.uleb128 0xb
+ 1420 007f 3B       		.uleb128 0x3b
+ 1421 0080 05       		.uleb128 0x5
+ 1422 0081 49       		.uleb128 0x49
+ 1423 0082 13       		.uleb128 0x13
+ 1424 0083 38       		.uleb128 0x38
+ 1425 0084 0B       		.uleb128 0xb
+ 1426 0085 00       		.byte	0
+ 1427 0086 00       		.byte	0
+ 1428 0087 0C       		.uleb128 0xc
+ 1429 0088 16       		.uleb128 0x16
+ 1430 0089 00       		.byte	0
+ 1431 008a 03       		.uleb128 0x3
+ 1432 008b 0E       		.uleb128 0xe
+ 1433 008c 3A       		.uleb128 0x3a
+ 1434 008d 0B       		.uleb128 0xb
+ 1435 008e 3B       		.uleb128 0x3b
+ 1436 008f 0B       		.uleb128 0xb
+ 1437 0090 49       		.uleb128 0x49
+ 1438 0091 13       		.uleb128 0x13
+ 1439 0092 00       		.byte	0
+ 1440 0093 00       		.byte	0
+ 1441 0094 0D       		.uleb128 0xd
+ 1442 0095 13       		.uleb128 0x13
+ 1443 0096 01       		.byte	0x1
+ 1444 0097 0B       		.uleb128 0xb
+ 1445 0098 0B       		.uleb128 0xb
+ 1446 0099 3A       		.uleb128 0x3a
+ 1447 009a 0B       		.uleb128 0xb
+ 1448 009b 3B       		.uleb128 0x3b
+ 1449 009c 0B       		.uleb128 0xb
+ 1450 009d 01       		.uleb128 0x1
+ 1451 009e 13       		.uleb128 0x13
+ 1452 009f 00       		.byte	0
+ 1453 00a0 00       		.byte	0
+ 1454 00a1 0E       		.uleb128 0xe
+ 1455 00a2 0D       		.uleb128 0xd
+ 1456 00a3 00       		.byte	0
+ 1457 00a4 03       		.uleb128 0x3
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 35
+
+
+ 1458 00a5 0E       		.uleb128 0xe
+ 1459 00a6 3A       		.uleb128 0x3a
+ 1460 00a7 0B       		.uleb128 0xb
+ 1461 00a8 3B       		.uleb128 0x3b
+ 1462 00a9 0B       		.uleb128 0xb
+ 1463 00aa 49       		.uleb128 0x49
+ 1464 00ab 13       		.uleb128 0x13
+ 1465 00ac 38       		.uleb128 0x38
+ 1466 00ad 0B       		.uleb128 0xb
+ 1467 00ae 00       		.byte	0
+ 1468 00af 00       		.byte	0
+ 1469 00b0 0F       		.uleb128 0xf
+ 1470 00b1 2E       		.uleb128 0x2e
+ 1471 00b2 00       		.byte	0
+ 1472 00b3 3F       		.uleb128 0x3f
+ 1473 00b4 19       		.uleb128 0x19
+ 1474 00b5 03       		.uleb128 0x3
+ 1475 00b6 0E       		.uleb128 0xe
+ 1476 00b7 3A       		.uleb128 0x3a
+ 1477 00b8 0B       		.uleb128 0xb
+ 1478 00b9 3B       		.uleb128 0x3b
+ 1479 00ba 0B       		.uleb128 0xb
+ 1480 00bb 27       		.uleb128 0x27
+ 1481 00bc 19       		.uleb128 0x19
+ 1482 00bd 11       		.uleb128 0x11
+ 1483 00be 01       		.uleb128 0x1
+ 1484 00bf 12       		.uleb128 0x12
+ 1485 00c0 06       		.uleb128 0x6
+ 1486 00c1 40       		.uleb128 0x40
+ 1487 00c2 18       		.uleb128 0x18
+ 1488 00c3 9642     		.uleb128 0x2116
+ 1489 00c5 19       		.uleb128 0x19
+ 1490 00c6 00       		.byte	0
+ 1491 00c7 00       		.byte	0
+ 1492 00c8 10       		.uleb128 0x10
+ 1493 00c9 2E       		.uleb128 0x2e
+ 1494 00ca 01       		.byte	0x1
+ 1495 00cb 3F       		.uleb128 0x3f
+ 1496 00cc 19       		.uleb128 0x19
+ 1497 00cd 03       		.uleb128 0x3
+ 1498 00ce 0E       		.uleb128 0xe
+ 1499 00cf 3A       		.uleb128 0x3a
+ 1500 00d0 0B       		.uleb128 0xb
+ 1501 00d1 3B       		.uleb128 0x3b
+ 1502 00d2 0B       		.uleb128 0xb
+ 1503 00d3 27       		.uleb128 0x27
+ 1504 00d4 19       		.uleb128 0x19
+ 1505 00d5 11       		.uleb128 0x11
+ 1506 00d6 01       		.uleb128 0x1
+ 1507 00d7 12       		.uleb128 0x12
+ 1508 00d8 06       		.uleb128 0x6
+ 1509 00d9 40       		.uleb128 0x40
+ 1510 00da 18       		.uleb128 0x18
+ 1511 00db 9642     		.uleb128 0x2116
+ 1512 00dd 19       		.uleb128 0x19
+ 1513 00de 01       		.uleb128 0x1
+ 1514 00df 13       		.uleb128 0x13
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 36
+
+
+ 1515 00e0 00       		.byte	0
+ 1516 00e1 00       		.byte	0
+ 1517 00e2 11       		.uleb128 0x11
+ 1518 00e3 05       		.uleb128 0x5
+ 1519 00e4 00       		.byte	0
+ 1520 00e5 03       		.uleb128 0x3
+ 1521 00e6 0E       		.uleb128 0xe
+ 1522 00e7 3A       		.uleb128 0x3a
+ 1523 00e8 0B       		.uleb128 0xb
+ 1524 00e9 3B       		.uleb128 0x3b
+ 1525 00ea 0B       		.uleb128 0xb
+ 1526 00eb 49       		.uleb128 0x49
+ 1527 00ec 13       		.uleb128 0x13
+ 1528 00ed 02       		.uleb128 0x2
+ 1529 00ee 18       		.uleb128 0x18
+ 1530 00ef 00       		.byte	0
+ 1531 00f0 00       		.byte	0
+ 1532 00f1 12       		.uleb128 0x12
+ 1533 00f2 34       		.uleb128 0x34
+ 1534 00f3 00       		.byte	0
+ 1535 00f4 03       		.uleb128 0x3
+ 1536 00f5 0E       		.uleb128 0xe
+ 1537 00f6 3A       		.uleb128 0x3a
+ 1538 00f7 0B       		.uleb128 0xb
+ 1539 00f8 3B       		.uleb128 0x3b
+ 1540 00f9 0B       		.uleb128 0xb
+ 1541 00fa 49       		.uleb128 0x49
+ 1542 00fb 13       		.uleb128 0x13
+ 1543 00fc 02       		.uleb128 0x2
+ 1544 00fd 18       		.uleb128 0x18
+ 1545 00fe 00       		.byte	0
+ 1546 00ff 00       		.byte	0
+ 1547 0100 13       		.uleb128 0x13
+ 1548 0101 2E       		.uleb128 0x2e
+ 1549 0102 01       		.byte	0x1
+ 1550 0103 3F       		.uleb128 0x3f
+ 1551 0104 19       		.uleb128 0x19
+ 1552 0105 03       		.uleb128 0x3
+ 1553 0106 0E       		.uleb128 0xe
+ 1554 0107 3A       		.uleb128 0x3a
+ 1555 0108 0B       		.uleb128 0xb
+ 1556 0109 3B       		.uleb128 0x3b
+ 1557 010a 05       		.uleb128 0x5
+ 1558 010b 27       		.uleb128 0x27
+ 1559 010c 19       		.uleb128 0x19
+ 1560 010d 11       		.uleb128 0x11
+ 1561 010e 01       		.uleb128 0x1
+ 1562 010f 12       		.uleb128 0x12
+ 1563 0110 06       		.uleb128 0x6
+ 1564 0111 40       		.uleb128 0x40
+ 1565 0112 18       		.uleb128 0x18
+ 1566 0113 9642     		.uleb128 0x2116
+ 1567 0115 19       		.uleb128 0x19
+ 1568 0116 01       		.uleb128 0x1
+ 1569 0117 13       		.uleb128 0x13
+ 1570 0118 00       		.byte	0
+ 1571 0119 00       		.byte	0
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 37
+
+
+ 1572 011a 14       		.uleb128 0x14
+ 1573 011b 05       		.uleb128 0x5
+ 1574 011c 00       		.byte	0
+ 1575 011d 03       		.uleb128 0x3
+ 1576 011e 0E       		.uleb128 0xe
+ 1577 011f 3A       		.uleb128 0x3a
+ 1578 0120 0B       		.uleb128 0xb
+ 1579 0121 3B       		.uleb128 0x3b
+ 1580 0122 05       		.uleb128 0x5
+ 1581 0123 49       		.uleb128 0x49
+ 1582 0124 13       		.uleb128 0x13
+ 1583 0125 02       		.uleb128 0x2
+ 1584 0126 18       		.uleb128 0x18
+ 1585 0127 00       		.byte	0
+ 1586 0128 00       		.byte	0
+ 1587 0129 15       		.uleb128 0x15
+ 1588 012a 34       		.uleb128 0x34
+ 1589 012b 00       		.byte	0
+ 1590 012c 03       		.uleb128 0x3
+ 1591 012d 0E       		.uleb128 0xe
+ 1592 012e 3A       		.uleb128 0x3a
+ 1593 012f 0B       		.uleb128 0xb
+ 1594 0130 3B       		.uleb128 0x3b
+ 1595 0131 05       		.uleb128 0x5
+ 1596 0132 49       		.uleb128 0x49
+ 1597 0133 13       		.uleb128 0x13
+ 1598 0134 02       		.uleb128 0x2
+ 1599 0135 18       		.uleb128 0x18
+ 1600 0136 00       		.byte	0
+ 1601 0137 00       		.byte	0
+ 1602 0138 16       		.uleb128 0x16
+ 1603 0139 2E       		.uleb128 0x2e
+ 1604 013a 00       		.byte	0
+ 1605 013b 3F       		.uleb128 0x3f
+ 1606 013c 19       		.uleb128 0x19
+ 1607 013d 03       		.uleb128 0x3
+ 1608 013e 0E       		.uleb128 0xe
+ 1609 013f 3A       		.uleb128 0x3a
+ 1610 0140 0B       		.uleb128 0xb
+ 1611 0141 3B       		.uleb128 0x3b
+ 1612 0142 05       		.uleb128 0x5
+ 1613 0143 27       		.uleb128 0x27
+ 1614 0144 19       		.uleb128 0x19
+ 1615 0145 11       		.uleb128 0x11
+ 1616 0146 01       		.uleb128 0x1
+ 1617 0147 12       		.uleb128 0x12
+ 1618 0148 06       		.uleb128 0x6
+ 1619 0149 40       		.uleb128 0x40
+ 1620 014a 18       		.uleb128 0x18
+ 1621 014b 9642     		.uleb128 0x2116
+ 1622 014d 19       		.uleb128 0x19
+ 1623 014e 00       		.byte	0
+ 1624 014f 00       		.byte	0
+ 1625 0150 17       		.uleb128 0x17
+ 1626 0151 01       		.uleb128 0x1
+ 1627 0152 01       		.byte	0x1
+ 1628 0153 49       		.uleb128 0x49
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 38
+
+
+ 1629 0154 13       		.uleb128 0x13
+ 1630 0155 01       		.uleb128 0x1
+ 1631 0156 13       		.uleb128 0x13
+ 1632 0157 00       		.byte	0
+ 1633 0158 00       		.byte	0
+ 1634 0159 18       		.uleb128 0x18
+ 1635 015a 21       		.uleb128 0x21
+ 1636 015b 00       		.byte	0
+ 1637 015c 49       		.uleb128 0x49
+ 1638 015d 13       		.uleb128 0x13
+ 1639 015e 2F       		.uleb128 0x2f
+ 1640 015f 0B       		.uleb128 0xb
+ 1641 0160 00       		.byte	0
+ 1642 0161 00       		.byte	0
+ 1643 0162 19       		.uleb128 0x19
+ 1644 0163 34       		.uleb128 0x34
+ 1645 0164 00       		.byte	0
+ 1646 0165 03       		.uleb128 0x3
+ 1647 0166 0E       		.uleb128 0xe
+ 1648 0167 3A       		.uleb128 0x3a
+ 1649 0168 0B       		.uleb128 0xb
+ 1650 0169 3B       		.uleb128 0x3b
+ 1651 016a 05       		.uleb128 0x5
+ 1652 016b 49       		.uleb128 0x49
+ 1653 016c 13       		.uleb128 0x13
+ 1654 016d 3F       		.uleb128 0x3f
+ 1655 016e 19       		.uleb128 0x19
+ 1656 016f 3C       		.uleb128 0x3c
+ 1657 0170 19       		.uleb128 0x19
+ 1658 0171 00       		.byte	0
+ 1659 0172 00       		.byte	0
+ 1660 0173 1A       		.uleb128 0x1a
+ 1661 0174 34       		.uleb128 0x34
+ 1662 0175 00       		.byte	0
+ 1663 0176 03       		.uleb128 0x3
+ 1664 0177 0E       		.uleb128 0xe
+ 1665 0178 3A       		.uleb128 0x3a
+ 1666 0179 0B       		.uleb128 0xb
+ 1667 017a 3B       		.uleb128 0x3b
+ 1668 017b 0B       		.uleb128 0xb
+ 1669 017c 49       		.uleb128 0x49
+ 1670 017d 13       		.uleb128 0x13
+ 1671 017e 3F       		.uleb128 0x3f
+ 1672 017f 19       		.uleb128 0x19
+ 1673 0180 02       		.uleb128 0x2
+ 1674 0181 18       		.uleb128 0x18
+ 1675 0182 00       		.byte	0
+ 1676 0183 00       		.byte	0
+ 1677 0184 00       		.byte	0
+ 1678              		.section	.debug_aranges,"",%progbits
+ 1679 0000 44000000 		.4byte	0x44
+ 1680 0004 0200     		.2byte	0x2
+ 1681 0006 00000000 		.4byte	.Ldebug_info0
+ 1682 000a 04       		.byte	0x4
+ 1683 000b 00       		.byte	0
+ 1684 000c 0000     		.2byte	0
+ 1685 000e 0000     		.2byte	0
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 39
+
+
+ 1686 0010 00000000 		.4byte	.LFB37
+ 1687 0014 1C000000 		.4byte	.LFE37-.LFB37
+ 1688 0018 00000000 		.4byte	.LFB38
+ 1689 001c 14010000 		.4byte	.LFE38-.LFB38
+ 1690 0020 00000000 		.4byte	.LFB39
+ 1691 0024 58000000 		.4byte	.LFE39-.LFB39
+ 1692 0028 00000000 		.4byte	.LFB40
+ 1693 002c 3C000000 		.4byte	.LFE40-.LFB40
+ 1694 0030 00000000 		.4byte	.LFB41
+ 1695 0034 5C000000 		.4byte	.LFE41-.LFB41
+ 1696 0038 00000000 		.4byte	.LFB42
+ 1697 003c A0000000 		.4byte	.LFE42-.LFB42
+ 1698 0040 00000000 		.4byte	0
+ 1699 0044 00000000 		.4byte	0
+ 1700              		.section	.debug_ranges,"",%progbits
+ 1701              	.Ldebug_ranges0:
+ 1702 0000 00000000 		.4byte	.LFB37
+ 1703 0004 1C000000 		.4byte	.LFE37
+ 1704 0008 00000000 		.4byte	.LFB38
+ 1705 000c 14010000 		.4byte	.LFE38
+ 1706 0010 00000000 		.4byte	.LFB39
+ 1707 0014 58000000 		.4byte	.LFE39
+ 1708 0018 00000000 		.4byte	.LFB40
+ 1709 001c 3C000000 		.4byte	.LFE40
+ 1710 0020 00000000 		.4byte	.LFB41
+ 1711 0024 5C000000 		.4byte	.LFE41
+ 1712 0028 00000000 		.4byte	.LFB42
+ 1713 002c A0000000 		.4byte	.LFE42
+ 1714 0030 00000000 		.4byte	0
+ 1715 0034 00000000 		.4byte	0
+ 1716              		.section	.debug_line,"",%progbits
+ 1717              	.Ldebug_line0:
+ 1718 0000 83010000 		.section	.debug_str,"MS",%progbits,1
+ 1718      0200B100 
+ 1718      00000201 
+ 1718      FB0E0D00 
+ 1718      01010101 
+ 1719              	.LASF76:
+ 1720 0000 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_RX_CREDIT_IND\000"
+ 1720      455F4556 
+ 1720      545F4C32 
+ 1720      4341505F 
+ 1720      43424643 
+ 1721              	.LASF21:
+ 1722 0023 4359424C 		.ascii	"CYBLE_EVT_STACK_BUSY_STATUS\000"
+ 1722      455F4556 
+ 1722      545F5354 
+ 1722      41434B5F 
+ 1722      42555359 
+ 1723              	.LASF100:
+ 1724 003f 4359424C 		.ascii	"CYBLE_STATE_STOPPED\000"
+ 1724      455F5354 
+ 1724      4154455F 
+ 1724      53544F50 
+ 1724      50454400 
+ 1725              	.LASF109:
+ 1726 0053 53656E64 		.ascii	"SendDataOverFreqCounterNotification\000"
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 40
+
+
+ 1726      44617461 
+ 1726      4F766572 
+ 1726      46726571 
+ 1726      436F756E 
+ 1727              	.LASF75:
+ 1728 0077 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_READ\000"
+ 1728      455F4556 
+ 1728      545F4C32 
+ 1728      4341505F 
+ 1728      43424643 
+ 1729              	.LASF90:
+ 1730 0096 4359424C 		.ascii	"CYBLE_CONN_HANDLE_T\000"
+ 1730      455F434F 
+ 1730      4E4E5F48 
+ 1730      414E444C 
+ 1730      455F5400 
+ 1731              	.LASF97:
+ 1732 00aa 636F6E6E 		.ascii	"connHandle\000"
+ 1732      48616E64 
+ 1732      6C6500
+ 1733              	.LASF126:
+ 1734 00b5 636F6E6E 		.ascii	"connectionHandle\000"
+ 1734      65637469 
+ 1734      6F6E4861 
+ 1734      6E646C65 
+ 1734      00
+ 1735              	.LASF33:
+ 1736 00c6 4359424C 		.ascii	"CYBLE_EVT_GAP_CONNECTION_UPDATE_COMPLETE\000"
+ 1736      455F4556 
+ 1736      545F4741 
+ 1736      505F434F 
+ 1736      4E4E4543 
+ 1737              	.LASF74:
+ 1738 00ef 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_CNF\000"
+ 1738      455F4556 
+ 1738      545F4C32 
+ 1738      4341505F 
+ 1738      43424643 
+ 1739              	.LASF38:
+ 1740 0110 4359424C 		.ascii	"CYBLE_EVT_GAP_OOB_GENERATED_NOTIFICATION\000"
+ 1740      455F4556 
+ 1740      545F4741 
+ 1740      505F4F4F 
+ 1740      425F4745 
+ 1741              	.LASF54:
+ 1742 0139 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_MULTI_RSP\000"
+ 1742      455F4556 
+ 1742      545F4741 
+ 1742      5454435F 
+ 1742      52454144 
+ 1743              	.LASF59:
+ 1744 0158 4359424C 		.ascii	"CYBLE_EVT_GATTS_EXEC_WRITE_REQ\000"
+ 1744      455F4556 
+ 1744      545F4741 
+ 1744      5454535F 
+ 1744      45584543 
+ 1745              	.LASF48:
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 41
+
+
+ 1746 0177 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_GROUP_TYPE_RSP\000"
+ 1746      455F4556 
+ 1746      545F4741 
+ 1746      5454435F 
+ 1746      52454144 
+ 1747              	.LASF18:
+ 1748 019e 4359424C 		.ascii	"CYBLE_EVT_TIMEOUT\000"
+ 1748      455F4556 
+ 1748      545F5449 
+ 1748      4D454F55 
+ 1748      5400
+ 1749              	.LASF4:
+ 1750 01b0 6C6F6E67 		.ascii	"long int\000"
+ 1750      20696E74 
+ 1750      00
+ 1751              	.LASF7:
+ 1752 01b9 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1752      206C6F6E 
+ 1752      6720756E 
+ 1752      7369676E 
+ 1752      65642069 
+ 1753              	.LASF92:
+ 1754 01d0 4359424C 		.ascii	"CYBLE_GATT_VALUE_T\000"
+ 1754      455F4741 
+ 1754      54545F56 
+ 1754      414C5545 
+ 1754      5F5400
+ 1755              	.LASF20:
+ 1756 01e3 4359424C 		.ascii	"CYBLE_EVT_HCI_STATUS\000"
+ 1756      455F4556 
+ 1756      545F4843 
+ 1756      495F5354 
+ 1756      41545553 
+ 1757              	.LASF79:
+ 1758 01f8 4359424C 		.ascii	"CYBLE_EVT_PENDING_FLASH_WRITE\000"
+ 1758      455F4556 
+ 1758      545F5045 
+ 1758      4E44494E 
+ 1758      475F464C 
+ 1759              	.LASF68:
+ 1760 0216 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_REQ\000"
+ 1760      455F4556 
+ 1760      545F4C32 
+ 1760      4341505F 
+ 1760      434F4E4E 
+ 1761              	.LASF36:
+ 1762 023c 4359424C 		.ascii	"CYBLE_EVT_GAP_NUMERIC_COMPARISON_REQUEST\000"
+ 1762      455F4556 
+ 1762      545F4741 
+ 1762      505F4E55 
+ 1762      4D455249 
+ 1763              	.LASF103:
+ 1764 0265 4359424C 		.ascii	"CYBLE_STATE_ADVERTISING\000"
+ 1764      455F5354 
+ 1764      4154455F 
+ 1764      41445645 
+ 1764      52544953 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 42
+
+
+ 1765              	.LASF6:
+ 1766 027d 6C6F6E67 		.ascii	"long long int\000"
+ 1766      206C6F6E 
+ 1766      6720696E 
+ 1766      7400
+ 1767              	.LASF0:
+ 1768 028b 7369676E 		.ascii	"signed char\000"
+ 1768      65642063 
+ 1768      68617200 
+ 1769              	.LASF17:
+ 1770 0297 4359424C 		.ascii	"CYBLE_EVT_STACK_ON\000"
+ 1770      455F4556 
+ 1770      545F5354 
+ 1770      41434B5F 
+ 1770      4F4E00
+ 1771              	.LASF34:
+ 1772 02aa 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_START_STOP\000"
+ 1772      455F4556 
+ 1772      545F4741 
+ 1772      50435F53 
+ 1772      43414E5F 
+ 1773              	.LASF91:
+ 1774 02c9 61637475 		.ascii	"actualLen\000"
+ 1774      616C4C65 
+ 1774      6E00
+ 1775              	.LASF24:
+ 1776 02d3 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_REQ\000"
+ 1776      455F4556 
+ 1776      545F4741 
+ 1776      505F4155 
+ 1776      54485F52 
+ 1777              	.LASF52:
+ 1778 02ea 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_RSP\000"
+ 1778      455F4556 
+ 1778      545F4741 
+ 1778      5454435F 
+ 1778      52454144 
+ 1779              	.LASF122:
+ 1780 0303 436F6E6E 		.ascii	"ConnectionParam\000"
+ 1780      65637469 
+ 1780      6F6E5061 
+ 1780      72616D00 
+ 1781              	.LASF120:
+ 1782 0313 73746174 		.ascii	"state\000"
+ 1782      6500
+ 1783              	.LASF57:
+ 1784 0319 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_CMD_REQ\000"
+ 1784      455F4556 
+ 1784      545F4741 
+ 1784      5454535F 
+ 1784      57524954 
+ 1785              	.LASF118:
+ 1786 0337 48616E64 		.ascii	"HandleStatusLED\000"
+ 1786      6C655374 
+ 1786      61747573 
+ 1786      4C454400 
+ 1787              	.LASF104:
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 43
+
+
+ 1788 0347 4359424C 		.ascii	"CYBLE_STATE_DISCONNECTED\000"
+ 1788      455F5354 
+ 1788      4154455F 
+ 1788      44495343 
+ 1788      4F4E4E45 
+ 1789              	.LASF29:
+ 1790 0360 4359424C 		.ascii	"CYBLE_EVT_GAPP_ADVERTISEMENT_START_STOP\000"
+ 1790      455F4556 
+ 1790      545F4741 
+ 1790      50505F41 
+ 1790      44564552 
+ 1791              	.LASF112:
+ 1792 0388 6E6F7469 		.ascii	"notificationHandle\000"
+ 1792      66696361 
+ 1792      74696F6E 
+ 1792      48616E64 
+ 1792      6C6500
+ 1793              	.LASF9:
+ 1794 039b 75696E74 		.ascii	"uint8\000"
+ 1794      3800
+ 1795              	.LASF60:
+ 1796 03a1 4359424C 		.ascii	"CYBLE_EVT_GATTC_EXEC_WRITE_RSP\000"
+ 1796      455F4556 
+ 1796      545F4741 
+ 1796      5454435F 
+ 1796      45584543 
+ 1797              	.LASF13:
+ 1798 03c0 646F7562 		.ascii	"double\000"
+ 1798      6C6500
+ 1799              	.LASF73:
+ 1800 03c7 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DISCONN_IND\000"
+ 1800      455F4556 
+ 1800      545F4C32 
+ 1800      4341505F 
+ 1800      43424643 
+ 1801              	.LASF116:
+ 1802 03e8 43434344 		.ascii	"CCCDvalue\000"
+ 1802      76616C75 
+ 1802      6500
+ 1803              	.LASF11:
+ 1804 03f2 75696E74 		.ascii	"uint32\000"
+ 1804      333200
+ 1805              	.LASF115:
+ 1806 03f9 55706461 		.ascii	"UpdateNotificationCCCD\000"
+ 1806      74654E6F 
+ 1806      74696669 
+ 1806      63617469 
+ 1806      6F6E4343 
+ 1807              	.LASF111:
+ 1808 0410 77725265 		.ascii	"wrReqParam\000"
+ 1808      71506172 
+ 1808      616D00
+ 1809              	.LASF78:
+ 1810 041b 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_DATA_WRITE_IND\000"
+ 1810      455F4556 
+ 1810      545F4C32 
+ 1810      4341505F 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 44
+
+
+ 1810      43424643 
+ 1811              	.LASF94:
+ 1812 043f 61747472 		.ascii	"attrHandle\000"
+ 1812      48616E64 
+ 1812      6C6500
+ 1813              	.LASF93:
+ 1814 044a 76616C75 		.ascii	"value\000"
+ 1814      6500
+ 1815              	.LASF65:
+ 1816 0450 4359424C 		.ascii	"CYBLE_EVT_GATTC_STOP_CMD_COMPLETE\000"
+ 1816      455F4556 
+ 1816      545F4741 
+ 1816      5454435F 
+ 1816      53544F50 
+ 1817              	.LASF8:
+ 1818 0472 756E7369 		.ascii	"unsigned int\000"
+ 1818      676E6564 
+ 1818      20696E74 
+ 1818      00
+ 1819              	.LASF80:
+ 1820 047f 4359424C 		.ascii	"CYBLE_EVT_LE_PING_AUTH_TIMEOUT\000"
+ 1820      455F4556 
+ 1820      545F4C45 
+ 1820      5F50494E 
+ 1820      475F4155 
+ 1821              	.LASF5:
+ 1822 049e 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1822      20756E73 
+ 1822      69676E65 
+ 1822      6420696E 
+ 1822      7400
+ 1823              	.LASF86:
+ 1824 04b0 4359424C 		.ascii	"CYBLE_GAP_CONN_UPDATE_PARAM_T\000"
+ 1824      455F4741 
+ 1824      505F434F 
+ 1824      4E4E5F55 
+ 1824      50444154 
+ 1825              	.LASF55:
+ 1826 04ce 4359424C 		.ascii	"CYBLE_EVT_GATTS_WRITE_REQ\000"
+ 1826      455F4556 
+ 1826      545F4741 
+ 1826      5454535F 
+ 1826      57524954 
+ 1827              	.LASF47:
+ 1828 04e8 4359424C 		.ascii	"CYBLE_EVT_GATTC_XCHNG_MTU_RSP\000"
+ 1828      455F4556 
+ 1828      545F4741 
+ 1828      5454435F 
+ 1828      5843484E 
+ 1829              	.LASF64:
+ 1830 0506 4359424C 		.ascii	"CYBLE_EVT_GATTS_DATA_SIGNED_CMD_REQ\000"
+ 1830      455F4556 
+ 1830      545F4741 
+ 1830      5454535F 
+ 1830      44415441 
+ 1831              	.LASF67:
+ 1832 052a 4359424C 		.ascii	"CYBLE_EVT_GATTC_LONG_PROCEDURE_END\000"
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 45
+
+
+ 1832      455F4556 
+ 1832      545F4741 
+ 1832      5454435F 
+ 1832      4C4F4E47 
+ 1833              	.LASF85:
+ 1834 054d 73757065 		.ascii	"supervisionTO\000"
+ 1834      72766973 
+ 1834      696F6E54 
+ 1834      4F00
+ 1835              	.LASF106:
+ 1836 055b 6576656E 		.ascii	"event\000"
+ 1836      7400
+ 1837              	.LASF3:
+ 1838 0561 73686F72 		.ascii	"short unsigned int\000"
+ 1838      7420756E 
+ 1838      7369676E 
+ 1838      65642069 
+ 1838      6E7400
+ 1839              	.LASF16:
+ 1840 0574 4359424C 		.ascii	"CYBLE_EVT_HOST_INVALID\000"
+ 1840      455F4556 
+ 1840      545F484F 
+ 1840      53545F49 
+ 1840      4E56414C 
+ 1841              	.LASF50:
+ 1842 058b 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_INFO_RSP\000"
+ 1842      455F4556 
+ 1842      545F4741 
+ 1842      5454435F 
+ 1842      46494E44 
+ 1843              	.LASF22:
+ 1844 05a9 4359424C 		.ascii	"CYBLE_EVT_MEMORY_REQUEST\000"
+ 1844      455F4556 
+ 1844      545F4D45 
+ 1844      4D4F5259 
+ 1844      5F524551 
+ 1845              	.LASF132:
+ 1846 05c2 433A5C55 		.ascii	"C:\\Users\\owono\\Documents\\PSoC Creator\\Frequenc"
+ 1846      73657273 
+ 1846      5C6F776F 
+ 1846      6E6F5C44 
+ 1846      6F63756D 
+ 1847 05f0 795F4D65 		.ascii	"y_Measurement_Using_PSoC4_BLE\\Frequency_Measuremen"
+ 1847      61737572 
+ 1847      656D656E 
+ 1847      745F5573 
+ 1847      696E675F 
+ 1848 0622 745F5573 		.ascii	"t_Using_PSoC4_BLE\\Frequency_Measurement_Using_PSoC"
+ 1848      696E675F 
+ 1848      50536F43 
+ 1848      345F424C 
+ 1848      455C4672 
+ 1849 0654 345F424C 		.ascii	"4_BLE.cydsn\000"
+ 1849      452E6379 
+ 1849      64736E00 
+ 1850              	.LASF25:
+ 1851 0660 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_ENTRY_REQUEST\000"
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 46
+
+
+ 1851      455F4556 
+ 1851      545F4741 
+ 1851      505F5041 
+ 1851      53534B45 
+ 1852              	.LASF30:
+ 1853 0684 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_CONNECTED\000"
+ 1853      455F4556 
+ 1853      545F4741 
+ 1853      505F4445 
+ 1853      56494345 
+ 1854              	.LASF123:
+ 1855 06a3 6379426C 		.ascii	"cyBle_state\000"
+ 1855      655F7374 
+ 1855      61746500 
+ 1856              	.LASF26:
+ 1857 06af 4359424C 		.ascii	"CYBLE_EVT_GAP_PASSKEY_DISPLAY_REQUEST\000"
+ 1857      455F4556 
+ 1857      545F4741 
+ 1857      505F5041 
+ 1857      53534B45 
+ 1858              	.LASF44:
+ 1859 06d5 4359424C 		.ascii	"CYBLE_EVT_GATT_CONNECT_IND\000"
+ 1859      455F4556 
+ 1859      545F4741 
+ 1859      54545F43 
+ 1859      4F4E4E45 
+ 1860              	.LASF89:
+ 1861 06f0 61747449 		.ascii	"attId\000"
+ 1861      6400
+ 1862              	.LASF70:
+ 1863 06f6 4359424C 		.ascii	"CYBLE_EVT_L2CAP_COMMAND_REJ\000"
+ 1863      455F4556 
+ 1863      545F4C32 
+ 1863      4341505F 
+ 1863      434F4D4D 
+ 1864              	.LASF23:
+ 1865 0712 4359424C 		.ascii	"CYBLE_EVT_GAPC_SCAN_PROGRESS_RESULT\000"
+ 1865      455F4556 
+ 1865      545F4741 
+ 1865      50435F53 
+ 1865      43414E5F 
+ 1866              	.LASF98:
+ 1867 0736 68616E64 		.ascii	"handleValPair\000"
+ 1867      6C655661 
+ 1867      6C506169 
+ 1867      7200
+ 1868              	.LASF84:
+ 1869 0744 636F6E6E 		.ascii	"connLatency\000"
+ 1869      4C617465 
+ 1869      6E637900 
+ 1870              	.LASF71:
+ 1871 0750 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_IND\000"
+ 1871      455F4556 
+ 1871      545F4C32 
+ 1871      4341505F 
+ 1871      43424643 
+ 1872              	.LASF49:
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 47
+
+
+ 1873 076e 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BY_TYPE_RSP\000"
+ 1873      455F4556 
+ 1873      545F4741 
+ 1873      5454435F 
+ 1873      52454144 
+ 1874              	.LASF15:
+ 1875 078f 73697A65 		.ascii	"sizetype\000"
+ 1875      74797065 
+ 1875      00
+ 1876              	.LASF99:
+ 1877 0798 4359424C 		.ascii	"CYBLE_GATTS_WRITE_REQ_PARAM_T\000"
+ 1877      455F4741 
+ 1877      5454535F 
+ 1877      57524954 
+ 1877      455F5245 
+ 1878              	.LASF96:
+ 1879 07b6 4359424C 		.ascii	"CYBLE_GATTS_HANDLE_VALUE_NTF_T\000"
+ 1879      455F4741 
+ 1879      5454535F 
+ 1879      48414E44 
+ 1879      4C455F56 
+ 1880              	.LASF101:
+ 1881 07d5 4359424C 		.ascii	"CYBLE_STATE_INITIALIZING\000"
+ 1881      455F5354 
+ 1881      4154455F 
+ 1881      494E4954 
+ 1881      49414C49 
+ 1882              	.LASF81:
+ 1883 07ee 4359424C 		.ascii	"CYBLE_EVT_MAX\000"
+ 1883      455F4556 
+ 1883      545F4D41 
+ 1883      5800
+ 1884              	.LASF28:
+ 1885 07fc 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_FAILED\000"
+ 1885      455F4556 
+ 1885      545F4741 
+ 1885      505F4155 
+ 1885      54485F46 
+ 1886              	.LASF114:
+ 1887 0816 55706461 		.ascii	"UpdateConnectionParam\000"
+ 1887      7465436F 
+ 1887      6E6E6563 
+ 1887      74696F6E 
+ 1887      50617261 
+ 1888              	.LASF56:
+ 1889 082c 4359424C 		.ascii	"CYBLE_EVT_GATTC_WRITE_RSP\000"
+ 1889      455F4556 
+ 1889      545F4741 
+ 1889      5454435F 
+ 1889      57524954 
+ 1890              	.LASF41:
+ 1891 0846 4359424C 		.ascii	"CYBLE_EVT_GAPC_DIRECT_ADV_REPORT\000"
+ 1891      455F4556 
+ 1891      545F4741 
+ 1891      50435F44 
+ 1891      49524543 
+ 1892              	.LASF39:
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 48
+
+
+ 1893 0867 4359424C 		.ascii	"CYBLE_EVT_GAP_DATA_LENGTH_CHANGE\000"
+ 1893      455F4556 
+ 1893      545F4741 
+ 1893      505F4441 
+ 1893      54415F4C 
+ 1894              	.LASF108:
+ 1895 0888 43757374 		.ascii	"CustomEventHandler\000"
+ 1895      6F6D4576 
+ 1895      656E7448 
+ 1895      616E646C 
+ 1895      657200
+ 1896              	.LASF124:
+ 1897 089b 64657669 		.ascii	"deviceConnected\000"
+ 1897      6365436F 
+ 1897      6E6E6563 
+ 1897      74656400 
+ 1898              	.LASF27:
+ 1899 08ab 4359424C 		.ascii	"CYBLE_EVT_GAP_AUTH_COMPLETE\000"
+ 1899      455F4556 
+ 1899      545F4741 
+ 1899      505F4155 
+ 1899      54485F43 
+ 1900              	.LASF113:
+ 1901 08c7 496E6974 		.ascii	"InitializeBLESystem\000"
+ 1901      69616C69 
+ 1901      7A65424C 
+ 1901      45537973 
+ 1901      74656D00 
+ 1902              	.LASF83:
+ 1903 08db 636F6E6E 		.ascii	"connIntvMax\000"
+ 1903      496E7476 
+ 1903      4D617800 
+ 1904              	.LASF61:
+ 1905 08e7 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_NTF\000"
+ 1905      455F4556 
+ 1905      545F4741 
+ 1905      5454435F 
+ 1905      48414E44 
+ 1906              	.LASF95:
+ 1907 0908 4359424C 		.ascii	"CYBLE_GATT_HANDLE_VALUE_PAIR_T\000"
+ 1907      455F4741 
+ 1907      54545F48 
+ 1907      414E444C 
+ 1907      455F5641 
+ 1908              	.LASF72:
+ 1909 0927 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_CONN_CNF\000"
+ 1909      455F4556 
+ 1909      545F4C32 
+ 1909      4341505F 
+ 1909      43424643 
+ 1910              	.LASF82:
+ 1911 0945 636F6E6E 		.ascii	"connIntvMin\000"
+ 1911      496E7476 
+ 1911      4D696E00 
+ 1912              	.LASF12:
+ 1913 0951 666C6F61 		.ascii	"float\000"
+ 1913      7400
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 49
+
+
+ 1914              	.LASF125:
+ 1915 0957 73746172 		.ascii	"startNotification\000"
+ 1915      744E6F74 
+ 1915      69666963 
+ 1915      6174696F 
+ 1915      6E00
+ 1916              	.LASF129:
+ 1917 0969 62757379 		.ascii	"busyStatus\000"
+ 1917      53746174 
+ 1917      757300
+ 1918              	.LASF1:
+ 1919 0974 756E7369 		.ascii	"unsigned char\000"
+ 1919      676E6564 
+ 1919      20636861 
+ 1919      7200
+ 1920              	.LASF10:
+ 1921 0982 75696E74 		.ascii	"uint16\000"
+ 1921      313600
+ 1922              	.LASF37:
+ 1923 0989 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYPRESS_NOTIFICATION\000"
+ 1923      455F4556 
+ 1923      545F4741 
+ 1923      505F4B45 
+ 1923      59505245 
+ 1924              	.LASF2:
+ 1925 09ad 73686F72 		.ascii	"short int\000"
+ 1925      7420696E 
+ 1925      7400
+ 1926              	.LASF62:
+ 1927 09b7 4359424C 		.ascii	"CYBLE_EVT_GATTC_HANDLE_VALUE_IND\000"
+ 1927      455F4556 
+ 1927      545F4741 
+ 1927      5454435F 
+ 1927      48414E44 
+ 1928              	.LASF102:
+ 1929 09d8 4359424C 		.ascii	"CYBLE_STATE_CONNECTED\000"
+ 1929      455F5354 
+ 1929      4154455F 
+ 1929      434F4E4E 
+ 1929      45435445 
+ 1930              	.LASF58:
+ 1931 09ee 4359424C 		.ascii	"CYBLE_EVT_GATTS_PREP_WRITE_REQ\000"
+ 1931      455F4556 
+ 1931      545F4741 
+ 1931      5454535F 
+ 1931      50524550 
+ 1932              	.LASF32:
+ 1933 0a0d 4359424C 		.ascii	"CYBLE_EVT_GAP_ENCRYPT_CHANGE\000"
+ 1933      455F4556 
+ 1933      545F4741 
+ 1933      505F454E 
+ 1933      43525950 
+ 1934              	.LASF117:
+ 1935 0a2a 6E6F7469 		.ascii	"notificationCCCDhandle\000"
+ 1935      66696361 
+ 1935      74696F6E 
+ 1935      43434344 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 50
+
+
+ 1935      68616E64 
+ 1936              	.LASF63:
+ 1937 0a41 4359424C 		.ascii	"CYBLE_EVT_GATTS_HANDLE_VALUE_CNF\000"
+ 1937      455F4556 
+ 1937      545F4741 
+ 1937      5454535F 
+ 1937      48414E44 
+ 1938              	.LASF43:
+ 1939 0a62 4359424C 		.ascii	"CYBLE_EVT_GATTC_ERROR_RSP\000"
+ 1939      455F4556 
+ 1939      545F4741 
+ 1939      5454435F 
+ 1939      4552524F 
+ 1940              	.LASF42:
+ 1941 0a7c 4359424C 		.ascii	"CYBLE_EVT_GAP_SMP_NEGOTIATED_AUTH_INFO\000"
+ 1941      455F4556 
+ 1941      545F4741 
+ 1941      505F534D 
+ 1941      505F4E45 
+ 1942              	.LASF14:
+ 1943 0aa3 63686172 		.ascii	"char\000"
+ 1943      00
+ 1944              	.LASF31:
+ 1945 0aa8 4359424C 		.ascii	"CYBLE_EVT_GAP_DEVICE_DISCONNECTED\000"
+ 1945      455F4556 
+ 1945      545F4741 
+ 1945      505F4445 
+ 1945      56494345 
+ 1946              	.LASF66:
+ 1947 0aca 4359424C 		.ascii	"CYBLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ\000"
+ 1947      455F4556 
+ 1947      545F4741 
+ 1947      5454535F 
+ 1947      52454144 
+ 1948              	.LASF131:
+ 1949 0af3 2E5C424C 		.ascii	".\\BLEApplications.c\000"
+ 1949      45417070 
+ 1949      6C696361 
+ 1949      74696F6E 
+ 1949      732E6300 
+ 1950              	.LASF77:
+ 1951 0b07 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CBFC_TX_CREDIT_IND\000"
+ 1951      455F4556 
+ 1951      545F4C32 
+ 1951      4341505F 
+ 1951      43424643 
+ 1952              	.LASF19:
+ 1953 0b2a 4359424C 		.ascii	"CYBLE_EVT_HARDWARE_ERROR\000"
+ 1953      455F4556 
+ 1953      545F4841 
+ 1953      52445741 
+ 1953      52455F45 
+ 1954              	.LASF110:
+ 1955 0b43 46726571 		.ascii	"Frequency_Ptr\000"
+ 1955      75656E63 
+ 1955      795F5074 
+ 1955      7200
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 51
+
+
+ 1956              	.LASF46:
+ 1957 0b51 4359424C 		.ascii	"CYBLE_EVT_GATTS_XCNHG_MTU_REQ\000"
+ 1957      455F4556 
+ 1957      545F4741 
+ 1957      5454535F 
+ 1957      58434E48 
+ 1958              	.LASF107:
+ 1959 0b6f 6576656E 		.ascii	"eventParam\000"
+ 1959      74506172 
+ 1959      616D00
+ 1960              	.LASF105:
+ 1961 0b7a 4359424C 		.ascii	"CYBLE_STATE_T\000"
+ 1961      455F5354 
+ 1961      4154455F 
+ 1961      5400
+ 1962              	.LASF121:
+ 1963 0b88 6973436F 		.ascii	"isConnectionUpdateRequested\000"
+ 1963      6E6E6563 
+ 1963      74696F6E 
+ 1963      55706461 
+ 1963      74655265 
+ 1964              	.LASF127:
+ 1965 0ba4 72657374 		.ascii	"restartAdvertisement\000"
+ 1965      61727441 
+ 1965      64766572 
+ 1965      74697365 
+ 1965      6D656E74 
+ 1966              	.LASF53:
+ 1967 0bb9 4359424C 		.ascii	"CYBLE_EVT_GATTC_READ_BLOB_RSP\000"
+ 1967      455F4556 
+ 1967      545F4741 
+ 1967      5454435F 
+ 1967      52454144 
+ 1968              	.LASF128:
+ 1969 0bd7 75706461 		.ascii	"updateNotificationCCCAttribute\000"
+ 1969      74654E6F 
+ 1969      74696669 
+ 1969      63617469 
+ 1969      6F6E4343 
+ 1970              	.LASF130:
+ 1971 0bf6 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 1971      4320342E 
+ 1971      392E3320 
+ 1971      32303135 
+ 1971      30333033 
+ 1972 0c29 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m0 -mthumb -g -O"
+ 1972      20726576 
+ 1972      6973696F 
+ 1972      6E203232 
+ 1972      31323230 
+ 1973 0c5c 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1973      66756E63 
+ 1973      74696F6E 
+ 1973      2D736563 
+ 1973      74696F6E 
+ 1974              	.LASF51:
+ 1975 0c84 4359424C 		.ascii	"CYBLE_EVT_GATTC_FIND_BY_TYPE_VALUE_RSP\000"
+ARM GAS  C:\Users\owono\AppData\Local\Temp\cceR3g3U.s 			page 52
+
+
+ 1975      455F4556 
+ 1975      545F4741 
+ 1975      5454435F 
+ 1975      46494E44 
+ 1976              	.LASF35:
+ 1977 0cab 4359424C 		.ascii	"CYBLE_EVT_GAP_KEYINFO_EXCHNGE_CMPLT\000"
+ 1977      455F4556 
+ 1977      545F4741 
+ 1977      505F4B45 
+ 1977      59494E46 
+ 1978              	.LASF88:
+ 1979 0ccf 62644861 		.ascii	"bdHandle\000"
+ 1979      6E646C65 
+ 1979      00
+ 1980              	.LASF69:
+ 1981 0cd8 4359424C 		.ascii	"CYBLE_EVT_L2CAP_CONN_PARAM_UPDATE_RSP\000"
+ 1981      455F4556 
+ 1981      545F4C32 
+ 1981      4341505F 
+ 1981      434F4E4E 
+ 1982              	.LASF40:
+ 1983 0cfe 4359424C 		.ascii	"CYBLE_EVT_GAP_ENHANCE_CONN_COMPLETE\000"
+ 1983      455F4556 
+ 1983      545F4741 
+ 1983      505F454E 
+ 1983      48414E43 
+ 1984              	.LASF87:
+ 1985 0d22 4359424C 		.ascii	"CYBLE_GATT_DB_ATTR_HANDLE_T\000"
+ 1985      455F4741 
+ 1985      54545F44 
+ 1985      425F4154 
+ 1985      54525F48 
+ 1986              	.LASF119:
+ 1987 0d3e 6C65645F 		.ascii	"led_counter\000"
+ 1987      636F756E 
+ 1987      74657200 
+ 1988              	.LASF45:
+ 1989 0d4a 4359424C 		.ascii	"CYBLE_EVT_GATT_DISCONNECT_IND\000"
+ 1989      455F4556 
+ 1989      545F4741 
+ 1989      54545F44 
+ 1989      4953434F 
+ 1990              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

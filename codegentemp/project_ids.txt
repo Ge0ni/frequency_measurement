@@ -1,0 +1,5 @@
+C:\Users\owono\Documents\PSoC Creator\Old_Stuff\Frequency_Measurement_Using_PSoC4_BLE\Frequency_Measurement_Using_PSoC4_BLE\Frequency_Measurement_Using_PSoC4_BLE.cydsn\Frequency_Measurement_Using_PSoC4_BLE.cyprj|e5ee288d-340d-4d3a-a143-f273267d71b1
+C:\Program Files (x86)\Cypress\PSoC Creator\3.3\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|90737e71-4ffd-46a7-b180-3b28cd7e78e8
+C:\Program Files (x86)\Cypress\PSoC Creator\3.3\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|e9c8133b-ee8f-4afb-a0c8-30c4bfb2d252
+C:\Program Files (x86)\Cypress\PSoC Creator\3.3\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|43bcc8ed-9bc8-4a7a-90ca-2ae68f8e916e
+C:\Program Files (x86)\Cypress\PSoC Creator\3.3\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|4e889414-8553-41bc-8d05-3a917b6efd40

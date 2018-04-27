@@ -1,0 +1,904 @@
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 1
+
+
+   1              		.cpu cortex-m0
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 34, 0
+  11              		.eabi_attribute 18, 4
+  12              		.code	16
+  13              		.file	"Communication.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.UART_SendDebugData,"ax",%progbits
+  18              		.align	2
+  19              		.global	UART_SendDebugData
+  20              		.code	16
+  21              		.thumb_func
+  22              		.type	UART_SendDebugData, %function
+  23              	UART_SendDebugData:
+  24              	.LFB37:
+  25              		.file 1 ".\\Communication.c"
+   1:.\Communication.c **** /***************************************************************************//**
+   2:.\Communication.c **** * @file    Communication.c
+   3:.\Communication.c **** * @version 1.0
+   4:.\Communication.c **** * @author  Chethan (dche@cypress.com)
+   5:.\Communication.c **** *
+   6:.\Communication.c **** * @par Description
+   7:.\Communication.c **** *   This file contains the source code to the APIs for transmitting project's 
+   8:.\Communication.c **** *   debug data via UART.
+   9:.\Communication.c **** *
+  10:.\Communication.c **** * @par Notes
+  11:.\Communication.c **** *	None
+  12:.\Communication.c **** *
+  13:.\Communication.c **** * @par Hardware Dependency
+  14:.\Communication.c **** *    1. CY8CKIT-042 BLE Pioneer Kit
+  15:.\Communication.c **** *
+  16:.\Communication.c **** * @par References
+  17:.\Communication.c **** *    1. 001-32359: AN2283 "PSoC 1 Measuring Frequency"
+  18:.\Communication.c **** *
+  19:.\Communication.c **** * @par Code Tested With
+  20:.\Communication.c **** *    1. PSoC Creator  3.1 SP2 (3.1.0.2177)
+  21:.\Communication.c **** *    2. GCC 4.8.4
+  22:.\Communication.c **** *
+  23:.\Communication.c **** **//****************************************************************************
+  24:.\Communication.c **** * Copyright (2015), Cypress Semiconductor Corporation.
+  25:.\Communication.c **** ********************************************************************************
+  26:.\Communication.c **** * All rights reserved. 
+  27:.\Communication.c **** * This software, including source code, documentation and related 
+  28:.\Communication.c **** * materials (“Software”), is owned by Cypress Semiconductor 
+  29:.\Communication.c **** * Corporation (“Cypress”) and is protected by and subject to worldwide 
+  30:.\Communication.c **** * patent protection (United States and foreign), United States copyright 
+  31:.\Communication.c **** * laws and international treaty provisions. Therefore, you may use this 
+  32:.\Communication.c **** * Software only as provided in the license agreement accompanying the 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 2
+
+
+  33:.\Communication.c **** * software package from which you obtained this Software (“EULA”). 
+  34:.\Communication.c **** *
+  35:.\Communication.c **** * If no EULA applies, Cypress hereby grants you a personal, non-exclusive, 
+  36:.\Communication.c **** * non-transferable license to copy, modify and compile the Software source code
+  37:.\Communication.c **** * solely for your use in connection with Cypress's integrated circuit products.
+  38:.\Communication.c **** * Any reproduction, modification, translation, compilation, or representation
+  39:.\Communication.c **** * of this Software except as specified above is prohibited without the express
+  40:.\Communication.c **** * written permission of Cypress.
+  41:.\Communication.c **** 
+  42:.\Communication.c **** * Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
+  43:.\Communication.c **** * EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
+  44:.\Communication.c **** * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  45:.\Communication.c **** * Cypress reserves the right to make changes to the Software without notice. 
+  46:.\Communication.c **** * Cypress does not assume any liability arising out of the application or use 
+  47:.\Communication.c **** * of the Software or any product or circuit described in the Software. Cypress
+  48:.\Communication.c **** * does not authorize its products for use in any products where a malfunction
+  49:.\Communication.c **** * or failure of the Cypress product may reasonably be expected to result in 
+  50:.\Communication.c **** * significant property damage, injury or death (“High Risk Product”). By 
+  51:.\Communication.c **** * including Cypress’s product in a High Risk Product, the manufacturer of such  
+  52:.\Communication.c **** * system or application assumes all risk of such use and in doing so agrees to  
+  53:.\Communication.c **** * indemnify Cypress against all liability. 
+  54:.\Communication.c **** *******************************************************************************/
+  55:.\Communication.c **** 
+  56:.\Communication.c **** /*******************************************************************************
+  57:.\Communication.c **** *   Included Headers
+  58:.\Communication.c **** *******************************************************************************/
+  59:.\Communication.c **** #include "main.h"
+  60:.\Communication.c **** 
+  61:.\Communication.c **** #if(UART_DEBUG_ENABLE)
+  62:.\Communication.c **** /*******************************************************************************
+  63:.\Communication.c **** * Function Name: UART_SendDebugData
+  64:.\Communication.c **** ********************************************************************************
+  65:.\Communication.c **** *
+  66:.\Communication.c **** * Summary:
+  67:.\Communication.c **** *  Function sends 32-bit count value to PC via UART communication
+  68:.\Communication.c **** *
+  69:.\Communication.c **** * Parameters:
+  70:.\Communication.c **** *  CountValue: 32-bit count value to be sent to PC
+  71:.\Communication.c **** *
+  72:.\Communication.c **** * Return:
+  73:.\Communication.c **** *  None
+  74:.\Communication.c **** *
+  75:.\Communication.c **** *******************************************************************************/
+  76:.\Communication.c **** void UART_SendDebugData(uint32 CountValue)
+  77:.\Communication.c **** {
+  26              		.loc 1 77 0
+  27              		.cfi_startproc
+  28 0000 80B5     		push	{r7, lr}
+  29              		.cfi_def_cfa_offset 8
+  30              		.cfi_offset 7, -8
+  31              		.cfi_offset 14, -4
+  32 0002 82B0     		sub	sp, sp, #8
+  33              		.cfi_def_cfa_offset 16
+  34 0004 00AF     		add	r7, sp, #0
+  35              		.cfi_def_cfa_register 7
+  36 0006 7860     		str	r0, [r7, #4]
+  78:.\Communication.c **** 	/* Send upper 16-bits of count */
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 3
+
+
+  79:.\Communication.c **** 	UART_PutHexInt(HI16(CountValue));
+  37              		.loc 1 79 0
+  38 0008 7B68     		ldr	r3, [r7, #4]
+  39 000a 1B0C     		lsr	r3, r3, #16
+  40 000c 9BB2     		uxth	r3, r3
+  41 000e 181C     		mov	r0, r3
+  42 0010 FFF7FEFF 		bl	UART_PutHexInt
+  80:.\Communication.c **** 	
+  81:.\Communication.c **** 	/* Send lower 16-bits of count */
+  82:.\Communication.c **** 	UART_PutHexInt(LO16(CountValue));
+  43              		.loc 1 82 0
+  44 0014 7B68     		ldr	r3, [r7, #4]
+  45 0016 9BB2     		uxth	r3, r3
+  46 0018 181C     		mov	r0, r3
+  47 001a FFF7FEFF 		bl	UART_PutHexInt
+  83:.\Communication.c **** }
+  48              		.loc 1 83 0
+  49 001e BD46     		mov	sp, r7
+  50 0020 02B0     		add	sp, sp, #8
+  51              		@ sp needed
+  52 0022 80BD     		pop	{r7, pc}
+  53              		.cfi_endproc
+  54              	.LFE37:
+  55              		.size	UART_SendDebugData, .-UART_SendDebugData
+  56              		.section	.text.UART_PutHexByte,"ax",%progbits
+  57              		.align	2
+  58              		.global	UART_PutHexByte
+  59              		.code	16
+  60              		.thumb_func
+  61              		.type	UART_PutHexByte, %function
+  62              	UART_PutHexByte:
+  63              	.LFB38:
+  84:.\Communication.c **** 	
+  85:.\Communication.c **** /*******************************************************************************
+  86:.\Communication.c **** * Function Name: UART_PutHexByte
+  87:.\Communication.c **** ********************************************************************************
+  88:.\Communication.c **** *
+  89:.\Communication.c **** * Summary:
+  90:.\Communication.c **** *  Sends a byte of data in Hex representation (two characters, uppercase for A-F) 
+  91:.\Communication.c **** *  via the Tx pin.
+  92:.\Communication.c **** *
+  93:.\Communication.c **** * Parameters:
+  94:.\Communication.c **** *  TxHexByte: The byte to be converted to ASCII characters and sent via the Tx pin.
+  95:.\Communication.c **** *
+  96:.\Communication.c **** * Return:
+  97:.\Communication.c **** *  None
+  98:.\Communication.c **** *
+  99:.\Communication.c **** *******************************************************************************/
+ 100:.\Communication.c **** void UART_PutHexByte(uint8 txHexByte) 
+ 101:.\Communication.c **** {
+  64              		.loc 1 101 0
+  65              		.cfi_startproc
+  66 0000 80B5     		push	{r7, lr}
+  67              		.cfi_def_cfa_offset 8
+  68              		.cfi_offset 7, -8
+  69              		.cfi_offset 14, -4
+  70 0002 82B0     		sub	sp, sp, #8
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 4
+
+
+  71              		.cfi_def_cfa_offset 16
+  72 0004 00AF     		add	r7, sp, #0
+  73              		.cfi_def_cfa_register 7
+  74 0006 021C     		mov	r2, r0
+  75 0008 FB1D     		add	r3, r7, #7
+  76 000a 1A70     		strb	r2, [r3]
+ 102:.\Communication.c ****     static char8 const CYCODE SW_Tx_UART_hex[] = "0123456789ABCDEF";
+ 103:.\Communication.c ****     UART_UartPutChar((uint8) SW_Tx_UART_hex[txHexByte >> SW_Tx_UART_BYTE_UPPER_NIBBLE_SHIFT]);
+  77              		.loc 1 103 0
+  78 000c FB1D     		add	r3, r7, #7
+  79 000e 1B78     		ldrb	r3, [r3]
+  80 0010 1B09     		lsr	r3, r3, #4
+  81 0012 DBB2     		uxtb	r3, r3
+  82 0014 1A1C     		mov	r2, r3
+  83 0016 084B     		ldr	r3, .L3
+  84 0018 9B5C     		ldrb	r3, [r3, r2]
+  85 001a 181C     		mov	r0, r3
+  86 001c FFF7FEFF 		bl	UART_SpiUartWriteTxData
+ 104:.\Communication.c ****     UART_UartPutChar((uint8) SW_Tx_UART_hex[txHexByte & SW_Tx_UART_BYTE_LOWER_NIBBLE_MASK]);
+  87              		.loc 1 104 0
+  88 0020 FB1D     		add	r3, r7, #7
+  89 0022 1B78     		ldrb	r3, [r3]
+  90 0024 0F22     		mov	r2, #15
+  91 0026 1340     		and	r3, r2
+  92 0028 034A     		ldr	r2, .L3
+  93 002a D35C     		ldrb	r3, [r2, r3]
+  94 002c 181C     		mov	r0, r3
+  95 002e FFF7FEFF 		bl	UART_SpiUartWriteTxData
+ 105:.\Communication.c **** }
+  96              		.loc 1 105 0
+  97 0032 BD46     		mov	sp, r7
+  98 0034 02B0     		add	sp, sp, #8
+  99              		@ sp needed
+ 100 0036 80BD     		pop	{r7, pc}
+ 101              	.L4:
+ 102              		.align	2
+ 103              	.L3:
+ 104 0038 00000000 		.word	SW_Tx_UART_hex.7597
+ 105              		.cfi_endproc
+ 106              	.LFE38:
+ 107              		.size	UART_PutHexByte, .-UART_PutHexByte
+ 108              		.section	.text.UART_PutHexInt,"ax",%progbits
+ 109              		.align	2
+ 110              		.global	UART_PutHexInt
+ 111              		.code	16
+ 112              		.thumb_func
+ 113              		.type	UART_PutHexInt, %function
+ 114              	UART_PutHexInt:
+ 115              	.LFB39:
+ 106:.\Communication.c **** 	
+ 107:.\Communication.c **** /*******************************************************************************
+ 108:.\Communication.c **** * Function Name: UART_PutHexInt
+ 109:.\Communication.c **** ********************************************************************************
+ 110:.\Communication.c **** *
+ 111:.\Communication.c **** * Summary:
+ 112:.\Communication.c **** *  Sends a 16-bit unsigned integer in Hex representation (four characters,
+ 113:.\Communication.c **** *  uppercase for A-F) via the Tx pin.
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 5
+
+
+ 114:.\Communication.c **** *
+ 115:.\Communication.c **** * Parameters:
+ 116:.\Communication.c **** *  TxHexInt: The uint16 to be converted to ASCII characters and sent via
+ 117:.\Communication.c **** *            the Tx pin.
+ 118:.\Communication.c **** *
+ 119:.\Communication.c **** * Return:
+ 120:.\Communication.c **** *  None
+ 121:.\Communication.c **** *
+ 122:.\Communication.c **** *******************************************************************************/
+ 123:.\Communication.c **** void UART_PutHexInt(uint16 txHexInt) 
+ 124:.\Communication.c **** {
+ 116              		.loc 1 124 0
+ 117              		.cfi_startproc
+ 118 0000 80B5     		push	{r7, lr}
+ 119              		.cfi_def_cfa_offset 8
+ 120              		.cfi_offset 7, -8
+ 121              		.cfi_offset 14, -4
+ 122 0002 82B0     		sub	sp, sp, #8
+ 123              		.cfi_def_cfa_offset 16
+ 124 0004 00AF     		add	r7, sp, #0
+ 125              		.cfi_def_cfa_register 7
+ 126 0006 021C     		mov	r2, r0
+ 127 0008 BB1D     		add	r3, r7, #6
+ 128 000a 1A80     		strh	r2, [r3]
+ 125:.\Communication.c ****     UART_PutHexByte((uint8)(txHexInt >> SW_Tx_UART_U16_UPPER_BYTE_SHIFT));
+ 129              		.loc 1 125 0
+ 130 000c BB1D     		add	r3, r7, #6
+ 131 000e 1B88     		ldrh	r3, [r3]
+ 132 0010 1B0A     		lsr	r3, r3, #8
+ 133 0012 9BB2     		uxth	r3, r3
+ 134 0014 DBB2     		uxtb	r3, r3
+ 135 0016 181C     		mov	r0, r3
+ 136 0018 FFF7FEFF 		bl	UART_PutHexByte
+ 126:.\Communication.c ****     UART_PutHexByte((uint8)(txHexInt & SW_Tx_UART_U16_LOWER_BYTE_MASK));
+ 137              		.loc 1 126 0
+ 138 001c BB1D     		add	r3, r7, #6
+ 139 001e 1B88     		ldrh	r3, [r3]
+ 140 0020 DBB2     		uxtb	r3, r3
+ 141 0022 181C     		mov	r0, r3
+ 142 0024 FFF7FEFF 		bl	UART_PutHexByte
+ 127:.\Communication.c **** }
+ 143              		.loc 1 127 0
+ 144 0028 BD46     		mov	sp, r7
+ 145 002a 02B0     		add	sp, sp, #8
+ 146              		@ sp needed
+ 147 002c 80BD     		pop	{r7, pc}
+ 148              		.cfi_endproc
+ 149              	.LFE39:
+ 150              		.size	UART_PutHexInt, .-UART_PutHexInt
+ 151 002e C046     		.section	.text.UART_PutCRLF,"ax",%progbits
+ 152              		.align	2
+ 153              		.global	UART_PutCRLF
+ 154              		.code	16
+ 155              		.thumb_func
+ 156              		.type	UART_PutCRLF, %function
+ 157              	UART_PutCRLF:
+ 158              	.LFB40:
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 6
+
+
+ 128:.\Communication.c **** 	
+ 129:.\Communication.c **** /*******************************************************************************
+ 130:.\Communication.c **** * Function Name: UART_PutCRLF
+ 131:.\Communication.c **** ********************************************************************************
+ 132:.\Communication.c **** *
+ 133:.\Communication.c **** * Summary:
+ 134:.\Communication.c **** *  Sends a carriage return (0x0D) and a line feed (0x0A) via the Tx pin.
+ 135:.\Communication.c **** *
+ 136:.\Communication.c **** * Parameters:
+ 137:.\Communication.c **** *  None
+ 138:.\Communication.c **** *
+ 139:.\Communication.c **** * Return:
+ 140:.\Communication.c **** *  None
+ 141:.\Communication.c **** *
+ 142:.\Communication.c **** *******************************************************************************/
+ 143:.\Communication.c **** void UART_PutCRLF(void) 
+ 144:.\Communication.c **** { 
+ 159              		.loc 1 144 0
+ 160              		.cfi_startproc
+ 161 0000 80B5     		push	{r7, lr}
+ 162              		.cfi_def_cfa_offset 8
+ 163              		.cfi_offset 7, -8
+ 164              		.cfi_offset 14, -4
+ 165 0002 00AF     		add	r7, sp, #0
+ 166              		.cfi_def_cfa_register 7
+ 145:.\Communication.c ****    UART_UartPutChar(0x0Du);
+ 167              		.loc 1 145 0
+ 168 0004 0D20     		mov	r0, #13
+ 169 0006 FFF7FEFF 		bl	UART_SpiUartWriteTxData
+ 146:.\Communication.c ****    UART_UartPutChar(0x0Au);
+ 170              		.loc 1 146 0
+ 171 000a 0A20     		mov	r0, #10
+ 172 000c FFF7FEFF 		bl	UART_SpiUartWriteTxData
+ 147:.\Communication.c **** }
+ 173              		.loc 1 147 0
+ 174 0010 BD46     		mov	sp, r7
+ 175              		@ sp needed
+ 176 0012 80BD     		pop	{r7, pc}
+ 177              		.cfi_endproc
+ 178              	.LFE40:
+ 179              		.size	UART_PutCRLF, .-UART_PutCRLF
+ 180              		.section	.rodata
+ 181              		.align	2
+ 182              		.type	SW_Tx_UART_hex.7597, %object
+ 183              		.size	SW_Tx_UART_hex.7597, 17
+ 184              	SW_Tx_UART_hex.7597:
+ 185 0000 30313233 		.ascii	"0123456789ABCDEF\000"
+ 185      34353637 
+ 185      38394142 
+ 185      43444546 
+ 185      00
+ 186 0011 000000   		.text
+ 187              	.Letext0:
+ 188              		.file 2 "Generated_Source\\PSoC4/cytypes.h"
+ 189              		.section	.debug_info,"",%progbits
+ 190              	.Ldebug_info0:
+ 191 0000 57010000 		.4byte	0x157
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 7
+
+
+ 192 0004 0400     		.2byte	0x4
+ 193 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 194 000a 04       		.byte	0x4
+ 195 000b 01       		.uleb128 0x1
+ 196 000c D5010000 		.4byte	.LASF23
+ 197 0010 01       		.byte	0x1
+ 198 0011 6A010000 		.4byte	.LASF24
+ 199 0015 B0000000 		.4byte	.LASF25
+ 200 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 201 001d 00000000 		.4byte	0
+ 202 0021 00000000 		.4byte	.Ldebug_line0
+ 203 0025 02       		.uleb128 0x2
+ 204 0026 01       		.byte	0x1
+ 205 0027 06       		.byte	0x6
+ 206 0028 9C010000 		.4byte	.LASF0
+ 207 002c 02       		.uleb128 0x2
+ 208 002d 01       		.byte	0x1
+ 209 002e 08       		.byte	0x8
+ 210 002f 4E010000 		.4byte	.LASF1
+ 211 0033 02       		.uleb128 0x2
+ 212 0034 02       		.byte	0x2
+ 213 0035 05       		.byte	0x5
+ 214 0036 BB010000 		.4byte	.LASF2
+ 215 003a 02       		.uleb128 0x2
+ 216 003b 02       		.byte	0x2
+ 217 003c 07       		.byte	0x7
+ 218 003d 97000000 		.4byte	.LASF3
+ 219 0041 02       		.uleb128 0x2
+ 220 0042 04       		.byte	0x4
+ 221 0043 05       		.byte	0x5
+ 222 0044 61010000 		.4byte	.LASF4
+ 223 0048 02       		.uleb128 0x2
+ 224 0049 04       		.byte	0x4
+ 225 004a 07       		.byte	0x7
+ 226 004b 53000000 		.4byte	.LASF5
+ 227 004f 02       		.uleb128 0x2
+ 228 0050 08       		.byte	0x8
+ 229 0051 05       		.byte	0x5
+ 230 0052 00000000 		.4byte	.LASF6
+ 231 0056 02       		.uleb128 0x2
+ 232 0057 08       		.byte	0x8
+ 233 0058 07       		.byte	0x7
+ 234 0059 75000000 		.4byte	.LASF7
+ 235 005d 03       		.uleb128 0x3
+ 236 005e 04       		.byte	0x4
+ 237 005f 05       		.byte	0x5
+ 238 0060 696E7400 		.ascii	"int\000"
+ 239 0064 02       		.uleb128 0x2
+ 240 0065 04       		.byte	0x4
+ 241 0066 07       		.byte	0x7
+ 242 0067 28000000 		.4byte	.LASF8
+ 243 006b 04       		.uleb128 0x4
+ 244 006c 4D000000 		.4byte	.LASF9
+ 245 0070 02       		.byte	0x2
+ 246 0071 9801     		.2byte	0x198
+ 247 0073 2C000000 		.4byte	0x2c
+ 248 0077 04       		.uleb128 0x4
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 8
+
+
+ 249 0078 C5010000 		.4byte	.LASF10
+ 250 007c 02       		.byte	0x2
+ 251 007d 9901     		.2byte	0x199
+ 252 007f 3A000000 		.4byte	0x3a
+ 253 0083 04       		.uleb128 0x4
+ 254 0084 0E000000 		.4byte	.LASF11
+ 255 0088 02       		.byte	0x2
+ 256 0089 9A01     		.2byte	0x19a
+ 257 008b 48000000 		.4byte	0x48
+ 258 008f 02       		.uleb128 0x2
+ 259 0090 04       		.byte	0x4
+ 260 0091 04       		.byte	0x4
+ 261 0092 B5010000 		.4byte	.LASF12
+ 262 0096 02       		.uleb128 0x2
+ 263 0097 08       		.byte	0x8
+ 264 0098 04       		.byte	0x4
+ 265 0099 7C010000 		.4byte	.LASF13
+ 266 009d 04       		.uleb128 0x4
+ 267 009e AA000000 		.4byte	.LASF14
+ 268 00a2 02       		.byte	0x2
+ 269 00a3 A901     		.2byte	0x1a9
+ 270 00a5 A9000000 		.4byte	0xa9
+ 271 00a9 02       		.uleb128 0x2
+ 272 00aa 01       		.byte	0x1
+ 273 00ab 08       		.byte	0x8
+ 274 00ac 5C010000 		.4byte	.LASF15
+ 275 00b0 02       		.uleb128 0x2
+ 276 00b1 04       		.byte	0x4
+ 277 00b2 07       		.byte	0x7
+ 278 00b3 CC010000 		.4byte	.LASF16
+ 279 00b7 05       		.uleb128 0x5
+ 280 00b8 15000000 		.4byte	.LASF17
+ 281 00bc 01       		.byte	0x1
+ 282 00bd 4C       		.byte	0x4c
+ 283 00be 00000000 		.4byte	.LFB37
+ 284 00c2 24000000 		.4byte	.LFE37-.LFB37
+ 285 00c6 01       		.uleb128 0x1
+ 286 00c7 9C       		.byte	0x9c
+ 287 00c8 DB000000 		.4byte	0xdb
+ 288 00cc 06       		.uleb128 0x6
+ 289 00cd 8C000000 		.4byte	.LASF19
+ 290 00d1 01       		.byte	0x1
+ 291 00d2 4C       		.byte	0x4c
+ 292 00d3 83000000 		.4byte	0x83
+ 293 00d7 02       		.uleb128 0x2
+ 294 00d8 91       		.byte	0x91
+ 295 00d9 74       		.sleb128 -12
+ 296 00da 00       		.byte	0
+ 297 00db 05       		.uleb128 0x5
+ 298 00dc 65000000 		.4byte	.LASF18
+ 299 00e0 01       		.byte	0x1
+ 300 00e1 64       		.byte	0x64
+ 301 00e2 00000000 		.4byte	.LFB38
+ 302 00e6 3C000000 		.4byte	.LFE38-.LFB38
+ 303 00ea 01       		.uleb128 0x1
+ 304 00eb 9C       		.byte	0x9c
+ 305 00ec 10010000 		.4byte	0x110
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 9
+
+
+ 306 00f0 06       		.uleb128 0x6
+ 307 00f1 92010000 		.4byte	.LASF20
+ 308 00f5 01       		.byte	0x1
+ 309 00f6 64       		.byte	0x64
+ 310 00f7 6B000000 		.4byte	0x6b
+ 311 00fb 02       		.uleb128 0x2
+ 312 00fc 91       		.byte	0x91
+ 313 00fd 77       		.sleb128 -9
+ 314 00fe 07       		.uleb128 0x7
+ 315 00ff 83010000 		.4byte	.LASF26
+ 316 0103 01       		.byte	0x1
+ 317 0104 66       		.byte	0x66
+ 318 0105 20010000 		.4byte	0x120
+ 319 0109 05       		.uleb128 0x5
+ 320 010a 03       		.byte	0x3
+ 321 010b 00000000 		.4byte	SW_Tx_UART_hex.7597
+ 322 010f 00       		.byte	0
+ 323 0110 08       		.uleb128 0x8
+ 324 0111 9D000000 		.4byte	0x9d
+ 325 0115 20010000 		.4byte	0x120
+ 326 0119 09       		.uleb128 0x9
+ 327 011a B0000000 		.4byte	0xb0
+ 328 011e 10       		.byte	0x10
+ 329 011f 00       		.byte	0
+ 330 0120 0A       		.uleb128 0xa
+ 331 0121 10010000 		.4byte	0x110
+ 332 0125 05       		.uleb128 0x5
+ 333 0126 35000000 		.4byte	.LASF21
+ 334 012a 01       		.byte	0x1
+ 335 012b 7B       		.byte	0x7b
+ 336 012c 00000000 		.4byte	.LFB39
+ 337 0130 2E000000 		.4byte	.LFE39-.LFB39
+ 338 0134 01       		.uleb128 0x1
+ 339 0135 9C       		.byte	0x9c
+ 340 0136 49010000 		.4byte	0x149
+ 341 013a 06       		.uleb128 0x6
+ 342 013b 44000000 		.4byte	.LASF22
+ 343 013f 01       		.byte	0x1
+ 344 0140 7B       		.byte	0x7b
+ 345 0141 77000000 		.4byte	0x77
+ 346 0145 02       		.uleb128 0x2
+ 347 0146 91       		.byte	0x91
+ 348 0147 76       		.sleb128 -10
+ 349 0148 00       		.byte	0
+ 350 0149 0B       		.uleb128 0xb
+ 351 014a A8010000 		.4byte	.LASF27
+ 352 014e 01       		.byte	0x1
+ 353 014f 8F       		.byte	0x8f
+ 354 0150 00000000 		.4byte	.LFB40
+ 355 0154 14000000 		.4byte	.LFE40-.LFB40
+ 356 0158 01       		.uleb128 0x1
+ 357 0159 9C       		.byte	0x9c
+ 358 015a 00       		.byte	0
+ 359              		.section	.debug_abbrev,"",%progbits
+ 360              	.Ldebug_abbrev0:
+ 361 0000 01       		.uleb128 0x1
+ 362 0001 11       		.uleb128 0x11
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 10
+
+
+ 363 0002 01       		.byte	0x1
+ 364 0003 25       		.uleb128 0x25
+ 365 0004 0E       		.uleb128 0xe
+ 366 0005 13       		.uleb128 0x13
+ 367 0006 0B       		.uleb128 0xb
+ 368 0007 03       		.uleb128 0x3
+ 369 0008 0E       		.uleb128 0xe
+ 370 0009 1B       		.uleb128 0x1b
+ 371 000a 0E       		.uleb128 0xe
+ 372 000b 55       		.uleb128 0x55
+ 373 000c 17       		.uleb128 0x17
+ 374 000d 11       		.uleb128 0x11
+ 375 000e 01       		.uleb128 0x1
+ 376 000f 10       		.uleb128 0x10
+ 377 0010 17       		.uleb128 0x17
+ 378 0011 00       		.byte	0
+ 379 0012 00       		.byte	0
+ 380 0013 02       		.uleb128 0x2
+ 381 0014 24       		.uleb128 0x24
+ 382 0015 00       		.byte	0
+ 383 0016 0B       		.uleb128 0xb
+ 384 0017 0B       		.uleb128 0xb
+ 385 0018 3E       		.uleb128 0x3e
+ 386 0019 0B       		.uleb128 0xb
+ 387 001a 03       		.uleb128 0x3
+ 388 001b 0E       		.uleb128 0xe
+ 389 001c 00       		.byte	0
+ 390 001d 00       		.byte	0
+ 391 001e 03       		.uleb128 0x3
+ 392 001f 24       		.uleb128 0x24
+ 393 0020 00       		.byte	0
+ 394 0021 0B       		.uleb128 0xb
+ 395 0022 0B       		.uleb128 0xb
+ 396 0023 3E       		.uleb128 0x3e
+ 397 0024 0B       		.uleb128 0xb
+ 398 0025 03       		.uleb128 0x3
+ 399 0026 08       		.uleb128 0x8
+ 400 0027 00       		.byte	0
+ 401 0028 00       		.byte	0
+ 402 0029 04       		.uleb128 0x4
+ 403 002a 16       		.uleb128 0x16
+ 404 002b 00       		.byte	0
+ 405 002c 03       		.uleb128 0x3
+ 406 002d 0E       		.uleb128 0xe
+ 407 002e 3A       		.uleb128 0x3a
+ 408 002f 0B       		.uleb128 0xb
+ 409 0030 3B       		.uleb128 0x3b
+ 410 0031 05       		.uleb128 0x5
+ 411 0032 49       		.uleb128 0x49
+ 412 0033 13       		.uleb128 0x13
+ 413 0034 00       		.byte	0
+ 414 0035 00       		.byte	0
+ 415 0036 05       		.uleb128 0x5
+ 416 0037 2E       		.uleb128 0x2e
+ 417 0038 01       		.byte	0x1
+ 418 0039 3F       		.uleb128 0x3f
+ 419 003a 19       		.uleb128 0x19
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 11
+
+
+ 420 003b 03       		.uleb128 0x3
+ 421 003c 0E       		.uleb128 0xe
+ 422 003d 3A       		.uleb128 0x3a
+ 423 003e 0B       		.uleb128 0xb
+ 424 003f 3B       		.uleb128 0x3b
+ 425 0040 0B       		.uleb128 0xb
+ 426 0041 27       		.uleb128 0x27
+ 427 0042 19       		.uleb128 0x19
+ 428 0043 11       		.uleb128 0x11
+ 429 0044 01       		.uleb128 0x1
+ 430 0045 12       		.uleb128 0x12
+ 431 0046 06       		.uleb128 0x6
+ 432 0047 40       		.uleb128 0x40
+ 433 0048 18       		.uleb128 0x18
+ 434 0049 9642     		.uleb128 0x2116
+ 435 004b 19       		.uleb128 0x19
+ 436 004c 01       		.uleb128 0x1
+ 437 004d 13       		.uleb128 0x13
+ 438 004e 00       		.byte	0
+ 439 004f 00       		.byte	0
+ 440 0050 06       		.uleb128 0x6
+ 441 0051 05       		.uleb128 0x5
+ 442 0052 00       		.byte	0
+ 443 0053 03       		.uleb128 0x3
+ 444 0054 0E       		.uleb128 0xe
+ 445 0055 3A       		.uleb128 0x3a
+ 446 0056 0B       		.uleb128 0xb
+ 447 0057 3B       		.uleb128 0x3b
+ 448 0058 0B       		.uleb128 0xb
+ 449 0059 49       		.uleb128 0x49
+ 450 005a 13       		.uleb128 0x13
+ 451 005b 02       		.uleb128 0x2
+ 452 005c 18       		.uleb128 0x18
+ 453 005d 00       		.byte	0
+ 454 005e 00       		.byte	0
+ 455 005f 07       		.uleb128 0x7
+ 456 0060 34       		.uleb128 0x34
+ 457 0061 00       		.byte	0
+ 458 0062 03       		.uleb128 0x3
+ 459 0063 0E       		.uleb128 0xe
+ 460 0064 3A       		.uleb128 0x3a
+ 461 0065 0B       		.uleb128 0xb
+ 462 0066 3B       		.uleb128 0x3b
+ 463 0067 0B       		.uleb128 0xb
+ 464 0068 49       		.uleb128 0x49
+ 465 0069 13       		.uleb128 0x13
+ 466 006a 02       		.uleb128 0x2
+ 467 006b 18       		.uleb128 0x18
+ 468 006c 00       		.byte	0
+ 469 006d 00       		.byte	0
+ 470 006e 08       		.uleb128 0x8
+ 471 006f 01       		.uleb128 0x1
+ 472 0070 01       		.byte	0x1
+ 473 0071 49       		.uleb128 0x49
+ 474 0072 13       		.uleb128 0x13
+ 475 0073 01       		.uleb128 0x1
+ 476 0074 13       		.uleb128 0x13
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 12
+
+
+ 477 0075 00       		.byte	0
+ 478 0076 00       		.byte	0
+ 479 0077 09       		.uleb128 0x9
+ 480 0078 21       		.uleb128 0x21
+ 481 0079 00       		.byte	0
+ 482 007a 49       		.uleb128 0x49
+ 483 007b 13       		.uleb128 0x13
+ 484 007c 2F       		.uleb128 0x2f
+ 485 007d 0B       		.uleb128 0xb
+ 486 007e 00       		.byte	0
+ 487 007f 00       		.byte	0
+ 488 0080 0A       		.uleb128 0xa
+ 489 0081 26       		.uleb128 0x26
+ 490 0082 00       		.byte	0
+ 491 0083 49       		.uleb128 0x49
+ 492 0084 13       		.uleb128 0x13
+ 493 0085 00       		.byte	0
+ 494 0086 00       		.byte	0
+ 495 0087 0B       		.uleb128 0xb
+ 496 0088 2E       		.uleb128 0x2e
+ 497 0089 00       		.byte	0
+ 498 008a 3F       		.uleb128 0x3f
+ 499 008b 19       		.uleb128 0x19
+ 500 008c 03       		.uleb128 0x3
+ 501 008d 0E       		.uleb128 0xe
+ 502 008e 3A       		.uleb128 0x3a
+ 503 008f 0B       		.uleb128 0xb
+ 504 0090 3B       		.uleb128 0x3b
+ 505 0091 0B       		.uleb128 0xb
+ 506 0092 27       		.uleb128 0x27
+ 507 0093 19       		.uleb128 0x19
+ 508 0094 11       		.uleb128 0x11
+ 509 0095 01       		.uleb128 0x1
+ 510 0096 12       		.uleb128 0x12
+ 511 0097 06       		.uleb128 0x6
+ 512 0098 40       		.uleb128 0x40
+ 513 0099 18       		.uleb128 0x18
+ 514 009a 9642     		.uleb128 0x2116
+ 515 009c 19       		.uleb128 0x19
+ 516 009d 00       		.byte	0
+ 517 009e 00       		.byte	0
+ 518 009f 00       		.byte	0
+ 519              		.section	.debug_aranges,"",%progbits
+ 520 0000 34000000 		.4byte	0x34
+ 521 0004 0200     		.2byte	0x2
+ 522 0006 00000000 		.4byte	.Ldebug_info0
+ 523 000a 04       		.byte	0x4
+ 524 000b 00       		.byte	0
+ 525 000c 0000     		.2byte	0
+ 526 000e 0000     		.2byte	0
+ 527 0010 00000000 		.4byte	.LFB37
+ 528 0014 24000000 		.4byte	.LFE37-.LFB37
+ 529 0018 00000000 		.4byte	.LFB38
+ 530 001c 3C000000 		.4byte	.LFE38-.LFB38
+ 531 0020 00000000 		.4byte	.LFB39
+ 532 0024 2E000000 		.4byte	.LFE39-.LFB39
+ 533 0028 00000000 		.4byte	.LFB40
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 13
+
+
+ 534 002c 14000000 		.4byte	.LFE40-.LFB40
+ 535 0030 00000000 		.4byte	0
+ 536 0034 00000000 		.4byte	0
+ 537              		.section	.debug_ranges,"",%progbits
+ 538              	.Ldebug_ranges0:
+ 539 0000 00000000 		.4byte	.LFB37
+ 540 0004 24000000 		.4byte	.LFE37
+ 541 0008 00000000 		.4byte	.LFB38
+ 542 000c 3C000000 		.4byte	.LFE38
+ 543 0010 00000000 		.4byte	.LFB39
+ 544 0014 2E000000 		.4byte	.LFE39
+ 545 0018 00000000 		.4byte	.LFB40
+ 546 001c 14000000 		.4byte	.LFE40
+ 547 0020 00000000 		.4byte	0
+ 548 0024 00000000 		.4byte	0
+ 549              		.section	.debug_line,"",%progbits
+ 550              	.Ldebug_line0:
+ 551 0000 9E000000 		.section	.debug_str,"MS",%progbits,1
+ 551      02004C00 
+ 551      00000201 
+ 551      FB0E0D00 
+ 551      01010101 
+ 552              	.LASF6:
+ 553 0000 6C6F6E67 		.ascii	"long long int\000"
+ 553      206C6F6E 
+ 553      6720696E 
+ 553      7400
+ 554              	.LASF11:
+ 555 000e 75696E74 		.ascii	"uint32\000"
+ 555      333200
+ 556              	.LASF17:
+ 557 0015 55415254 		.ascii	"UART_SendDebugData\000"
+ 557      5F53656E 
+ 557      64446562 
+ 557      75674461 
+ 557      746100
+ 558              	.LASF8:
+ 559 0028 756E7369 		.ascii	"unsigned int\000"
+ 559      676E6564 
+ 559      20696E74 
+ 559      00
+ 560              	.LASF21:
+ 561 0035 55415254 		.ascii	"UART_PutHexInt\000"
+ 561      5F507574 
+ 561      48657849 
+ 561      6E7400
+ 562              	.LASF22:
+ 563 0044 74784865 		.ascii	"txHexInt\000"
+ 563      78496E74 
+ 563      00
+ 564              	.LASF9:
+ 565 004d 75696E74 		.ascii	"uint8\000"
+ 565      3800
+ 566              	.LASF5:
+ 567 0053 6C6F6E67 		.ascii	"long unsigned int\000"
+ 567      20756E73 
+ 567      69676E65 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 14
+
+
+ 567      6420696E 
+ 567      7400
+ 568              	.LASF18:
+ 569 0065 55415254 		.ascii	"UART_PutHexByte\000"
+ 569      5F507574 
+ 569      48657842 
+ 569      79746500 
+ 570              	.LASF7:
+ 571 0075 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 571      206C6F6E 
+ 571      6720756E 
+ 571      7369676E 
+ 571      65642069 
+ 572              	.LASF19:
+ 573 008c 436F756E 		.ascii	"CountValue\000"
+ 573      7456616C 
+ 573      756500
+ 574              	.LASF3:
+ 575 0097 73686F72 		.ascii	"short unsigned int\000"
+ 575      7420756E 
+ 575      7369676E 
+ 575      65642069 
+ 575      6E7400
+ 576              	.LASF14:
+ 577 00aa 63686172 		.ascii	"char8\000"
+ 577      3800
+ 578              	.LASF25:
+ 579 00b0 433A5C55 		.ascii	"C:\\Users\\owono\\Documents\\PSoC Creator\\Frequenc"
+ 579      73657273 
+ 579      5C6F776F 
+ 579      6E6F5C44 
+ 579      6F63756D 
+ 580 00de 795F4D65 		.ascii	"y_Measurement_Using_PSoC4_BLE\\Frequency_Measuremen"
+ 580      61737572 
+ 580      656D656E 
+ 580      745F5573 
+ 580      696E675F 
+ 581 0110 745F5573 		.ascii	"t_Using_PSoC4_BLE\\Frequency_Measurement_Using_PSoC"
+ 581      696E675F 
+ 581      50536F43 
+ 581      345F424C 
+ 581      455C4672 
+ 582 0142 345F424C 		.ascii	"4_BLE.cydsn\000"
+ 582      452E6379 
+ 582      64736E00 
+ 583              	.LASF1:
+ 584 014e 756E7369 		.ascii	"unsigned char\000"
+ 584      676E6564 
+ 584      20636861 
+ 584      7200
+ 585              	.LASF15:
+ 586 015c 63686172 		.ascii	"char\000"
+ 586      00
+ 587              	.LASF4:
+ 588 0161 6C6F6E67 		.ascii	"long int\000"
+ 588      20696E74 
+ 588      00
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 15
+
+
+ 589              	.LASF24:
+ 590 016a 2E5C436F 		.ascii	".\\Communication.c\000"
+ 590      6D6D756E 
+ 590      69636174 
+ 590      696F6E2E 
+ 590      6300
+ 591              	.LASF13:
+ 592 017c 646F7562 		.ascii	"double\000"
+ 592      6C6500
+ 593              	.LASF26:
+ 594 0183 53575F54 		.ascii	"SW_Tx_UART_hex\000"
+ 594      785F5541 
+ 594      52545F68 
+ 594      657800
+ 595              	.LASF20:
+ 596 0192 74784865 		.ascii	"txHexByte\000"
+ 596      78427974 
+ 596      6500
+ 597              	.LASF0:
+ 598 019c 7369676E 		.ascii	"signed char\000"
+ 598      65642063 
+ 598      68617200 
+ 599              	.LASF27:
+ 600 01a8 55415254 		.ascii	"UART_PutCRLF\000"
+ 600      5F507574 
+ 600      43524C46 
+ 600      00
+ 601              	.LASF12:
+ 602 01b5 666C6F61 		.ascii	"float\000"
+ 602      7400
+ 603              	.LASF2:
+ 604 01bb 73686F72 		.ascii	"short int\000"
+ 604      7420696E 
+ 604      7400
+ 605              	.LASF10:
+ 606 01c5 75696E74 		.ascii	"uint16\000"
+ 606      313600
+ 607              	.LASF16:
+ 608 01cc 73697A65 		.ascii	"sizetype\000"
+ 608      74797065 
+ 608      00
+ 609              	.LASF23:
+ 610 01d5 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 610      4320342E 
+ 610      392E3320 
+ 610      32303135 
+ 610      30333033 
+ 611 0208 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m0 -mthumb -g -O"
+ 611      20726576 
+ 611      6973696F 
+ 611      6E203232 
+ 611      31323230 
+ 612 023b 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 612      66756E63 
+ 612      74696F6E 
+ 612      2D736563 
+ 612      74696F6E 
+ARM GAS  C:\Users\owono\AppData\Local\Temp\ccAqdqgQ.s 			page 16
+
+
+ 613              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br
